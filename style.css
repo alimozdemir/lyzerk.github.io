@@ -3,6 +3,7 @@ body {
   height: 100%;
   margin:0;
   font-family: 'Open Sans', sans-serif;
+  /*font-family: 'PT Serif', serif;*/
   color:white;
 }
 
@@ -32,6 +33,7 @@ main {
 .name {
     color:white;
     font-size:3em;
+    font-weight: bold;
 }
 .name > p{
     margin-bottom:2px;
