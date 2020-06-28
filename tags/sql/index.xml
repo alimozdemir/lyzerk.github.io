@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>sql on Alim Özdemir</title>
-    <link>www.alimozdemir.com/tags/sql/</link>
+    <link>/tags/sql/</link>
     <description>Recent content in sql on Alim Özdemir</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 09 Jun 2020 17:45:46 +0000</lastBuildDate>
     
-	<atom:link href="www.alimozdemir.com/tags/sql/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/sql/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>ASP.NET Core: A powerful API Design with OData, EF and SQLKata</title>
-      <link>www.alimozdemir.com/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</link>
+      <link>/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</link>
       <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</guid>
+      <guid>/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</guid>
       <description>&lt;p&gt;Rather than reinventing the wheel, you may need a fast and reliable solution in a short time span. In this case, your framework should be able to support all your requirements. ASP.NET Core is doing that very well.&lt;/p&gt;</description>
     </item>
     

@@ -2,86 +2,86 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>dotnet on Alim Özdemir</title>
-    <link>www.alimozdemir.com/tags/dotnet/</link>
+    <link>/tags/dotnet/</link>
     <description>Recent content in dotnet on Alim Özdemir</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sat, 30 May 2020 19:16:17 +0000</lastBuildDate>
     
-	<atom:link href="www.alimozdemir.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Better DI Service Registration with Assembly Scan</title>
-      <link>www.alimozdemir.com/posts/better-di-service-registration-with-assembly-scan/</link>
+      <link>/posts/better-di-service-registration-with-assembly-scan/</link>
       <pubDate>Sat, 30 May 2020 19:16:17 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/better-di-service-registration-with-assembly-scan/</guid>
+      <guid>/posts/better-di-service-registration-with-assembly-scan/</guid>
       <description>&lt;p&gt;Today, I will talk about a better way to register services for Microsoft’s DI container. Let’s have a look at the standard way of service registration.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SignalR Core: Heartbeat and Redis</title>
-      <link>www.alimozdemir.com/posts/signalr-core-heartbeat-and-redis/</link>
+      <link>/posts/signalr-core-heartbeat-and-redis/</link>
       <pubDate>Mon, 23 Dec 2019 09:51:18 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/signalr-core-heartbeat-and-redis/</guid>
+      <guid>/posts/signalr-core-heartbeat-and-redis/</guid>
       <description>&lt;p&gt;Realtime applications are hard to design in .NET world, we have SignalR Core which gives us a painless interface for developing such applications. SignalR Core is a very new library, here I will be discussing a problem case which came with the latest versions.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Hangfire Docker with Multiple Servers</title>
-      <link>www.alimozdemir.com/posts/hangfire-docker-with-multiple-servers/</link>
+      <link>/posts/hangfire-docker-with-multiple-servers/</link>
       <pubDate>Fri, 19 Jul 2019 06:32:49 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/hangfire-docker-with-multiple-servers/</guid>
+      <guid>/posts/hangfire-docker-with-multiple-servers/</guid>
       <description>&lt;p&gt;I’ve been using Hangfire for almost 2 years. It’s a wonderful job schedule API with persistent storage. Community have a lot of examples about how to use Hangfire. However, almost all of them use the application (UI) as a hangfire server. Here, I will explain how to use Hangfire with docker and multiple servers. Let’s begin.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Design Pattern Serisi 3: Pipeline</title>
-      <link>www.alimozdemir.com/posts/design-pattern-serisi-3-pipeline/</link>
+      <link>/posts/design-pattern-serisi-3-pipeline/</link>
       <pubDate>Fri, 12 Jul 2019 13:41:04 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/design-pattern-serisi-3-pipeline/</guid>
+      <guid>/posts/design-pattern-serisi-3-pipeline/</guid>
       <description>&lt;p&gt;Temiz ve yalın kod yazmak yazılım dünyasında olmazsa olmaz şeylerin başında geliyor. Bunu sağlamak için bir çok yol var bizde bunlardan birine değineceğiz.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>ML.NET kullanarak çoklu dil sınıflandırma</title>
-      <link>www.alimozdemir.com/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</link>
+      <link>/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</link>
       <pubDate>Wed, 30 Jan 2019 11:36:33 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</guid>
+      <guid>/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</guid>
       <description>&lt;p&gt;Herkese yeniden merhaba,&lt;/p&gt;
 &lt;p&gt;Bu yazımda Microsoft’un makine öğrenmesi kütüphanesi olan ML.NET’i kullanarak dil sınıflandırma yapacağım. Örnek vermek gerekirse, dökümanları, yazıları vb. şeylerin dillerini tespit edebileceğiz. İşe kendi eğitim ve test verilerimizi oluşturarak başlayacağım.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>deget/ddown; a downloader cli/api for dotnet</title>
-      <link>www.alimozdemir.com/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</link>
+      <link>/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</link>
       <pubDate>Mon, 14 Jan 2019 09:10:19 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;www.alimozdemir.com/img/1__uCwhJpWZUQVkkXTvVr__m2A.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <guid>/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;/img/1__uCwhJpWZUQVkkXTvVr__m2A.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Hello&lt;/strong&gt; everyone, I would like to introduce my first global tool for dotnet core ecosystem. This is one of my side projects that I have completed in my free time. It is a downloader just like ‘wget’ command in unix. It has partitioning, pause and resume features. Also, it is not only a CLI tool, but has a nuget package that you can include to your projects for downloading files.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Design Pattern Serisi 2: Object Pool</title>
-      <link>www.alimozdemir.com/posts/design-pattern-serisi-2-object-pool/</link>
+      <link>/posts/design-pattern-serisi-2-object-pool/</link>
       <pubDate>Wed, 05 Sep 2018 12:01:55 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/design-pattern-serisi-2-object-pool/</guid>
+      <guid>/posts/design-pattern-serisi-2-object-pool/</guid>
       <description>&lt;p&gt;Merhaba, bu seferki yazımda bir başka design pattern anlatacağım. Projelerimizde sınıfların oluşturulması bazen pahalıya patlayabiliyor. Bellekten gereksiz yer ayırma (allocation) durumunda performans sorunları ortaya çıkabiliyor. Bu tür performans sorunlarını çözmek için sınıfların yeniden oluşturulmasını engellemek bir çözüm olabilir. Bunun için Object Pool Design Pattern bulunmakta. Ayrıca, .NET Framework SQL Connection üzerinde bu Design Pattern kullanılmaktadır.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Design Pattern Serisi 1: Singleton</title>
-      <link>www.alimozdemir.com/posts/design-pattern-serisi-1-singleton/</link>
+      <link>/posts/design-pattern-serisi-1-singleton/</link>
       <pubDate>Mon, 03 Sep 2018 06:56:15 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/design-pattern-serisi-1-singleton/</guid>
+      <guid>/posts/design-pattern-serisi-1-singleton/</guid>
       <description>&lt;p&gt;Herkese merhaba, öncelikle neden başlıkta ingilizce terimler kullandığıma değinmek istiyorum. Yazılım dünyasında ağırlıklı dilin ingilizce olduğu ve bu tür terimlerin türkçe karşılığı bana çok anlamlı gelmediği için bu şekilde başlık atma gereği duydum. Design Pattern için Tasarım Deseni çevirisi yapılabilir. Belki TDK buna farklı bir isim verirse daha güzel olabilir ancak ben yine de bu tür ünlü terimleri ingilizce bırakarak makale serime devam etmek istiyorum.&lt;/p&gt;</description>
     </item>
     

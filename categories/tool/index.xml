@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tool on Alim Özdemir</title>
-    <link>www.alimozdemir.com/categories/tool/</link>
+    <link>/categories/tool/</link>
     <description>Recent content in tool on Alim Özdemir</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Mon, 14 Jan 2019 09:10:19 +0000</lastBuildDate>
     
-	<atom:link href="www.alimozdemir.com/categories/tool/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/tool/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>deget/ddown; a downloader cli/api for dotnet</title>
-      <link>www.alimozdemir.com/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</link>
+      <link>/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</link>
       <pubDate>Mon, 14 Jan 2019 09:10:19 +0000</pubDate>
       
-      <guid>www.alimozdemir.com/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;www.alimozdemir.com/img/1__uCwhJpWZUQVkkXTvVr__m2A.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <guid>/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;/img/1__uCwhJpWZUQVkkXTvVr__m2A.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Hello&lt;/strong&gt; everyone, I would like to introduce my first global tool for dotnet core ecosystem. This is one of my side projects that I have completed in my free time. It is a downloader just like ‘wget’ command in unix. It has partitioning, pause and resume features. Also, it is not only a CLI tool, but has a nuget package that you can include to your projects for downloading files.&lt;/p&gt;</description>
     </item>
     
