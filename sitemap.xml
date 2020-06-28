@@ -74,6 +74,36 @@
   </url>
   
   <url>
+    <loc>/projects/nuget-promptcli/</loc>
+    <lastmod>2020-04-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/cli/</loc>
+    <lastmod>2020-04-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/inquirerjs/</loc>
+    <lastmod>2020-04-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/nuget/</loc>
+    <lastmod>2020-04-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/package/</loc>
+    <lastmod>2020-04-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/projects/</loc>
+    <lastmod>2020-04-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/tags/angular/</loc>
     <lastmod>2020-01-26T19:56:57+00:00</lastmod>
   </url>
@@ -124,16 +154,6 @@
   </url>
   
   <url>
-    <loc>/categories/package/</loc>
-    <lastmod>2019-08-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/projects/</loc>
-    <lastmod>2019-08-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/docker/</loc>
     <lastmod>2019-07-19T06:32:49+00:00</lastmod>
   </url>
@@ -166,6 +186,21 @@
   <url>
     <loc>/tags/tasarim-kalibi/</loc>
     <lastmod>2019-07-12T13:41:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/grandnode/</loc>
+    <lastmod>2019-02-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/projects/grandnode-payment-iyzico/</loc>
+    <lastmod>2019-02-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/iyzico/</loc>
+    <lastmod>2019-02-20T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -211,6 +246,21 @@
   <url>
     <loc>/posts/design-pattern-serisi-1-singleton/</loc>
     <lastmod>2018-09-03T06:56:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/projects/triggr-lightweight-source-code-monitoring/</loc>
+    <lastmod>2018-09-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/projects/nuget-ddown/</loc>
+    <lastmod>2018-01-13T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/downloader/</loc>
+    <lastmod>2018-01-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
