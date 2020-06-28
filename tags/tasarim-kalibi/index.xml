@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tasarim kalibi on Alim Özdemir</title>
+    <link>www.alimozdemir.com/tags/tasarim-kalibi/</link>
+    <description>Recent content in tasarim kalibi on Alim Özdemir</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 12 Jul 2019 13:41:04 +0000</lastBuildDate>
+    
+	<atom:link href="www.alimozdemir.com/tags/tasarim-kalibi/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Design Pattern Serisi 3: Pipeline</title>
+      <link>www.alimozdemir.com/posts/design-pattern-serisi-3-pipeline/</link>
+      <pubDate>Fri, 12 Jul 2019 13:41:04 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/design-pattern-serisi-3-pipeline/</guid>
+      <description>&lt;p&gt;Temiz ve yalın kod yazmak yazılım dünyasında olmazsa olmaz şeylerin başında geliyor. Bunu sağlamak için bir çok yol var bizde bunlardan birine değineceğiz.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Design Pattern Serisi 2: Object Pool</title>
+      <link>www.alimozdemir.com/posts/design-pattern-serisi-2-object-pool/</link>
+      <pubDate>Wed, 05 Sep 2018 12:01:55 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/design-pattern-serisi-2-object-pool/</guid>
+      <description>&lt;p&gt;Merhaba, bu seferki yazımda bir başka design pattern anlatacağım. Projelerimizde sınıfların oluşturulması bazen pahalıya patlayabiliyor. Bellekten gereksiz yer ayırma (allocation) durumunda performans sorunları ortaya çıkabiliyor. Bu tür performans sorunlarını çözmek için sınıfların yeniden oluşturulmasını engellemek bir çözüm olabilir. Bunun için Object Pool Design Pattern bulunmakta. Ayrıca, .NET Framework SQL Connection üzerinde bu Design Pattern kullanılmaktadır.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Design Pattern Serisi 1: Singleton</title>
+      <link>www.alimozdemir.com/posts/design-pattern-serisi-1-singleton/</link>
+      <pubDate>Mon, 03 Sep 2018 06:56:15 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/design-pattern-serisi-1-singleton/</guid>
+      <description>&lt;p&gt;Herkese merhaba, öncelikle neden başlıkta ingilizce terimler kullandığıma değinmek istiyorum. Yazılım dünyasında ağırlıklı dilin ingilizce olduğu ve bu tür terimlerin türkçe karşılığı bana çok anlamlı gelmediği için bu şekilde başlık atma gereği duydum. Design Pattern için Tasarım Deseni çevirisi yapılabilir. Belki TDK buna farklı bir isim verirse daha güzel olabilir ancak ben yine de bu tür ünlü terimleri ingilizce bırakarak makale serime devam etmek istiyorum.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

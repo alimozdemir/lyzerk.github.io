@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>hangfire on Alim Özdemir</title>
+    <link>www.alimozdemir.com/tags/hangfire/</link>
+    <description>Recent content in hangfire on Alim Özdemir</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 19 Jul 2019 06:32:49 +0000</lastBuildDate>
+    
+	<atom:link href="www.alimozdemir.com/tags/hangfire/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hangfire Docker with Multiple Servers</title>
+      <link>www.alimozdemir.com/posts/hangfire-docker-with-multiple-servers/</link>
+      <pubDate>Fri, 19 Jul 2019 06:32:49 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/hangfire-docker-with-multiple-servers/</guid>
+      <description>&lt;p&gt;I’ve been using Hangfire for almost 2 years. It’s a wonderful job schedule API with persistent storage. Community have a lot of examples about how to use Hangfire. However, almost all of them use the application (UI) as a hangfire server. Here, I will explain how to use Hangfire with docker and multiple servers. Let’s begin.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

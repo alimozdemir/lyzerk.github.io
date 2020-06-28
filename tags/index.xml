@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Alim Özdemir</title>
+    <link>www.alimozdemir.com/tags/</link>
+    <description>Recent content on Alim Özdemir</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 09 Jun 2020 17:45:46 +0000</lastBuildDate>
+    
+	<atom:link href="www.alimozdemir.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>aspnetcore</title>
+      <link>www.alimozdemir.com/tags/aspnetcore/</link>
+      <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/aspnetcore/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>odata</title>
+      <link>www.alimozdemir.com/tags/odata/</link>
+      <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/odata/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>orm</title>
+      <link>www.alimozdemir.com/tags/orm/</link>
+      <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/orm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sql</title>
+      <link>www.alimozdemir.com/tags/sql/</link>
+      <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/sql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>dependency injection</title>
+      <link>www.alimozdemir.com/tags/dependency-injection/</link>
+      <pubDate>Sat, 30 May 2020 19:16:17 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/dependency-injection/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>dotnet</title>
+      <link>www.alimozdemir.com/tags/dotnet/</link>
+      <pubDate>Sat, 30 May 2020 19:16:17 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/dotnet/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>angular</title>
+      <link>www.alimozdemir.com/tags/angular/</link>
+      <pubDate>Sun, 26 Jan 2020 19:56:57 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/angular/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>typescript</title>
+      <link>www.alimozdemir.com/tags/typescript/</link>
+      <pubDate>Sun, 26 Jan 2020 19:56:57 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/typescript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>signalr</title>
+      <link>www.alimozdemir.com/tags/signalr/</link>
+      <pubDate>Mon, 23 Dec 2019 09:51:18 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/signalr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>fabricjs</title>
+      <link>www.alimozdemir.com/tags/fabricjs/</link>
+      <pubDate>Thu, 15 Aug 2019 08:25:21 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/fabricjs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>javascript</title>
+      <link>www.alimozdemir.com/tags/javascript/</link>
+      <pubDate>Thu, 15 Aug 2019 08:25:21 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>npm</title>
+      <link>www.alimozdemir.com/tags/npm/</link>
+      <pubDate>Sun, 11 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/npm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>docker</title>
+      <link>www.alimozdemir.com/tags/docker/</link>
+      <pubDate>Fri, 19 Jul 2019 06:32:49 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hangfire</title>
+      <link>www.alimozdemir.com/tags/hangfire/</link>
+      <pubDate>Fri, 19 Jul 2019 06:32:49 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/hangfire/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>design patterns</title>
+      <link>www.alimozdemir.com/tags/design-patterns/</link>
+      <pubDate>Fri, 12 Jul 2019 13:41:04 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/design-patterns/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tasarim kalibi</title>
+      <link>www.alimozdemir.com/tags/tasarim-kalibi/</link>
+      <pubDate>Fri, 12 Jul 2019 13:41:04 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/tasarim-kalibi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>machine learning</title>
+      <link>www.alimozdemir.com/tags/machine-learning/</link>
+      <pubDate>Wed, 30 Jan 2019 11:36:33 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/machine-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mlnet</title>
+      <link>www.alimozdemir.com/tags/mlnet/</link>
+      <pubDate>Wed, 30 Jan 2019 11:36:33 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/mlnet/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tool</title>
+      <link>www.alimozdemir.com/tags/tool/</link>
+      <pubDate>Mon, 14 Jan 2019 09:10:19 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/tool/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nginx</title>
+      <link>www.alimozdemir.com/tags/nginx/</link>
+      <pubDate>Tue, 19 Dec 2017 21:52:17 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/nginx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>websocket</title>
+      <link>www.alimozdemir.com/tags/websocket/</link>
+      <pubDate>Tue, 19 Dec 2017 21:52:17 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/tags/websocket/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

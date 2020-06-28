@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>angular on Alim Özdemir</title>
+    <link>www.alimozdemir.com/tags/angular/</link>
+    <description>Recent content in angular on Alim Özdemir</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 26 Jan 2020 19:56:57 +0000</lastBuildDate>
+    
+	<atom:link href="www.alimozdemir.com/tags/angular/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Angular 2&#43;: Base Component Misusage</title>
+      <link>www.alimozdemir.com/posts/angular-2-base-component-misusage/</link>
+      <pubDate>Sun, 26 Jan 2020 19:56:57 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/angular-2-base-component-misusage/</guid>
+      <description>&lt;p&gt;Hello again, base functionality is an &lt;em&gt;inevitable&lt;/em&gt; requirement. I’m going to talk about a different base component approach in the Angular. Most of the examples create a base component and inject services to it. Later, you create components from it. However, internet has many examples that could lead you to write bad code.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

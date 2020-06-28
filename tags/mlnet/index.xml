@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mlnet on Alim Özdemir</title>
+    <link>www.alimozdemir.com/tags/mlnet/</link>
+    <description>Recent content in mlnet on Alim Özdemir</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 30 Jan 2019 11:36:33 +0000</lastBuildDate>
+    
+	<atom:link href="www.alimozdemir.com/tags/mlnet/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ML.NET kullanarak çoklu dil sınıflandırma</title>
+      <link>www.alimozdemir.com/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</link>
+      <pubDate>Wed, 30 Jan 2019 11:36:33 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</guid>
+      <description>&lt;p&gt;Herkese yeniden merhaba,&lt;/p&gt;
+&lt;p&gt;Bu yazımda Microsoft’un makine öğrenmesi kütüphanesi olan ML.NET’i kullanarak dil sınıflandırma yapacağım. Örnek vermek gerekirse, dökümanları, yazıları vb. şeylerin dillerini tespit edebileceğiz. İşe kendi eğitim ve test verilerimizi oluşturarak başlayacağım.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

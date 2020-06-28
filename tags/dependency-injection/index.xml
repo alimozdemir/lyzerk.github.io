@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>dependency injection on Alim Özdemir</title>
+    <link>www.alimozdemir.com/tags/dependency-injection/</link>
+    <description>Recent content in dependency injection on Alim Özdemir</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 30 May 2020 19:16:17 +0000</lastBuildDate>
+    
+	<atom:link href="www.alimozdemir.com/tags/dependency-injection/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Better DI Service Registration with Assembly Scan</title>
+      <link>www.alimozdemir.com/posts/better-di-service-registration-with-assembly-scan/</link>
+      <pubDate>Sat, 30 May 2020 19:16:17 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/better-di-service-registration-with-assembly-scan/</guid>
+      <description>&lt;p&gt;Today, I will talk about a better way to register services for Microsoft’s DI container. Let’s have a look at the standard way of service registration.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

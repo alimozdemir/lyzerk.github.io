@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>signalr on Alim Özdemir</title>
+    <link>www.alimozdemir.com/tags/signalr/</link>
+    <description>Recent content in signalr on Alim Özdemir</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 23 Dec 2019 09:51:18 +0000</lastBuildDate>
+    
+	<atom:link href="www.alimozdemir.com/tags/signalr/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>SignalR Core: Heartbeat and Redis</title>
+      <link>www.alimozdemir.com/posts/signalr-core-heartbeat-and-redis/</link>
+      <pubDate>Mon, 23 Dec 2019 09:51:18 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/signalr-core-heartbeat-and-redis/</guid>
+      <description>&lt;p&gt;Realtime applications are hard to design in .NET world, we have SignalR Core which gives us a painless interface for developing such applications. SignalR Core is a very new library, here I will be discussing a problem case which came with the latest versions.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Deployment of SignalR with nginx</title>
+      <link>www.alimozdemir.com/posts/deployment-of-signalr-with-nginx/</link>
+      <pubDate>Tue, 19 Dec 2017 21:52:17 +0000</pubDate>
+      
+      <guid>www.alimozdemir.com/posts/deployment-of-signalr-with-nginx/</guid>
+      <description>At the beginning of the semester, I took software engineering course which has a term project. It requires us to do real-time web application. After discussion with team members, we chose ASP.NET Core with SignalR. While I was writing this story, SignalR is on alpha stage (1.0.0-alpha2). Therefore, it has issues. Such as, the documentation is incomplete, some of the features are under development and there is no information about unit testing or functionality testing etc.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/about/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/aspnetcore/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/categories/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/odata/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/orm/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/categories/programming/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/sql/</loc>
+    <lastmod>2020-06-09T17:45:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/better-di-service-registration-with-assembly-scan/</loc>
+    <lastmod>2020-05-30T19:16:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/dependency-injection/</loc>
+    <lastmod>2020-05-30T19:16:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/dotnet/</loc>
+    <lastmod>2020-05-30T19:16:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/angular/</loc>
+    <lastmod>2020-01-26T19:56:57+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/angular-2-base-component-misusage/</loc>
+    <lastmod>2020-01-26T19:56:57+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/typescript/</loc>
+    <lastmod>2020-01-26T19:56:57+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/signalr/</loc>
+    <lastmod>2019-12-23T09:51:18+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/signalr-core-heartbeat-and-redis/</loc>
+    <lastmod>2019-12-23T09:51:18+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/fabric-js-history-operations-undo-redo-and-useful-tips/</loc>
+    <lastmod>2019-08-15T08:25:21+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/fabricjs/</loc>
+    <lastmod>2019-08-15T08:25:21+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/javascript/</loc>
+    <lastmod>2019-08-15T08:25:21+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/projects/npm-fabric-history/</loc>
+    <lastmod>2019-08-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/npm/</loc>
+    <lastmod>2019-08-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/categories/package/</loc>
+    <lastmod>2019-08-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/projects/</loc>
+    <lastmod>2019-08-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/docker/</loc>
+    <lastmod>2019-07-19T06:32:49+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/hangfire/</loc>
+    <lastmod>2019-07-19T06:32:49+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/hangfire-docker-with-multiple-servers/</loc>
+    <lastmod>2019-07-19T06:32:49+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/design-pattern-serisi-3-pipeline/</loc>
+    <lastmod>2019-07-12T13:41:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/design-patterns/</loc>
+    <lastmod>2019-07-12T13:41:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/categories/engineering/</loc>
+    <lastmod>2019-07-12T13:41:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/tasarim-kalibi/</loc>
+    <lastmod>2019-07-12T13:41:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/machine-learning/</loc>
+    <lastmod>2019-01-30T11:36:33+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/categories/machine-learning/</loc>
+    <lastmod>2019-01-30T11:36:33+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</loc>
+    <lastmod>2019-01-30T11:36:33+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/mlnet/</loc>
+    <lastmod>2019-01-30T11:36:33+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</loc>
+    <lastmod>2019-01-14T09:10:19+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/tool/</loc>
+    <lastmod>2019-01-14T09:10:19+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/categories/tool/</loc>
+    <lastmod>2019-01-14T09:10:19+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/design-pattern-serisi-2-object-pool/</loc>
+    <lastmod>2018-09-05T12:01:55+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/design-pattern-serisi-1-singleton/</loc>
+    <lastmod>2018-09-03T06:56:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/posts/deployment-of-signalr-with-nginx/</loc>
+    <lastmod>2017-12-19T21:52:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/nginx/</loc>
+    <lastmod>2017-12-19T21:52:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>www.alimozdemir.com/tags/websocket/</loc>
+    <lastmod>2017-12-19T21:52:17+00:00</lastmod>
+  </url>
+  
+</urlset>
