@@ -33,12 +33,19 @@
 		<meta name="generator" content="Hugo 0.72.0" />
 		<title>Fabric.js History Operations (undo, redo) and Useful Tips &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
-		<link rel="stylesheet" href="/css/style.css">
-		<link rel="preload" as="style" href="/css/highlight.css">
-		<link rel="preload" as="style" href="/css/vs.css">
 
 		
-		<link rel="preload" as="style" href="/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/css/style.min.css" integrity="" media="screen">
+
+		
+		
+		<link rel="stylesheet" href="/css/highlight.min.css" integrity="" media="screen">
+
+		
+		<link rel="stylesheet" href="/css/vs.min.css" integrity="" media="screen">
+
+		
+		<link rel="stylesheet" href="/css/icomoon.css">
 		
 
 		
@@ -75,7 +82,7 @@
                     </h1>
                     <h2 class="headline">
                     Aug 15, 2019 08:25
-                    · 697 words
+                    · 699 words
                     · 4 minute read
                       <span class="tags">
                       
@@ -151,8 +158,8 @@
 </code></pre></div><p>Then you can download the 3x canvas.</p>
 <h4 id="clip-canvas">Clip canvas</h4>
 <p>In most cases, I wanted to clip objects with different kind of shapes. HTML5 canvas has a property called <code>globalCompositeOperation</code>.</p>
-<p><img src="/img/1__yjsrwvoZmyY7RmRBxDt7Mg.png" alt="https://www.rgraph.net/canvas/reference/globalcompositeoperation.html">
-<a href="https://www.rgraph.net/canvas/reference/globalcompositeoperation.html">https://www.rgraph.net/canvas/reference/globalcompositeoperation.html</a></p>
+<p><img src="/img/1__yjsrwvoZmyY7RmRBxDt7Mg.png" alt="global composite operation">
+<a href="https://www.rgraph.net/canvas/reference/globalcompositeoperation.html">global composite operation</a></p>
 <p>This is important while clipping a fabric object. Same rules apply here. For example, I have added a rectangle on the canvas. Then, I have set the clipPath property to a group of objects.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">canvas</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Canvas</span>(<span style="color:#e6db74">&#39;canvas&#39;</span>)
 
@@ -183,7 +190,7 @@
 
 <span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">clipPath</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">clipGroup</span>;
 </code></pre></div><p>The circle defines the outside border of the rectangle and second rectangle will cut inside of the circle. You can easily set the <code>globalCompositeOperation</code> as <code>destination-out</code> value. And the result;</p>
-<p><img src="/img/1__uU9cD4GsTzVKbVWe8Mhd4A.png" alt=""></p>
+<p><img src="/img/1__uU9cD4GsTzVKbVWe8Mhd4A.png" alt="Destination-out"></p>
 <p>You can see an example below:</p>
 <p>
 
@@ -210,6 +217,35 @@ _Summary: The globalCompositeOperation property determines how drawings are adde
             
 
             
+                <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/better-di-service-registration-with-assembly-scan/">Better DI Service Registration with Assembly Scan<aside class="dates">May 30 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/projects/nuget-promptcli/">[NUGET] PromptCLI<aside class="dates">Apr 26 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/angular-2-base-component-misusage/">Angular 2&#43;: Base Component Misusage<aside class="dates">Jan 26 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
+        </li>
+    
+</ul>
+
+            
 
             <footer id="footer">
     
@@ -218,19 +254,19 @@ _Summary: The globalCompositeOperation property determines how drawings are adde
 	
 	
     <a class="symbol" href="https://www.github.com/lyzerk">
-        <i class="fa fa-github-square"></i>
+        <span class="demo-icon icon-github-square"></span>
     </a>
     
     <a class="symbol" href="https://www.linkedin.com/in/almozdmr/">
-        <i class="fa fa-linkedin-square"></i>
+        <span class="demo-icon icon-linkedin-square"></span>
     </a>
     
     <a class="symbol" href="https://medium.com/@alm.ozdmr">
-        <i class="fa fa-medium"></i>
+        <span class="demo-icon icon-medium"></span>
     </a>
     
     <a class="symbol" href="https://www.twitter.com/almozdmr">
-        <i class="fa fa-twitter-square"></i>
+        <span class="demo-icon icon-twitter-square"></span>
     </a>
     
 
@@ -247,7 +283,11 @@ _Summary: The globalCompositeOperation property determines how drawings are adde
 
         </section>
 
-        <script src="/js/jquery-3.3.1.min.js"></script>
+        
+<script
+  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+  crossorigin="anonymous"></script>
 <script src="/js/main.js"></script>
 <script src="/js/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>

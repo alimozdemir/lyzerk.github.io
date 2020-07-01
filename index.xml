@@ -126,7 +126,7 @@
       <pubDate>Mon, 14 Jan 2019 09:10:19 +0000</pubDate>
       
       <guid>/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;/img/1__uCwhJpWZUQVkkXTvVr__m2A.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;/img/1__uCwhJpWZUQVkkXTvVr__m2A.png&#34; alt=&#34;The blog image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Hello&lt;/strong&gt; everyone, I would like to introduce my first global tool for dotnet core ecosystem. This is one of my side projects that I have completed in my free time. It is a downloader just like ‘wget’ command in unix. It has partitioning, pause and resume features. Also, it is not only a CLI tool, but has a nuget package that you can include to your projects for downloading files.&lt;/p&gt;</description>
     </item>
     

@@ -33,12 +33,19 @@
 		<meta name="generator" content="Hugo 0.72.0" />
 		<title>Design Pattern Serisi 2: Object Pool &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
-		<link rel="stylesheet" href="/css/style.css">
-		<link rel="preload" as="style" href="/css/highlight.css">
-		<link rel="preload" as="style" href="/css/vs.css">
 
 		
-		<link rel="preload" as="style" href="/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/css/style.min.css" integrity="" media="screen">
+
+		
+		
+		<link rel="stylesheet" href="/css/highlight.min.css" integrity="" media="screen">
+
+		
+		<link rel="stylesheet" href="/css/vs.min.css" integrity="" media="screen">
+
+		
+		<link rel="stylesheet" href="/css/icomoon.css">
 		
 
 		
@@ -96,7 +103,7 @@
                 <section id="post-body">
                     <p>Merhaba, bu seferki yazımda bir başka design pattern anlatacağım. Projelerimizde sınıfların oluşturulması bazen pahalıya patlayabiliyor. Bellekten gereksiz yer ayırma (allocation) durumunda performans sorunları ortaya çıkabiliyor. Bu tür performans sorunlarını çözmek için sınıfların yeniden oluşturulmasını engellemek bir çözüm olabilir. Bunun için Object Pool Design Pattern bulunmakta. Ayrıca, .NET Framework SQL Connection üzerinde bu Design Pattern kullanılmaktadır.</p>
 <p>Serinin bir önceki yazısında anlattığım Singleton Pattern’i burada kullanmamız gerekecek çünkü Object Pool tek elden yönetilmesi ve kullanılması gerekmektedir. Ayrıca, kullanılmasını veya üretilmesini istediğimiz sınıfın abstract olarak tanımlayıp sadece Object Pool assembly’si tarafından üretilmesini sağlayacağız. Ayrıca, kaynak kodları makalenin sonunda bulunmaktadır.</p>
-<p><img src="/img/1__odCuMsqO33z35l6yN0aURw.png" alt=""></p>
+<p><img src="/img/1__odCuMsqO33z35l6yN0aURw.png" alt="The blog image"></p>
 <p>Öncelikle yapımızın UML Class Diagram halini göstermek istiyorum. Buradaki amacımız Client sınıfına doğrudan erişimi kapatıp, bu sınıfa ait tek elden türetilmiş bir Client sınıfı elde etmek istiyoruz. Olayın amacını daha detaylı anlatmak gerekirse, <code>AcquireObject()</code> metotu ile oluşturulmasını beklediğimiz objenin oluşturulmasını yada bize hazırda olan objeyi vermesini bekliyoruz. Burada bir istisna bulunmakta, eğer havuz boş ise ve oluşturulması gereken obje sayısı sınıra ulaşılmış ise havuzdan null pointer dönmektedir. Ancak bu kısım için Exception atılması da sağlanabilir. <code>ReleaseObject()</code> metotu ile kullanmış olduğumuz objeyi geri iade ediyoruz. Burada dikkat edilmesi gereken en önemli nokta alınan objenin kullanıldıktan sonra havuza geri verilmesi, eğer geri verilmezse havuzda eksik objeler bulunacak. Ve sistem eksik bir şekilde çalışmasına devam edecek. Eğer havuzun limiti size yetmiyorsa <code>IncreaseSize()</code> metotu ile havuzu büyütebiliriz. Temel olarak ulaşmak istediğimiz yapı bu, artık bu diyagramı koda dökebiliriz.</p>
 <h4 id="gerçekleme-implementation">Gerçekleme (Implementation)</h4>
 <p>Önceki makalede yaptığım gibi burada da C# dilinde devam edip .NET Core üzerinden gerçekleyeceğiz.</p>
@@ -253,6 +260,35 @@ _Intent - reuse and share objects that are expensive to create._www.oodesign.com
             
 
             
+                <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/better-di-service-registration-with-assembly-scan/">Better DI Service Registration with Assembly Scan<aside class="dates">May 30 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/projects/nuget-promptcli/">[NUGET] PromptCLI<aside class="dates">Apr 26 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/angular-2-base-component-misusage/">Angular 2&#43;: Base Component Misusage<aside class="dates">Jan 26 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
+        </li>
+    
+</ul>
+
+            
 
             <footer id="footer">
     
@@ -261,19 +297,19 @@ _Intent - reuse and share objects that are expensive to create._www.oodesign.com
 	
 	
     <a class="symbol" href="https://www.github.com/lyzerk">
-        <i class="fa fa-github-square"></i>
+        <span class="demo-icon icon-github-square"></span>
     </a>
     
     <a class="symbol" href="https://www.linkedin.com/in/almozdmr/">
-        <i class="fa fa-linkedin-square"></i>
+        <span class="demo-icon icon-linkedin-square"></span>
     </a>
     
     <a class="symbol" href="https://medium.com/@alm.ozdmr">
-        <i class="fa fa-medium"></i>
+        <span class="demo-icon icon-medium"></span>
     </a>
     
     <a class="symbol" href="https://www.twitter.com/almozdmr">
-        <i class="fa fa-twitter-square"></i>
+        <span class="demo-icon icon-twitter-square"></span>
     </a>
     
 
@@ -290,7 +326,11 @@ _Intent - reuse and share objects that are expensive to create._www.oodesign.com
 
         </section>
 
-        <script src="/js/jquery-3.3.1.min.js"></script>
+        
+<script
+  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+  crossorigin="anonymous"></script>
 <script src="/js/main.js"></script>
 <script src="/js/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>

@@ -33,12 +33,19 @@
 		<meta name="generator" content="Hugo 0.72.0" />
 		<title>Angular 2&#43;: Base Component Misusage &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
-		<link rel="stylesheet" href="/css/style.css">
-		<link rel="preload" as="style" href="/css/highlight.css">
-		<link rel="preload" as="style" href="/css/vs.css">
 
 		
-		<link rel="preload" as="style" href="/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/css/style.min.css" integrity="" media="screen">
+
+		
+		
+		<link rel="stylesheet" href="/css/highlight.min.css" integrity="" media="screen">
+
+		
+		<link rel="stylesheet" href="/css/vs.min.css" integrity="" media="screen">
+
+		
+		<link rel="stylesheet" href="/css/icomoon.css">
 		
 
 		
@@ -96,7 +103,7 @@
 <blockquote>
 <p><strong>DISCLAIMER</strong>: This story does not prove a pattern or anti-pattern. It just provides a different point of view.</p>
 </blockquote>
-<p><img src="/img/1____AgWDLYhv1mEVi0mFRqbLA.jpeg" alt=""></p>
+<p><img src="/img/1____AgWDLYhv1mEVi0mFRqbLA.jpeg" alt="The blog picture"></p>
 <p>Let’s see a common example;</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Component</span>, <span style="color:#a6e22e">OnInit</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;@angular/core&#39;</span>;
 <span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Router</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;@angular/router&#39;</span>;
@@ -279,6 +286,35 @@ _Encapsulate your common code in a base component and extend to your heart&rsquo
             
 
             
+                <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/better-di-service-registration-with-assembly-scan/">Better DI Service Registration with Assembly Scan<aside class="dates">May 30 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/projects/nuget-promptcli/">[NUGET] PromptCLI<aside class="dates">Apr 26 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/fabric-js-history-operations-undo-redo-and-useful-tips/">Fabric.js History Operations (undo, redo) and Useful Tips<aside class="dates">Aug 15 2019</aside></a>
+        </li>
+    
+</ul>
+
+            
 
             <footer id="footer">
     
@@ -287,19 +323,19 @@ _Encapsulate your common code in a base component and extend to your heart&rsquo
 	
 	
     <a class="symbol" href="https://www.github.com/lyzerk">
-        <i class="fa fa-github-square"></i>
+        <span class="demo-icon icon-github-square"></span>
     </a>
     
     <a class="symbol" href="https://www.linkedin.com/in/almozdmr/">
-        <i class="fa fa-linkedin-square"></i>
+        <span class="demo-icon icon-linkedin-square"></span>
     </a>
     
     <a class="symbol" href="https://medium.com/@alm.ozdmr">
-        <i class="fa fa-medium"></i>
+        <span class="demo-icon icon-medium"></span>
     </a>
     
     <a class="symbol" href="https://www.twitter.com/almozdmr">
-        <i class="fa fa-twitter-square"></i>
+        <span class="demo-icon icon-twitter-square"></span>
     </a>
     
 
@@ -316,7 +352,11 @@ _Encapsulate your common code in a base component and extend to your heart&rsquo
 
         </section>
 
-        <script src="/js/jquery-3.3.1.min.js"></script>
+        
+<script
+  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+  crossorigin="anonymous"></script>
 <script src="/js/main.js"></script>
 <script src="/js/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>

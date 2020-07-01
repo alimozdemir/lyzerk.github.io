@@ -33,12 +33,19 @@
 		<meta name="generator" content="Hugo 0.72.0" />
 		<title>Better DI Service Registration with Assembly Scan &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
-		<link rel="stylesheet" href="/css/style.css">
-		<link rel="preload" as="style" href="/css/highlight.css">
-		<link rel="preload" as="style" href="/css/vs.css">
 
 		
-		<link rel="preload" as="style" href="/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/css/style.min.css" integrity="" media="screen">
+
+		
+		
+		<link rel="stylesheet" href="/css/highlight.min.css" integrity="" media="screen">
+
+		
+		<link rel="stylesheet" href="/css/vs.min.css" integrity="" media="screen">
+
+		
+		<link rel="stylesheet" href="/css/icomoon.css">
 		
 
 		
@@ -103,7 +110,7 @@
 }
 </code></pre></div><p>There exists three types of object lifetime. I’m not going to explain all of them, since they are already well documented at <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-3.1">Microsoft Docs</a>.</p>
 <p>For small scale applications the above usage is very acceptable. However, managing a large scale applications might require different solutions.</p>
-<p><img src="/img/1__e7BcghEYOwey5qOKNBcGaA.jpeg" alt=""></p>
+<p><img src="/img/1__e7BcghEYOwey5qOKNBcGaA.jpeg" alt="The blog picture"></p>
 <p>Now, I will show you 3 different solutions that you might like to use. First, I will consider all lifetimes separately. All three solutions require a NuGet package called <a href="https://www.nuget.org/packages/Scrutor">Scrutor</a>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">dotnet add package Scrutor
 </code></pre></div><p>This package allows you to scan assemblies and register the services with implementations.</p>
@@ -390,6 +397,35 @@
             
 
             
+                <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/projects/nuget-promptcli/">[NUGET] PromptCLI<aside class="dates">Apr 26 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/angular-2-base-component-misusage/">Angular 2&#43;: Base Component Misusage<aside class="dates">Jan 26 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/posts/fabric-js-history-operations-undo-redo-and-useful-tips/">Fabric.js History Operations (undo, redo) and Useful Tips<aside class="dates">Aug 15 2019</aside></a>
+        </li>
+    
+</ul>
+
+            
 
             <footer id="footer">
     
@@ -398,19 +434,19 @@
 	
 	
     <a class="symbol" href="https://www.github.com/lyzerk">
-        <i class="fa fa-github-square"></i>
+        <span class="demo-icon icon-github-square"></span>
     </a>
     
     <a class="symbol" href="https://www.linkedin.com/in/almozdmr/">
-        <i class="fa fa-linkedin-square"></i>
+        <span class="demo-icon icon-linkedin-square"></span>
     </a>
     
     <a class="symbol" href="https://medium.com/@alm.ozdmr">
-        <i class="fa fa-medium"></i>
+        <span class="demo-icon icon-medium"></span>
     </a>
     
     <a class="symbol" href="https://www.twitter.com/almozdmr">
-        <i class="fa fa-twitter-square"></i>
+        <span class="demo-icon icon-twitter-square"></span>
     </a>
     
 
@@ -427,7 +463,11 @@
 
         </section>
 
-        <script src="/js/jquery-3.3.1.min.js"></script>
+        
+<script
+  src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+  crossorigin="anonymous"></script>
 <script src="/js/main.js"></script>
 <script src="/js/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
