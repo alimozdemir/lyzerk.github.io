@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>Angular 2&#43;: Base Component Misusage</title>
-      <link>/posts/angular-2-base-component-misusage/</link>
+      <title>Angular 2&#43;: Base Component Alternative</title>
+      <link>/posts/angular-2-base-component-alternative/</link>
       <pubDate>Sun, 26 Jan 2020 19:56:57 +0000</pubDate>
       
-      <guid>/posts/angular-2-base-component-misusage/</guid>
+      <guid>/posts/angular-2-base-component-alternative/</guid>
       <description>&lt;p&gt;Hello again, base functionality is an &lt;em&gt;inevitable&lt;/em&gt; requirement. I’m going to talk about a different base component approach in the Angular. Most of the examples create a base component and inject services to it. Later, you create components from it. However, internet has many examples that could lead you to write bad code.&lt;/p&gt;</description>
     </item>
     
