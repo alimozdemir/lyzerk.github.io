@@ -110,47 +110,47 @@
 <h3 id="api-design">API Design</h3>
 <h4 id="select">Select</h4>
 <p>Let’s first speak about what we know about the performance of an API design. Assume that we have entities over 1M+ rows in a database system. You can’t show that much data directly with an UI, you have the split into pages. In other words, we can say <code>pagination</code>. I may apply a “skip and take” methodology and show paged data.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[HttpGet]</span>
-<span style="color:#66d9ef">public</span> IEnumerable&lt;Entity&gt; Get(<span style="color:#66d9ef">int</span> skip = <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">int</span> take = <span style="color:#ae81ff">10</span>)
-{
-    <span style="color:#66d9ef">return</span> _db.Entities.Skip(skip).Take(take).ToList();
-}
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[HttpGet]</span>
+<span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Entity</span><span class="p">&gt;</span> <span class="n">Get</span><span class="p">(</span><span class="kt">int</span> <span class="n">skip</span> <span class="p">=</span> <span class="m">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">take</span> <span class="p">=</span> <span class="m">10</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">_db</span><span class="p">.</span><span class="n">Entities</span><span class="p">.</span><span class="n">Skip</span><span class="p">(</span><span class="n">skip</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="n">take</span><span class="p">).</span><span class="n">ToList</span><span class="p">();</span>
+<span class="p">}</span>
 </code></pre></div><p>This would be enough for basics. The things are starting to get more complex when you need more functionality. The given example could expanded with search, order, select and group functions, etc. So you have to implement each one of them and consider all possibilities. It would be a waste of time and increases the likelihood of errors. <strong>OData</strong> answers your call here. It presents a good API support for such needs and works with <strong>Entity Framework</strong> for query builder.</p>
 <h4 id="patchputpostdelete">Patch/Put/Post/Delete</h4>
 <p>REST &amp; Entity Framework &amp; OData can handle these actions painlessly.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Post(Entity model)
-{
-    _db.Entities.Add(model);
-    <span style="color:#66d9ef">await</span> _db.SaveChangesAsync();
-    <span style="color:#66d9ef">return</span> Created(model);
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[HttpPatch]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Patch([FromODataUri] <span style="color:#66d9ef">int</span> key, Delta&lt;Entity&gt; model)
-{
-    <span style="color:#66d9ef">var</span> entity = <span style="color:#66d9ef">await</span> _db.Entities.FindAsync(key);
-    model.Patch(entity);
-    _db.SaveChanges();
-    <span style="color:#66d9ef">return</span> Updated(entity);
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[HttpPut]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Put([FromODataUri] <span style="color:#66d9ef">int</span> key, Entity entity)
-{
-    _db.Entry(entity).State = EntityState.Modified;
-    <span style="color:#66d9ef">await</span> _db.SaveChangesAsync();
-    <span style="color:#66d9ef">return</span> Updated(entity);
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[HttpDelete]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Delete([FromODataUri] <span style="color:#66d9ef">int</span> key)
-{
-    <span style="color:#66d9ef">var</span> entity = <span style="color:#66d9ef">await</span> _db.Entities.FindAsync(key);
-    _db.Entities.Remove(entity);
-    <span style="color:#66d9ef">await</span> _db.SaveChangesAsync();
-    <span style="color:#66d9ef">return</span> StatusCode((<span style="color:#66d9ef">int</span>)HttpStatusCode.NoContent);
-}
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[HttpPost]</span>
+<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">Post</span><span class="p">(</span><span class="n">Entity</span> <span class="n">model</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">_db</span><span class="p">.</span><span class="n">Entities</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+    <span class="k">await</span> <span class="n">_db</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">Created</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[HttpPatch]</span>
+<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">Patch</span><span class="p">([</span><span class="n">FromODataUri</span><span class="p">]</span> <span class="kt">int</span> <span class="n">key</span><span class="p">,</span> <span class="n">Delta</span><span class="p">&lt;</span><span class="n">Entity</span><span class="p">&gt;</span> <span class="n">model</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">entity</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_db</span><span class="p">.</span><span class="n">Entities</span><span class="p">.</span><span class="n">FindAsync</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+    <span class="n">model</span><span class="p">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+    <span class="n">_db</span><span class="p">.</span><span class="n">SaveChanges</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">Updated</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[HttpPut]</span>
+<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">Put</span><span class="p">([</span><span class="n">FromODataUri</span><span class="p">]</span> <span class="kt">int</span> <span class="n">key</span><span class="p">,</span> <span class="n">Entity</span> <span class="n">entity</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">_db</span><span class="p">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">entity</span><span class="p">).</span><span class="n">State</span> <span class="p">=</span> <span class="n">EntityState</span><span class="p">.</span><span class="n">Modified</span><span class="p">;</span>
+    <span class="k">await</span> <span class="n">_db</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">Updated</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[HttpDelete]</span>
+<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">Delete</span><span class="p">([</span><span class="n">FromODataUri</span><span class="p">]</span> <span class="kt">int</span> <span class="n">key</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">entity</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_db</span><span class="p">.</span><span class="n">Entities</span><span class="p">.</span><span class="n">FindAsync</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+    <span class="n">_db</span><span class="p">.</span><span class="n">Entities</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">entity</span><span class="p">);</span>
+    <span class="k">await</span> <span class="n">_db</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">StatusCode</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">HttpStatusCode</span><span class="p">.</span><span class="n">NoContent</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div><p>I didn’t include the validations. You can see a full example from <a href="https://docs.microsoft.com/tr-tr/aspnet/web-api/overview/odata-support-in-aspnet-web-api/odata-v4/create-an-odata-v4-endpoint">Microsoft’s site</a>. So far so good, we handled CRUD operations and exposed an API.</p>
 <h3 id="projection">Projection</h3>
 <p>The whole scenario is based on an entity on a database system which means it is can be a table, a document, etc. However, you may want to use OData features with a projection. In other words, you have a View on SQL that joins multiple tables and collects bunch of data.</p>
@@ -160,64 +160,64 @@
 <p>Therefore, CRUD operations couldn’t work and you have to handle the operations manually with respect to the columns.</p>
 <h4 id="scenario">Scenario</h4>
 <p>Assume that, you have a song database. It has a restriction system for countries. And, you want to design a webpage that allows you to control the songs status over the countries with a checkbox.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">VIEW</span> vw_Songs
-<span style="color:#66d9ef">AS</span>
-    <span style="color:#66d9ef">SELECT</span> s.Id, s.Title, <span style="color:#66d9ef">MIN</span>(<span style="color:#66d9ef">ISNULL</span>(cs.[Status], <span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">0</span>) CountryStatus
-    <span style="color:#66d9ef">FROM</span> Song <span style="color:#66d9ef">AS</span> s
-        <span style="color:#66d9ef">LEFT</span> <span style="color:#66d9ef">JOIN</span> dbo.Country_Songs <span style="color:#66d9ef">AS</span> cs <span style="color:#66d9ef">ON</span> cs.SongId <span style="color:#f92672">=</span> s.Id
-    <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> s.Id, s.Title
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">CREATE</span> <span class="k">VIEW</span> <span class="n">vw_Songs</span>
+<span class="k">AS</span>
+    <span class="k">SELECT</span> <span class="n">s</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span> <span class="k">MIN</span><span class="p">(</span><span class="k">ISNULL</span><span class="p">(</span><span class="n">cs</span><span class="p">.[</span><span class="n">Status</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span> <span class="n">CountryStatus</span>
+    <span class="k">FROM</span> <span class="n">Song</span> <span class="k">AS</span> <span class="n">s</span>
+        <span class="k">LEFT</span> <span class="k">JOIN</span> <span class="n">dbo</span><span class="p">.</span><span class="n">Country_Songs</span> <span class="k">AS</span> <span class="n">cs</span> <span class="k">ON</span> <span class="n">cs</span><span class="p">.</span><span class="n">SongId</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">Id</span>
+    <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">s</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">Title</span>
 </code></pre></div><p><code>CountryStatus</code> will present the collective status of the countries. If all countries are true then <code>CountryStatus</code> will ‘true’ otherwise it is ‘false’.</p>
 <p>The structure is completed for the selection of the songs. Assume that, we are using an advanced data grid which supports OData such as <strong>DevExtreme</strong>, <strong>Telerik,</strong> etc. The user want to change the status of a song on all countries. And, the grid shows the songs with a checkbox. Hereafter, you have to handle the editing operations manually. Since Entity Framework does not support bulk changes, we need to use an extension package like <a href="https://entityframework-plus.net">EntityFramework Plus</a>.</p>
 <h4 id="patch">Patch</h4>
 <p>The patch method provides a <code>Delta&lt;T&gt;</code> object which stores the changes. We can handle the request;</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[HttpPatch]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Patch([FromODataUri] <span style="color:#66d9ef">int</span> key, Delta&lt;vw_Song&gt; model)
-{
-    <span style="color:#66d9ef">var</span> instance = model.GetInstance();
-    <span style="color:#66d9ef">var</span> changedProps = model.GetChangedPropertyNames();
-    <span style="color:#66d9ef">if</span> (changedProps.Contains(<span style="color:#e6db74">&#34;Status&#34;</span>))
-    {
-        <span style="color:#66d9ef">await</span> _db.Country_Songs.Where(i =&gt; i.SongId == instance.Id)
-            .UpdateAsync(i =&gt; <span style="color:#66d9ef">new</span> Country_Songs() { Status = instance.Status });
-    }
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[HttpPatch]</span>
+<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">Patch</span><span class="p">([</span><span class="n">FromODataUri</span><span class="p">]</span> <span class="kt">int</span> <span class="n">key</span><span class="p">,</span> <span class="n">Delta</span><span class="p">&lt;</span><span class="n">vw_Song</span><span class="p">&gt;</span> <span class="n">model</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">model</span><span class="p">.</span><span class="n">GetInstance</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">changedProps</span> <span class="p">=</span> <span class="n">model</span><span class="p">.</span><span class="n">GetChangedPropertyNames</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">changedProps</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&#34;Status&#34;</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">await</span> <span class="n">_db</span><span class="p">.</span><span class="n">Country_Songs</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">SongId</span> <span class="p">==</span> <span class="n">instance</span><span class="p">.</span><span class="n">Id</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">UpdateAsync</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">Country_Songs</span><span class="p">()</span> <span class="p">{</span> <span class="n">Status</span> <span class="p">=</span> <span class="n">instance</span><span class="p">.</span><span class="n">Status</span> <span class="p">});</span>
+    <span class="p">}</span>
 
-    <span style="color:#66d9ef">return</span> Updated(instance);
-}
+    <span class="k">return</span> <span class="n">Updated</span><span class="p">(</span><span class="n">instance</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div><p>The plus package produces the following sql.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">UPDATE</span> A 
-<span style="color:#66d9ef">SET</span> A.[Status] <span style="color:#f92672">=</span> <span style="color:#f92672">@</span>zzz_BatchUpdate_0
-<span style="color:#66d9ef">FROM</span> [Country_Songs] <span style="color:#66d9ef">AS</span> A
-<span style="color:#66d9ef">INNER</span> <span style="color:#66d9ef">JOIN</span> ( <span style="color:#66d9ef">SELECT</span> [<span style="color:#66d9ef">c</span>].[SongId], [<span style="color:#66d9ef">c</span>].[CountryId], [<span style="color:#66d9ef">c</span>].[Status]
-<span style="color:#66d9ef">FROM</span> [Country_Songs] <span style="color:#66d9ef">AS</span> [<span style="color:#66d9ef">c</span>]
-<span style="color:#66d9ef">WHERE</span> [<span style="color:#66d9ef">c</span>].[SongId] <span style="color:#f92672">=</span> <span style="color:#f92672">@</span>zzz_BatchUpdate_1
-           ) <span style="color:#66d9ef">AS</span> B <span style="color:#66d9ef">ON</span> A.[SongId] <span style="color:#f92672">=</span> B.[SongId]
-<span style="color:#66d9ef">AND</span> A.[CountryId] <span style="color:#f92672">=</span> B.[CountryId]
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">UPDATE</span> <span class="n">A</span> 
+<span class="k">SET</span> <span class="n">A</span><span class="p">.[</span><span class="n">Status</span><span class="p">]</span> <span class="o">=</span> <span class="o">@</span><span class="n">zzz_BatchUpdate_0</span>
+<span class="k">FROM</span> <span class="p">[</span><span class="n">Country_Songs</span><span class="p">]</span> <span class="k">AS</span> <span class="n">A</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="p">(</span> <span class="k">SELECT</span> <span class="p">[</span><span class="k">c</span><span class="p">].[</span><span class="n">SongId</span><span class="p">],</span> <span class="p">[</span><span class="k">c</span><span class="p">].[</span><span class="n">CountryId</span><span class="p">],</span> <span class="p">[</span><span class="k">c</span><span class="p">].[</span><span class="n">Status</span><span class="p">]</span>
+<span class="k">FROM</span> <span class="p">[</span><span class="n">Country_Songs</span><span class="p">]</span> <span class="k">AS</span> <span class="p">[</span><span class="k">c</span><span class="p">]</span>
+<span class="k">WHERE</span> <span class="p">[</span><span class="k">c</span><span class="p">].[</span><span class="n">SongId</span><span class="p">]</span> <span class="o">=</span> <span class="o">@</span><span class="n">zzz_BatchUpdate_1</span>
+           <span class="p">)</span> <span class="k">AS</span> <span class="n">B</span> <span class="k">ON</span> <span class="n">A</span><span class="p">.[</span><span class="n">SongId</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">.[</span><span class="n">SongId</span><span class="p">]</span>
+<span class="k">AND</span> <span class="n">A</span><span class="p">.[</span><span class="n">CountryId</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">.[</span><span class="n">CountryId</span><span class="p">]</span>
 </code></pre></div><p>I don’t think this one is a good update statement. The join statement is not necessary because it updates all rows with respect to an ID. My computer runs it in around <strong>1.5</strong> seconds. It works but it’s slow. In a future they could fix it. I will not go into Entity Framework Plus package details.</p>
 <h4 id="sqlkata">SqlKata</h4>
 <p><img src="/img/1__qHnlXoKJKnQHTj6QcoN1nw.jpeg" alt="The blog picture"></p>
 <p>Since, the selection part is customized I would like to go with my own queries for customization and performance matters. SqlKata is a good query builder that allows you to compile your queries according to different database systems.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[HttpPatch]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Patch([FromODataUri] <span style="color:#66d9ef">int</span> key, Delta&lt;vw_Song&gt; delta)
-{
-    <span style="color:#66d9ef">var</span> changedProps = delta.GetChangedPropertyNames();
-    <span style="color:#66d9ef">var</span> instance = delta.GetInstance();
-    <span style="color:#66d9ef">var</span> updateDict = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;();
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[HttpPatch]</span>
+<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="n">Patch</span><span class="p">([</span><span class="n">FromODataUri</span><span class="p">]</span> <span class="kt">int</span> <span class="n">key</span><span class="p">,</span> <span class="n">Delta</span><span class="p">&lt;</span><span class="n">vw_Song</span><span class="p">&gt;</span> <span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">changedProps</span> <span class="p">=</span> <span class="n">delta</span><span class="p">.</span><span class="n">GetChangedPropertyNames</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">delta</span><span class="p">.</span><span class="n">GetInstance</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">updateDict</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">object</span><span class="p">&gt;();</span>
 
-    <span style="color:#66d9ef">if</span> (changedProps.Contains(<span style="color:#e6db74">&#34;Status&#34;</span>))
-    {
-        updateDict.Add(<span style="color:#e6db74">&#34;Status&#34;</span>, instance.Status);
-    }
+    <span class="k">if</span> <span class="p">(</span><span class="n">changedProps</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&#34;Status&#34;</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">updateDict</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&#34;Status&#34;</span><span class="p">,</span> <span class="n">instance</span><span class="p">.</span><span class="n">Status</span><span class="p">);</span>
+    <span class="p">}</span>
 
-    <span style="color:#66d9ef">var</span> q = <span style="color:#66d9ef">new</span> SqlKata.Query(<span style="color:#e6db74">&#34;Country_Songs&#34;</span>)
-        .Where(<span style="color:#e6db74">&#34;SongId&#34;</span>, key)
-        .AsUpdate(updateDict);
+    <span class="kt">var</span> <span class="n">q</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SqlKata</span><span class="p">.</span><span class="n">Query</span><span class="p">(</span><span class="s">&#34;Country_Songs&#34;</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="s">&#34;SongId&#34;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">AsUpdate</span><span class="p">(</span><span class="n">updateDict</span><span class="p">);</span>
 
-    <span style="color:#66d9ef">var</span> result = _compiler.Compile(q);
+    <span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">_compiler</span><span class="p">.</span><span class="n">Compile</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
 
-    <span style="color:#66d9ef">await</span> _db.Database.ExecuteSqlRawAsync(result.Sql, result.Bindings);
-}
+    <span class="k">await</span> <span class="n">_db</span><span class="p">.</span><span class="n">Database</span><span class="p">.</span><span class="n">ExecuteSqlRawAsync</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Sql</span><span class="p">,</span> <span class="n">result</span><span class="p">.</span><span class="n">Bindings</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div><p>SqlKata produces the following sql</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">UPDATE</span> [Country_Songs] <span style="color:#66d9ef">SET</span> [Status] <span style="color:#f92672">=</span> <span style="color:#f92672">@</span>p0 <span style="color:#66d9ef">WHERE</span> [SongId] <span style="color:#f92672">=</span> <span style="color:#f92672">@</span>p1
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">UPDATE</span> <span class="p">[</span><span class="n">Country_Songs</span><span class="p">]</span> <span class="k">SET</span> <span class="p">[</span><span class="n">Status</span><span class="p">]</span> <span class="o">=</span> <span class="o">@</span><span class="n">p0</span> <span class="k">WHERE</span> <span class="p">[</span><span class="n">SongId</span><span class="p">]</span> <span class="o">=</span> <span class="o">@</span><span class="n">p1</span>
 </code></pre></div><p>This was what I expected. My computer runs the patch action between <strong>30ms</strong>~<strong>100ms</strong>.</p>
 <h3 id="conclusion">Conclusion</h3>
 <p>OData presents powerful features depending on your needs. The standard procedure is not always available for you and you have to improvise for each case. As a result, you have a <strong>powerful</strong>, <strong>fast</strong> and <strong>RESTful API</strong> concept.</p>
@@ -237,6 +237,10 @@
     
     
         <li>
+            <a href="/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/">ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies<aside class="dates">Sep 13 2020</aside></a>
+        </li>
+    
+        <li>
             <a href="/posts/better-di-service-registration-with-assembly-scan/">Better DI Service Registration with Assembly Scan<aside class="dates">May 30 2020</aside></a>
         </li>
     
@@ -250,10 +254,6 @@
     
         <li>
             <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
-        </li>
-    
-        <li>
-            <a href="/posts/fabric-js-history-operations-undo-redo-and-useful-tips/">Fabric.js History Operations (undo, redo) and Useful Tips<aside class="dates">Aug 15 2019</aside></a>
         </li>
     
 </ul>

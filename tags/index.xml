@@ -6,7 +6,7 @@
     <description>Recent content on Alim Özdemir</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 09 Jun 2020 17:45:46 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 13 Sep 2020 17:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,36 @@
     <item>
       <title>aspnetcore</title>
       <link>/tags/aspnetcore/</link>
-      <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
+      <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
       
       <guid>/tags/aspnetcore/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cookie</title>
+      <link>/tags/cookie/</link>
+      <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
+      
+      <guid>/tags/cookie/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>jwt</title>
+      <link>/tags/jwt/</link>
+      <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
+      
+      <guid>/tags/jwt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>refresh-token</title>
+      <link>/tags/refresh-token/</link>
+      <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
+      
+      <guid>/tags/refresh-token/</guid>
       <description></description>
     </item>
     

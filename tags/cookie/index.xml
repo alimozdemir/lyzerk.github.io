@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cookie on Alim Özdemir</title>
+    <link>/tags/cookie/</link>
+    <description>Recent content in cookie on Alim Özdemir</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 13 Sep 2020 17:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/cookie/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies</title>
+      <link>/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/</link>
+      <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
+      
+      <guid>/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/</guid>
+      <description>&lt;p&gt;I would like to talk about the SPA client authentication. Most of the blog implementations are stores the token into localStorage, sessionStorage or in-memory storage (redux/vuex/ngrx). It depends on your needs.  For instance, you don&amp;rsquo;t need high security with your In-House applications. For other cases, you need to increase your security. Today, I will try to explain that with my best.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

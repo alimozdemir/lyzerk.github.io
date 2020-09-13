@@ -107,38 +107,38 @@
 <p><img src="/img/1__b1Z3NB5cxQL5preMW4nCiw.png" alt="Singleton Pattern Class Diagram">
 Singleton Pattern Class Diagram</p>
 <p>Bu design pattern en basit olanlarından biridir. Varsayalımki projenizde öyle bir sınıfa ihtiyaç var ki sadece sizin tarafınızda oluşturulup tek bir noktadan kullanılmasını istiyorsunuz. Bu durumda bu design pattern devreye giriyor ve küçük nüanslarla bizi büyük dertlerden kurtarabiliyor. Elde etmek istediğimiz yapı sol taraftaki Class Diagram’ında gösterilmektedir. Öncelikle ilk aşamadan başlayarak örnek sınıfımızı oluşturup gösterelim. Daha sonra bu sınıfı adım adım nasıl Singleton Pattern yapacağımızı görelim.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ActionHistory_V1</span> : IActionHistory
-{
-    <span style="color:#66d9ef">private</span> Stack&lt;<span style="color:#66d9ef">string</span>&gt; _history { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V1</span> <span class="p">:</span> <span class="n">IActionHistory</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">_history</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
 
-    <span style="color:#66d9ef">public</span> ActionHistory_V1()
-    {
-        <span style="color:#66d9ef">if</span> (File.Exists(<span style="color:#e6db74">&#34;actions.txt&#34;</span>))
-        {
-            <span style="color:#66d9ef">var</span> lines = File.ReadAllLines(<span style="color:#e6db74">&#34;actions.txt&#34;</span>);
+    <span class="k">public</span> <span class="n">ActionHistory_V1</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">File</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">))</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">lines</span> <span class="p">=</span> <span class="n">File</span><span class="p">.</span><span class="n">ReadAllLines</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">);</span>
 
-            _history = <span style="color:#66d9ef">new</span> Stack&lt;<span style="color:#66d9ef">string</span>&gt;(lines.ToList());
-        }
-        <span style="color:#66d9ef">else</span>
-            _history = <span style="color:#66d9ef">new</span> Stack&lt;<span style="color:#66d9ef">string</span>&gt;();
-    }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> AddAction(<span style="color:#66d9ef">string</span> action)
-    {
-        _history.Push(action);
-    }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Save()
-    {
-        File.WriteAllLines(<span style="color:#e6db74">&#34;actions.txt&#34;</span>, _history);
-    }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> RetriveLastAction()
-    {
-        <span style="color:#66d9ef">return</span> _history.FirstOrDefault();
-    }
-    <span style="color:#66d9ef">public</span> List&lt;<span style="color:#66d9ef">string</span>&gt; RetriveAllActions()
-    {
-        <span style="color:#66d9ef">return</span> _history.ToList();
-    }
-}
+            <span class="n">_history</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;(</span><span class="n">lines</span><span class="p">.</span><span class="n">ToList</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+            <span class="n">_history</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;();</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="n">AddAction</span><span class="p">(</span><span class="kt">string</span> <span class="n">action</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_history</span><span class="p">.</span><span class="n">Push</span><span class="p">(</span><span class="n">action</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="n">Save</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">File</span><span class="p">.</span><span class="n">WriteAllLines</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">,</span> <span class="n">_history</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">RetriveLastAction</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">_history</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">RetriveAllActions</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">_history</span><span class="p">.</span><span class="n">ToList</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><p>Uygulamanın ilk versiyonu</p>
 <p>Aksiyon geçmişini hafızada tutan ve gerektiği zaman kaydedebilen bir sınıf oluşturdum. Böyle bir sınıfın bir projede tek bir elden kullanılması doğru bir yaklaşım sağlayacaktır. Yukarıdaki hali ile kullanmak istersek sadece yeni bir instance açmamız bize kullanımını sağlayacaktır. Ancak, bu sınıf birden fazla oluşturulursa her bir instance kendine ait <code>Stack&lt;string&gt;</code> tutacaktır ve ona göre dosyaya kaydetme işlemi yapacaktır ancak biz bunu istemiyoruz.</p>
 <p>Öncelikle, Singleton Pattern’ın en can alıcı kısmı constructor kısmının erişebilirlik düzeyini <code>public</code> den <code>private</code> yapmamız gerekmekte. Bu sayede bu sınıfı kendi içi dışında hiç bir yerde oluşturamayacağız. Oluşturmaya çalıştığımızda da bu hata ile karşılaşacağız.</p>
@@ -146,18 +146,18 @@ Singleton Pattern Class Diagram</p>
 <p>ActionHistory_V1.ActionHistory_V1()’ is inaccessible due to its protection level</p>
 </blockquote>
 <p>Bu yaklaşım ile bu sınıfı sadece tek bir yerde yani kendi içinde oluşturabileceğiz. Sınıfı bu şekilde düzenleyebiliriz.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ActionHistory_V2</span> : IActionHistory
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> ActionHistory_V2 instance = <span style="color:#66d9ef">new</span> ActionHistory_V2();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ActionHistory_V2 Instance { <span style="color:#66d9ef">get</span>; } = instance;
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V2</span> <span class="p">:</span> <span class="n">IActionHistory</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="n">ActionHistory_V2</span> <span class="n">instance</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ActionHistory_V2</span><span class="p">();</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="n">ActionHistory_V2</span> <span class="n">Instance</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
 
-    <span style="color:#66d9ef">private</span> ActionHistory_V2()
-    {
-        ....
-    }
+    <span class="k">private</span> <span class="n">ActionHistory_V2</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="p">....</span>
+    <span class="p">}</span>
     
-    ....
-}
+    <span class="p">....</span>
+<span class="p">}</span>
 </code></pre></div><p>Uygulamanın ikinci versiyonu</p>
 <p>Bu şekilde projede aşağıdaki şekilde kullanımı sağlanacaktır. Sınıf içerisinde buluna Instance özelliğine erişerek sınıfı elde etmemiz yetecektir. Daha sonrasında sınıfı istediğimiz şekilde kullanmamız için hazır.</p>
 <p>IActionHistory history = ActionHistory_V2.Instance;<br>
@@ -165,19 +165,19 @@ history.AddAction(“delete”);<br>
 var lastAction = history.RetrieveLastAction();</p>
 <p>Ancak burada da bir sorun ile karşılaşıyoruz, o da bu oluşturduğumuz sınıf daha ağır yüklü bi sınıf olabilir o yüzden programın başlangıcında oluşturulması (static olarak tanımladığımız ve oluşturduğumuz için program açıldığında sınıfı oluşturacaktır.), programın açılış süresini etkileyebilir. Bunun için <code>Instance</code> özelliği (property) ilk istenildiğinde oluşturulması akılcı bir çözüm olabilir. Daha bitmedi ! burada aynı anda birden fazla erişim yapılırsa instance birden fazla oluşturulabilir, o yüzden bu kısmın <code>Critical Section</code>olarak dikkate alınması gerekmektedir. Bu yüzden o kod bloğunu <code>lock</code> keywordu ile kilitleyip <code>thread-safe</code> yapabiliriz. Ancak ben sizi bunlarla uğraştırmayacağım.</p>
 <p>.NET de bulunan <code>Lazy&lt;T&gt;</code> yapısını kullanarak, bu objenin hem istenildiği zamanda hem de <code>thread-safe</code> olarak oluşturulmasını sağlayacağız.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ActionHistory_V3</span> : IActionHistory
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> Lazy&lt;ActionHistory_V3&gt; instance =
-                    <span style="color:#66d9ef">new</span> Lazy&lt;ActionHistory_V3&gt;(() =&gt; <span style="color:#66d9ef">new</span> ActionHistory_V3());
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ActionHistory_V3 Instance { <span style="color:#66d9ef">get</span>; } = instance.Value;
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V3</span> <span class="p">:</span> <span class="n">IActionHistory</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="n">Lazy</span><span class="p">&lt;</span><span class="n">ActionHistory_V3</span><span class="p">&gt;</span> <span class="n">instance</span> <span class="p">=</span>
+                    <span class="k">new</span> <span class="n">Lazy</span><span class="p">&lt;</span><span class="n">ActionHistory_V3</span><span class="p">&gt;(()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">ActionHistory_V3</span><span class="p">());</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="n">ActionHistory_V3</span> <span class="n">Instance</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="n">instance</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
 
-    <span style="color:#66d9ef">private</span> ActionHistory_V3()
-    {
-        ....
-    }
+    <span class="k">private</span> <span class="n">ActionHistory_V3</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="p">....</span>
+    <span class="p">}</span>
     
-    ....
-}
+    <span class="p">....</span>
+<span class="p">}</span>
 </code></pre></div><p>Uygulamanın son versiyonu</p>
 <p>Bu çözüm ile birlikte ilk kullanım sırasında, gerektiğinde sınıfı oluşturacak ve programın açılış hızında yavaşlama sağlamayacaktır. Yine de bu yaklaşımda her sınıfa göre değişebilir. Siz kendi sınıfınızın amacına ve özelliklerine göre ayrı bir şekilde tasarım yapmanız gerekebilir. Bu yüzden bu tür yaklaşımlarda kurallara uymak yerine kuralları esneterek kendinize göre bir çözüm üretmeniz gerekecektir.</p>
 <p>Yukarıdaki kodların tamamlanmış haline <a href="https://github.com/lyzerk/medium/tree/master/DesignPatternSingleton">buradan</a> erişebilirsiniz. Bir sonraki yazıda görüşmek üzere.</p>
@@ -201,6 +201,10 @@ _In software engineering, the singleton pattern is a software design pattern tha
     
     
         <li>
+            <a href="/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/">ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies<aside class="dates">Sep 13 2020</aside></a>
+        </li>
+    
+        <li>
             <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
         </li>
     
@@ -214,10 +218,6 @@ _In software engineering, the singleton pattern is a software design pattern tha
     
         <li>
             <a href="/posts/angular-2-base-component-alternative/">Angular 2&#43;: Base Component Alternative<aside class="dates">Jan 26 2020</aside></a>
-        </li>
-    
-        <li>
-            <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
         </li>
     
 </ul>

@@ -107,126 +107,126 @@
 <p>Öncelikle yapımızın UML Class Diagram halini göstermek istiyorum. Buradaki amacımız Client sınıfına doğrudan erişimi kapatıp, bu sınıfa ait tek elden türetilmiş bir Client sınıfı elde etmek istiyoruz. Olayın amacını daha detaylı anlatmak gerekirse, <code>AcquireObject()</code> metotu ile oluşturulmasını beklediğimiz objenin oluşturulmasını yada bize hazırda olan objeyi vermesini bekliyoruz. Burada bir istisna bulunmakta, eğer havuz boş ise ve oluşturulması gereken obje sayısı sınıra ulaşılmış ise havuzdan null pointer dönmektedir. Ancak bu kısım için Exception atılması da sağlanabilir. <code>ReleaseObject()</code> metotu ile kullanmış olduğumuz objeyi geri iade ediyoruz. Burada dikkat edilmesi gereken en önemli nokta alınan objenin kullanıldıktan sonra havuza geri verilmesi, eğer geri verilmezse havuzda eksik objeler bulunacak. Ve sistem eksik bir şekilde çalışmasına devam edecek. Eğer havuzun limiti size yetmiyorsa <code>IncreaseSize()</code> metotu ile havuzu büyütebiliriz. Temel olarak ulaşmak istediğimiz yapı bu, artık bu diyagramı koda dökebiliriz.</p>
 <h4 id="gerçekleme-implementation">Gerçekleme (Implementation)</h4>
 <p>Önceki makalede yaptığım gibi burada da C# dilinde devam edip .NET Core üzerinden gerçekleyeceğiz.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Client</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Connect();
-}
-<span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RequestClient</span> : Client
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Connect()
-    {
-        Console.WriteLine(<span style="color:#e6db74">&#34;Connecting to something with RequestClient...&#34;</span>);
-    }
-}
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">Client</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">abstract</span> <span class="k">void</span> <span class="n">Connect</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">internal</span> <span class="k">class</span> <span class="nc">RequestClient</span> <span class="p">:</span> <span class="n">Client</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="n">Connect</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Connecting to something with RequestClient...&#34;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><p>Client sınıfımızın yapısından bahsederek başlamak istiyorum. Tasarladığınız sistemde <code>ClientPool</code>, <code>Client</code> ve <code>RequestClient</code> sınıfları ayrı bi DLL içerisinde bulunduğunu varsayalım. Client sınıfı <code>abstract</code> olarak yazıldığı için kendi başına varlığını sürdüremeyecektir, bu nedenle RequestClient sınıfı Client sınıfından türetilmiştir. Buradaki dikkat edilmesi gereken nokta RequestClient sınıfının <code>internal</code> anahtar sözcüğü ile tanımlanmış olması. Bu nedenle o DLL dışında hiç bir yerde üretilmeyeceğini ve erişilemeyeceğini garanti ediyoruz.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClientPool</span>
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> Lazy&lt;ClientPool&gt; instance
-        = <span style="color:#66d9ef">new</span> Lazy&lt;ClientPool&gt;(() =&gt; <span style="color:#66d9ef">new</span> ClientPool());
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ClientPool Instance { <span style="color:#66d9ef">get</span>; } = instance.Value;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Size { <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> _currentSize; } }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> TotalObject { <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> _counter; } }
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">ClientPool</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">static</span> <span class="n">Lazy</span><span class="p">&lt;</span><span class="n">ClientPool</span><span class="p">&gt;</span> <span class="n">instance</span>
+        <span class="p">=</span> <span class="k">new</span> <span class="n">Lazy</span><span class="p">&lt;</span><span class="n">ClientPool</span><span class="p">&gt;(()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">ClientPool</span><span class="p">());</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="n">ClientPool</span> <span class="n">Instance</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="n">instance</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">Size</span> <span class="p">{</span> <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_currentSize</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">TotalObject</span> <span class="p">{</span> <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_counter</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
 
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> defaultSize = <span style="color:#ae81ff">5</span>;
-    <span style="color:#66d9ef">private</span> ConcurrentBag&lt;Client&gt; _bag = <span style="color:#66d9ef">new</span> ConcurrentBag&lt;Client&gt;();
-    <span style="color:#66d9ef">private</span> volatile <span style="color:#66d9ef">int</span> _currentSize;
-    <span style="color:#66d9ef">private</span> volatile <span style="color:#66d9ef">int</span> _counter;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">object</span> _lockObject = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>();
+    <span class="k">private</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">defaultSize</span> <span class="p">=</span> <span class="m">5</span><span class="p">;</span>
+    <span class="k">private</span> <span class="n">ConcurrentBag</span><span class="p">&lt;</span><span class="n">Client</span><span class="p">&gt;</span> <span class="n">_bag</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ConcurrentBag</span><span class="p">&lt;</span><span class="n">Client</span><span class="p">&gt;();</span>
+    <span class="k">private</span> <span class="n">volatile</span> <span class="kt">int</span> <span class="n">_currentSize</span><span class="p">;</span>
+    <span class="k">private</span> <span class="n">volatile</span> <span class="kt">int</span> <span class="n">_counter</span><span class="p">;</span>
+    <span class="k">private</span> <span class="kt">object</span> <span class="n">_lockObject</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">object</span><span class="p">();</span>
 
-    <span style="color:#66d9ef">private</span> ClientPool()
-        : <span style="color:#66d9ef">this</span>(defaultSize)
-    {
-    }
-    <span style="color:#66d9ef">private</span> ClientPool(<span style="color:#66d9ef">int</span> size)
-    {
-        _currentSize = size;
-    }
+    <span class="k">private</span> <span class="n">ClientPool</span><span class="p">()</span>
+        <span class="p">:</span> <span class="k">this</span><span class="p">(</span><span class="n">defaultSize</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+    <span class="k">private</span> <span class="n">ClientPool</span><span class="p">(</span><span class="kt">int</span> <span class="n">size</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_currentSize</span> <span class="p">=</span> <span class="n">size</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    <span style="color:#66d9ef">public</span> Client AcquireObject()
-    {
-        <span style="color:#66d9ef">if</span> (!_bag.TryTake(<span style="color:#66d9ef">out</span> Client item))
-        {
-            <span style="color:#66d9ef">lock</span> (_lockObject)
-            {
-                <span style="color:#66d9ef">if</span> (item == <span style="color:#66d9ef">null</span>)
-                {
-                    <span style="color:#66d9ef">if</span> (_counter &gt;= _currentSize)
-                        <span style="color:#75715e">// or throw an exception, or wait for an object to return.
-</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+    <span class="k">public</span> <span class="n">Client</span> <span class="n">AcquireObject</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(!</span><span class="n">_bag</span><span class="p">.</span><span class="n">TryTake</span><span class="p">(</span><span class="k">out</span> <span class="n">Client</span> <span class="n">item</span><span class="p">))</span>
+        <span class="p">{</span>
+            <span class="k">lock</span> <span class="p">(</span><span class="n">_lockObject</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">_counter</span> <span class="p">&gt;=</span> <span class="n">_currentSize</span><span class="p">)</span>
+                        <span class="c1">// or throw an exception, or wait for an object to return.
+</span><span class="c1"></span>                        <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
 
-                    item = <span style="color:#66d9ef">new</span> RequestClient();
+                    <span class="n">item</span> <span class="p">=</span> <span class="k">new</span> <span class="n">RequestClient</span><span class="p">();</span>
 
-                    <span style="color:#75715e">// it could be Interlocked.Increment(_counter). Since, we have locked the section, I don&#39;t think we need that.
-</span><span style="color:#75715e"></span>                    _counter++;
+                    <span class="c1">// it could be Interlocked.Increment(_counter). Since, we have locked the section, I don&#39;t think we need that.
+</span><span class="c1"></span>                    <span class="n">_counter</span><span class="p">++;</span>
 
-                }
-            }
+                <span class="p">}</span>
+            <span class="p">}</span>
 
-        }
+        <span class="p">}</span>
 
-        <span style="color:#66d9ef">return</span> item;
-    }
+        <span class="k">return</span> <span class="n">item</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ReleaseObject(Client item)
-    {
-        _bag.Add(item);
-    }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> IncreaseSize()
-    {
-        <span style="color:#66d9ef">lock</span> (_lockObject)
-        {
-            _currentSize++;
-        }
-    }
-}
+    <span class="k">public</span> <span class="k">void</span> <span class="n">ReleaseObject</span><span class="p">(</span><span class="n">Client</span> <span class="n">item</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_bag</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="n">IncreaseSize</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">lock</span> <span class="p">(</span><span class="n">_lockObject</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">_currentSize</span><span class="p">++;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><p>Sıra geldi ana sınıfımıza, öncelikle sınıfımız thread-safe Singleton Pattern’i sağlamaktadır. Bu sayede proje üzerinde sadece tek bir ClientPool sınıfı kullanabilir halde olacağız. Sınıfımızda maksimum üretilebilecek Client sayısını ayarlamamız için <code>_currentSize</code> değişkeni bulunmaktadır. Görüldüğü üzere havuzun başlangıç boyutunu 5 olarak belirledim ancak tabii ki bu değişebilir. Ayrıca, sınıf tamamen thread-safe olarak kodlanmıştır. Bunu sağlamak için <a href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentbag-1?view=netframework-4.7.2">ConcurrentBag<!-- raw HTML omitted --></a> adlı .NET sınıfı ile birlikte AcquireObject ve IncreaseSize metotlarını lock kullanarak thread-safe yapmış bulunuyoruz.</p>
 <p>AcquireObject metotunu anlatarak devam edeceğim, öncelikle _bag listemizden obje almaya çalışıyoruz <code>_bag.TryTake(out Client item)</code> kodu ile aldığımız objenin durumunu kontrol ediyoruz eğer obje doğru ise objemizi dönderiyoruz eğer obje yok ise havuzun durumuna bakarak yeni bir obje oluşturuyoruz yada null pointer dönderiyoruz.</p>
 <p>ReleaseObject metotu ile de almış olduğumuz objeleri sisteme geri iade ederek yeniden kullanıma sunuyoruz. Geri bırakılmadığı taktirde, kaynakların doğru kullanımı gerçekleşemeyecektir.</p>
 <p>IncreaseSize metotu havuzun boyutunu büyütmek için kullanılmaktadır. Tabii ki sisteminizin gerekliliklerine göre bu metot değiştirilebilir yada varyasyonları eklenebilir.</p>
 <p>Örnek kullanım görelim.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> BasicExample()
-{
-    Console.WriteLine(<span style="color:#e6db74">&#34;Havuzun boyutu {0}&#34;</span>, ClientPool.Instance.Size);
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">static</span> <span class="k">void</span> <span class="n">BasicExample</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Havuzun boyutu {0}&#34;</span><span class="p">,</span> <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Size</span><span class="p">);</span>
 
-    Console.WriteLine(<span style="color:#e6db74">&#34;Client sınıfı ediniyoruz.&#34;</span>);
-    <span style="color:#66d9ef">var</span> client1 = ClientPool.Instance.AcquireObject();
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Client sınıfı ediniyoruz.&#34;</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">client1</span> <span class="p">=</span> <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">AcquireObject</span><span class="p">();</span>
 
-    client1.Connect();
+    <span class="n">client1</span><span class="p">.</span><span class="n">Connect</span><span class="p">();</span>
 
-    Console.WriteLine(<span style="color:#e6db74">&#34;Client&#39;ı geri bırakıyoruz&#34;</span>);
-    <span style="color:#66d9ef">if</span> (client1 != <span style="color:#66d9ef">null</span>)
-        ClientPool.Instance.ReleaseObject(client1);
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Client&#39;ı geri bırakıyoruz&#34;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">client1</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+        <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">ReleaseObject</span><span class="p">(</span><span class="n">client1</span><span class="p">);</span>
 
-    <span style="color:#66d9ef">var</span> clients = <span style="color:#66d9ef">new</span> List&lt;Client&gt;();
-    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; ClientPool.Instance.Size; i++)
-    {
-        clients.Add(ClientPool.Instance.AcquireObject());
-    }
+    <span class="kt">var</span> <span class="n">clients</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Client</span><span class="p">&gt;();</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Size</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+    <span class="p">{</span>
+        <span class="n">clients</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">AcquireObject</span><span class="p">());</span>
+    <span class="p">}</span>
 
-    Console.WriteLine(<span style="color:#e6db74">&#34;Uygun olan tüm Client nesneleri listeye eklendi.&#34;</span>);
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Uygun olan tüm Client nesneleri listeye eklendi.&#34;</span><span class="p">);</span>
 
-    <span style="color:#66d9ef">var</span> nullClient = ClientPool.Instance.AcquireObject();
+    <span class="kt">var</span> <span class="n">nullClient</span> <span class="p">=</span> <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">AcquireObject</span><span class="p">();</span>
 
-    <span style="color:#66d9ef">if</span> (nullClient == <span style="color:#66d9ef">null</span>)
-        Console.WriteLine(<span style="color:#e6db74">&#34;Daha fazla Client sınıfı bulunmamaktadır.&#34;</span>);
+    <span class="k">if</span> <span class="p">(</span><span class="n">nullClient</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Daha fazla Client sınıfı bulunmamaktadır.&#34;</span><span class="p">);</span>
 
-    Console.WriteLine(<span style="color:#e6db74">&#34;Havuzun boyutunu arttırıyoruz&#34;</span>);
-    ClientPool.Instance.IncreaseSize();
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Havuzun boyutunu arttırıyoruz&#34;</span><span class="p">);</span>
+    <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">IncreaseSize</span><span class="p">();</span>
 
-    Console.WriteLine(<span style="color:#e6db74">&#34;Yeni bir Client sınıfı ediniyoruz.&#34;</span>);
-    <span style="color:#66d9ef">var</span> newClient = ClientPool.Instance.AcquireObject();
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Yeni bir Client sınıfı ediniyoruz.&#34;</span><span class="p">);</span>
+    <span class="kt">var</span> <span class="n">newClient</span> <span class="p">=</span> <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">AcquireObject</span><span class="p">();</span>
     
-    newClient.Connect();
+    <span class="n">newClient</span><span class="p">.</span><span class="n">Connect</span><span class="p">();</span>
 
-    Console.WriteLine(<span style="color:#e6db74">&#34;Edindiğimiz sınıfı geri veriyoruz.&#34;</span>);
-    <span style="color:#66d9ef">if</span> (newClient != <span style="color:#66d9ef">null</span>)
-        ClientPool.Instance.ReleaseObject(newClient);
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Edindiğimiz sınıfı geri veriyoruz.&#34;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">newClient</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+        <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">ReleaseObject</span><span class="p">(</span><span class="n">newClient</span><span class="p">);</span>
 
-    Console.WriteLine(<span style="color:#e6db74">&#34;Listedeki tüm Client sınıflarını geri bırakıyoruz.&#34;</span>);
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Listedeki tüm Client sınıflarını geri bırakıyoruz.&#34;</span><span class="p">);</span>
 
-    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> clients)
-        ClientPool.Instance.ReleaseObject(item);
-}
+    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">item</span> <span class="k">in</span> <span class="n">clients</span><span class="p">)</span>
+        <span class="n">ClientPool</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">ReleaseObject</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div><p>Yukarıdaki kodun çıktısı aşağıdaki gibidir.</p>
 <p>Havuzun boyutu 5<br>
 Client sınıfı ediniyoruz.<br>
@@ -267,6 +267,10 @@ _Intent - reuse and share objects that are expensive to create._www.oodesign.com
     
     
         <li>
+            <a href="/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/">ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies<aside class="dates">Sep 13 2020</aside></a>
+        </li>
+    
+        <li>
             <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
         </li>
     
@@ -280,10 +284,6 @@ _Intent - reuse and share objects that are expensive to create._www.oodesign.com
     
         <li>
             <a href="/posts/angular-2-base-component-alternative/">Angular 2&#43;: Base Component Alternative<aside class="dates">Jan 26 2020</aside></a>
-        </li>
-    
-        <li>
-            <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
         </li>
     
 </ul>

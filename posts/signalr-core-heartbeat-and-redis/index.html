@@ -103,19 +103,19 @@
                 <section id="post-body">
                     <p>Realtime applications are hard to design in .NET world, we have SignalR Core which gives us a painless interface for developing such applications. SignalR Core is a very new library, here I will be discussing a problem case which came with the latest versions.</p>
 <p>The story come up with a problem that I faced. I have been storing the client information on Redis. My application records client information with <code>OnConnectedAsync</code> method and remove it with <code>OnDisconnectedAsync</code> method. Moreover, we have an object called _clientList for inserting and removing clients, and for updating a clients information.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task OnConnectedAsync()  
-{  
-    ...  
-    _clientList.CreateUser(Context.ConnectionId);  
-    ...  
-}
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="n">OnConnectedAsync</span><span class="p">()</span>  
+<span class="p">{</span>  
+    <span class="p">...</span>  
+    <span class="n">_clientList</span><span class="p">.</span><span class="n">CreateUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
+    <span class="p">...</span>  
+<span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task OnDisconnectedAsync(Exception ex)  
-{  
-    ...  
-    _clientList.RemoveUser(Context.ConnectionId);  
-    ...  
-}
+<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="n">OnDisconnectedAsync</span><span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>  
+<span class="p">{</span>  
+    <span class="p">...</span>  
+    <span class="n">_clientList</span><span class="p">.</span><span class="n">RemoveUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
+    <span class="p">...</span>  
+<span class="p">}</span>
 </code></pre></div><p>This seems good enough for cases without a failure. However, we have to consider the worst case. <code>_clientList</code> must be reliable for the reading the data. Which means, we should be able to see the most up-to-date status information for the online users.</p>
 <p><strong>Further note</strong>; the story’s code does not include a Redis implementation.</p>
 <h4 id="scenario-1">Scenario 1</h4>
@@ -126,20 +126,20 @@
 <p>You have to cover these scenarios for better realtime applications. Let’s start.</p>
 <h3 id="solutions">Solutions</h3>
 <p><strong><em>Scenario 1</em></strong> has a basic solution. You can ignore the new connections while Redis is down. Which means, you don’t allow new connections. In order to accomplish this, basically call the <code>Context.Abort()</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task OnConnectedAsync()  
-{
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="n">OnConnectedAsync</span><span class="p">()</span>  
+<span class="p">{</span>
 
-    <span style="color:#66d9ef">try</span> {  
-       ...  
-       _clientList.CreateUser(Context.ConnectionId);  
-       ...  
-    }  
-    <span style="color:#66d9ef">catch</span> (Exception ex) {  
-       <span style="color:#75715e">// put your logger logic here  
-</span><span style="color:#75715e"></span>       Context.Abort();
+    <span class="k">try</span> <span class="p">{</span>  
+       <span class="p">...</span>  
+       <span class="n">_clientList</span><span class="p">.</span><span class="n">CreateUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
+       <span class="p">...</span>  
+    <span class="p">}</span>  
+    <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>  
+       <span class="c1">// put your logger logic here  
+</span><span class="c1"></span>       <span class="n">Context</span><span class="p">.</span><span class="n">Abort</span><span class="p">();</span>
 
-    }  
-}
+    <span class="p">}</span>  
+<span class="p">}</span>
 </code></pre></div><p>After that, you can show such a message to user ‘Server is offline’. Problem solved for reliable data. Next step would be to solve the problem in Redis.</p>
 <blockquote>
 <p><strong>For advanced usage</strong>, this is not a proper solution. You have to make sure that Redis is always online, or have a backup plan in order to prevent server uptime loss.</p>
@@ -147,16 +147,16 @@
 <p><strong><em>Scenario 2</em></strong>, the main point of this story. Data stuck on the Redis. And, we can’t rely the data anymore. SignalR sending ping to the clients for testing their connections. It called as Heartbeat.</p>
 <p>Old SignalR was using an extra interface to control existing connections. <code>ITransportHeartbeat</code>, it has collection of existing connections, so we can remove stuck data with iteration. I won’t delve into details here, you can refere the David Flow’s code <a href="https://github.com/DamianEdwards/NDCLondon2013/blob/master/UserPresence/PresenceMonitor.cs">here</a>. However, taking all connections and processing them might cause some performance issues. In order to solve this, SignalR takes a different approach by implementing a new method between its ping/pong cycles on its own Backend.</p>
 <p>ASP.NET Core has Connection Features. And, it includes <code>IConnectionHeartbeatFeature</code> interface. You must use the following code inside of a hub. Let&rsquo;s see the code.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> Heartbeat()  
-{  
-     <span style="color:#66d9ef">var</span> heartbeat = Context.Features.Get&lt;IConnectionHeartbeatFeature&gt;();
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">private</span> <span class="k">void</span> <span class="n">Heartbeat</span><span class="p">()</span>  
+<span class="p">{</span>  
+     <span class="kt">var</span> <span class="n">heartbeat</span> <span class="p">=</span> <span class="n">Context</span><span class="p">.</span><span class="n">Features</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">IConnectionHeartbeatFeature</span><span class="p">&gt;();</span>
 
-     heartbeat.OnHeartbeat(state =&gt; {  
-        (HttpContext context ,<span style="color:#66d9ef">string</span> connectionId) = ((HttpContext,   <span style="color:#66d9ef">string</span>))state;  
-         <span style="color:#66d9ef">var</span> ClientList = context.RequestServices.GetService&lt;IClientList&gt;();  
-         ClientList.LatestPing(connectionId);  
-    }, (Context.GetHttpContext(), Context.ConnectionId));  
-}
+     <span class="n">heartbeat</span><span class="p">.</span><span class="n">OnHeartbeat</span><span class="p">(</span><span class="n">state</span> <span class="p">=&gt;</span> <span class="p">{</span>  
+        <span class="p">(</span><span class="n">HttpContext</span> <span class="n">context</span> <span class="p">,</span><span class="kt">string</span> <span class="n">connectionId</span><span class="p">)</span> <span class="p">=</span> <span class="p">((</span><span class="n">HttpContext</span><span class="p">,</span>   <span class="kt">string</span><span class="p">))</span><span class="n">state</span><span class="p">;</span>  
+         <span class="kt">var</span> <span class="n">ClientList</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">RequestServices</span><span class="p">.</span><span class="n">GetService</span><span class="p">&lt;</span><span class="n">IClientList</span><span class="p">&gt;();</span>  
+         <span class="n">ClientList</span><span class="p">.</span><span class="n">LatestPing</span><span class="p">(</span><span class="n">connectionId</span><span class="p">);</span>  
+    <span class="p">},</span> <span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">GetHttpContext</span><span class="p">(),</span> <span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">));</span>  
+<span class="p">}</span>
 </code></pre></div><p>Call the Heartbeat method on <code>OnConnectedAsync</code>. Also, if you want to use a service from DI, You have to request with <code>context.RequestServices.GetService</code> . Then, we just update the client’s LatestPing parameter. This property will be updated on Redis.</p>
 <p>To verify, the results check the <a href="http://localhost:5000/api/clients">http://localhost:5000/api/clients</a></p>
 <p><img src="/img/1__2oXntW9P1OF0zLUAsHe3Mw.png" alt="Result">
@@ -180,6 +180,10 @@ Result</p>
     
     
         <li>
+            <a href="/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/">ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies<aside class="dates">Sep 13 2020</aside></a>
+        </li>
+    
+        <li>
             <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
         </li>
     
@@ -193,10 +197,6 @@ Result</p>
     
         <li>
             <a href="/posts/angular-2-base-component-alternative/">Angular 2&#43;: Base Component Alternative<aside class="dates">Jan 26 2020</aside></a>
-        </li>
-    
-        <li>
-            <a href="/posts/fabric-js-history-operations-undo-redo-and-useful-tips/">Fabric.js History Operations (undo, redo) and Useful Tips<aside class="dates">Aug 15 2019</aside></a>
         </li>
     
 </ul>

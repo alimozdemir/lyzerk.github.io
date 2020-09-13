@@ -102,93 +102,93 @@
                     <p>Hello again, today’s subject is a javascript library called Fabric.js. I have worked with this library a couple of times in the past. However, you have to improvise while using the library features for advanced usages. I needed common features for my projects. Such as, history implementation (redo, undo), clipping the canvas, export image with high resolution and so on. I think this blog post will help other people for required such kind of features.</p>
 <h4 id="history">History</h4>
 <p>First of all, most required features are undo and redo actions. In fabric.js almost every action is catched with <code>object:modified</code>, <code>object:added</code> and <code>object:removed</code>. Basically, we are keeping the state of the canvas on a stack and redraw the state each time.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Canvas</span>.<span style="color:#a6e22e">prototype</span>.<span style="color:#a6e22e">historyInit</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> () {
-  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyUndo</span> <span style="color:#f92672">=</span> [];
-  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyNextState</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyNext</span>();
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">fabric</span><span class="p">.</span><span class="nx">Canvas</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">historyInit</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">historyUndo</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">historyNextState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">historyNext</span><span class="p">();</span>
 
-  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">on</span>({
-    <span style="color:#e6db74">&#34;object:added&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historySaveAction</span>,
-    <span style="color:#e6db74">&#34;object:removed&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historySaveAction</span>,
-    <span style="color:#e6db74">&#34;object:modified&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historySaveAction</span>
-  })
-}
+  <span class="k">this</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span>
+    <span class="s2">&#34;object:added&#34;</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">historySaveAction</span><span class="p">,</span>
+    <span class="s2">&#34;object:removed&#34;</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">historySaveAction</span><span class="p">,</span>
+    <span class="s2">&#34;object:modified&#34;</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">historySaveAction</span>
+  <span class="p">})</span>
+<span class="p">}</span>
 
-<span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Canvas</span>.<span style="color:#a6e22e">prototype</span>.<span style="color:#a6e22e">historyNext</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> () {
-  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">toDatalessJSON</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">extraProps</span>));
-}
+<span class="nx">fabric</span><span class="p">.</span><span class="nx">Canvas</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">historyNext</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">toDatalessJSON</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">extraProps</span><span class="p">));</span>
+<span class="p">}</span>
 
-<span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Canvas</span>.<span style="color:#a6e22e">prototype</span>.<span style="color:#a6e22e">historySaveAction</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> () {
-  <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyProcessing</span>)
-    <span style="color:#66d9ef">return</span>;
+<span class="nx">fabric</span><span class="p">.</span><span class="nx">Canvas</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">historySaveAction</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">historyProcessing</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">;</span>
 
-  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">json</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyNextState</span>;
-  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyUndo</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">json</span>);
-  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyNextState</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyNext</span>();
-}
+  <span class="kr">const</span> <span class="nx">json</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">historyNextState</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">historyUndo</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">historyNextState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">historyNext</span><span class="p">();</span>
+<span class="p">}</span>
 
-<span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Canvas</span>.<span style="color:#a6e22e">prototype</span>.<span style="color:#a6e22e">undo</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> () {
-  <span style="color:#75715e">// The undo process will render the new states of the objects
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// Therefore, object:added and object:modified events will triggered again
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// To ignore those events, we are setting a flag.
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyProcessing</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+<span class="nx">fabric</span><span class="p">.</span><span class="nx">Canvas</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">undo</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// The undo process will render the new states of the objects
+</span><span class="c1"></span>  <span class="c1">// Therefore, object:added and object:modified events will triggered again
+</span><span class="c1"></span>  <span class="c1">// To ignore those events, we are setting a flag.
+</span><span class="c1"></span>  <span class="k">this</span><span class="p">.</span><span class="nx">historyProcessing</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
 
-  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">history</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyUndo</span>.<span style="color:#a6e22e">pop</span>();
-  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">history</span>) {
-    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">loadFromJSON</span>(<span style="color:#a6e22e">history</span>).<span style="color:#a6e22e">renderAll</span>();
-  }
+  <span class="kr">const</span> <span class="nx">history</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">historyUndo</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">history</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">loadFromJSON</span><span class="p">(</span><span class="nx">history</span><span class="p">).</span><span class="nx">renderAll</span><span class="p">();</span>
+  <span class="p">}</span>
 
-  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">historyProcessing</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
-}
+  <span class="k">this</span><span class="p">.</span><span class="nx">historyProcessing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div><p><code>historySaveAction</code> collects the user’s actions into the <code>historyUndo</code> stack. However, the events are post-events, because of this we can’t get the current state of the canvas. To solve this problem, we are keeping the current state of the canvas on <code>historyNextState</code>variable. And pushing it into the stack when a new event fired.</p>
 <p><code>undo</code> function applies the rollback operation on the state popped from the stack. However, during the canvas re-rendering events from the old state will also trigger. These events should not be fired, therefore <code>historyProcessing</code> variable will block the new states from getting pushed into the stack.</p>
 <h4 id="npm-package">npm package</h4>
 <p>I have created a npm package in order to make it easier to apply the processes we discussed above. Additionally, it includes redo action. You can install the package using with</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm install fabric-history
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">npm install fabric-history
 </code></pre></div><p>Import it to a node project with</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">import</span> <span style="color:#e6db74">&#39;fabric-history&#39;</span>;
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kr">import</span> <span class="s1">&#39;fabric-history&#39;</span><span class="p">;</span>
 </code></pre></div><p>Then basically you have to initialize it</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">canvas</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Canvas</span>(<span style="color:#e6db74">&#39;canvas&#39;</span>);  
-<span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">historyInit</span>();
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kr">const</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">fabric</span><span class="p">.</span><span class="nx">Canvas</span><span class="p">(</span><span class="s1">&#39;canvas&#39;</span><span class="p">);</span>  
+<span class="nx">canvas</span><span class="p">.</span><span class="nx">historyInit</span><span class="p">();</span>
 </code></pre></div><p>Finally, you can easily redo and undo with</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">undo</span>();  
-<span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">redo</span>();
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">canvas</span><span class="p">.</span><span class="nx">undo</span><span class="p">();</span>  
+<span class="nx">canvas</span><span class="p">.</span><span class="nx">redo</span><span class="p">();</span>
 </code></pre></div><h4 id="download-the-canvas-with-higher-resolution">Download the canvas with higher resolution</h4>
 <p>Second problem I have faced, my canvas had lower resolution than I needed, and I wanted to download the high resolution version of it. There is a built-in solution for this. Basically, you can multiply the canvas while downloading by</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">toDataUrl</span>({ <span style="color:#a6e22e">multiplier</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3</span> });
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="nx">canvas</span><span class="p">.</span><span class="nx">toDataUrl</span><span class="p">({</span> <span class="nx">multiplier</span><span class="o">:</span> <span class="mi">3</span> <span class="p">});</span>
 </code></pre></div><p>Then you can download the 3x canvas.</p>
 <h4 id="clip-canvas">Clip canvas</h4>
 <p>In most cases, I wanted to clip objects with different kind of shapes. HTML5 canvas has a property called <code>globalCompositeOperation</code>.</p>
 <p><img src="/img/1__yjsrwvoZmyY7RmRBxDt7Mg.png" alt="global composite operation">
 <a href="https://www.rgraph.net/canvas/reference/globalcompositeoperation.html">global composite operation</a></p>
 <p>This is important while clipping a fabric object. Same rules apply here. For example, I have added a rectangle on the canvas. Then, I have set the clipPath property to a group of objects.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">canvas</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Canvas</span>(<span style="color:#e6db74">&#39;canvas&#39;</span>)
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">fabric</span><span class="p">.</span><span class="nx">Canvas</span><span class="p">(</span><span class="s1">&#39;canvas&#39;</span><span class="p">)</span>
 
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">rect</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Rect</span>({
-  <span style="color:#a6e22e">width</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">100</span>,
-  <span style="color:#a6e22e">height</span><span style="color:#f92672">:</span><span style="color:#ae81ff">100</span>,
-  <span style="color:#a6e22e">fill</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;red&#39;</span>,
-  <span style="color:#a6e22e">left</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">100</span>,
-  <span style="color:#a6e22e">top</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">100</span>
-});
+<span class="kd">var</span> <span class="nx">rect</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">fabric</span><span class="p">.</span><span class="nx">Rect</span><span class="p">({</span>
+  <span class="nx">width</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+  <span class="nx">height</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span>
+  <span class="nx">fill</span><span class="o">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+  <span class="nx">left</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+  <span class="nx">top</span><span class="o">:</span> <span class="mi">100</span>
+<span class="p">});</span>
 
-<span style="color:#a6e22e">canvas</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">rect</span>)
+<span class="nx">canvas</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">rect</span><span class="p">)</span>
 
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">clipGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Group</span>([
- <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Circle</span>({
-    <span style="color:#a6e22e">radius</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">50</span>,
-    <span style="color:#a6e22e">left</span><span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">50</span>,
-    <span style="color:#a6e22e">top</span><span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">50</span>
-  }),
-  <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">fabric</span>.<span style="color:#a6e22e">Rect</span>({
-    <span style="color:#a6e22e">width</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">25</span>,
-    <span style="color:#a6e22e">height</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">25</span>,
-    <span style="color:#a6e22e">left</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>,
-    <span style="color:#a6e22e">top</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>,
-    <span style="color:#a6e22e">globalCompositeOperation</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;destination-out&#39;</span>
-  })
-]);
+<span class="kd">var</span> <span class="nx">clipGroup</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">fabric</span><span class="p">.</span><span class="nx">Group</span><span class="p">([</span>
+ <span class="k">new</span> <span class="nx">fabric</span><span class="p">.</span><span class="nx">Circle</span><span class="p">({</span>
+    <span class="nx">radius</span><span class="o">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="nx">left</span><span class="o">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span>
+    <span class="nx">top</span><span class="o">:</span> <span class="o">-</span><span class="mi">50</span>
+  <span class="p">}),</span>
+  <span class="k">new</span> <span class="nx">fabric</span><span class="p">.</span><span class="nx">Rect</span><span class="p">({</span>
+    <span class="nx">width</span><span class="o">:</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="nx">height</span><span class="o">:</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="nx">left</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nx">top</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nx">globalCompositeOperation</span><span class="o">:</span> <span class="s1">&#39;destination-out&#39;</span>
+  <span class="p">})</span>
+<span class="p">]);</span>
 
-<span style="color:#a6e22e">rect</span>.<span style="color:#a6e22e">clipPath</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">clipGroup</span>;
+<span class="nx">rect</span><span class="p">.</span><span class="nx">clipPath</span> <span class="o">=</span> <span class="nx">clipGroup</span><span class="p">;</span>
 </code></pre></div><p>The circle defines the outside border of the rectangle and second rectangle will cut inside of the circle. You can easily set the <code>globalCompositeOperation</code> as <code>destination-out</code> value. And the result;</p>
 <p><img src="/img/1__uU9cD4GsTzVKbVWe8Mhd4A.png" alt="Destination-out"></p>
 <p>You can see an example below:</p>
@@ -224,6 +224,10 @@ _Summary: The globalCompositeOperation property determines how drawings are adde
     
     
         <li>
+            <a href="/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/">ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies<aside class="dates">Sep 13 2020</aside></a>
+        </li>
+    
+        <li>
             <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
         </li>
     
@@ -237,10 +241,6 @@ _Summary: The globalCompositeOperation property determines how drawings are adde
     
         <li>
             <a href="/posts/angular-2-base-component-alternative/">Angular 2&#43;: Base Component Alternative<aside class="dates">Jan 26 2020</aside></a>
-        </li>
-    
-        <li>
-            <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
         </li>
     
 </ul>

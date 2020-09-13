@@ -100,292 +100,292 @@
                 
                 <section id="post-body">
                     <p>Today, I will talk about a better way to register services for Microsoft’s DI container. Let’s have a look at the standard way of service registration.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-...
-    services.AddTransient&lt;ITestTransientService, TestTransientService&gt;();
-    services.AddScoped&lt;ITestScopedService, TestScopedService&gt;();
-    services.AddSingleton&lt;ITestSingletonService, TestSingletonService&gt;();
-...
-}
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">void</span> <span class="n">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">...</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">AddTransient</span><span class="p">&lt;</span><span class="n">ITestTransientService</span><span class="p">,</span> <span class="n">TestTransientService</span><span class="p">&gt;();</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">AddScoped</span><span class="p">&lt;</span><span class="n">ITestScopedService</span><span class="p">,</span> <span class="n">TestScopedService</span><span class="p">&gt;();</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="p">&lt;</span><span class="n">ITestSingletonService</span><span class="p">,</span> <span class="n">TestSingletonService</span><span class="p">&gt;();</span>
+<span class="p">...</span>
+<span class="p">}</span>
 </code></pre></div><p>There exists three types of object lifetime. I’m not going to explain all of them, since they are already well documented at <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-3.1">Microsoft Docs</a>.</p>
 <p>For small scale applications the above usage is very acceptable. However, managing a large scale applications might require different solutions.</p>
 <p><img src="/img/1__e7BcghEYOwey5qOKNBcGaA.jpeg" alt="The blog picture"></p>
 <p>Now, I will show you 3 different solutions that you might like to use. First, I will consider all lifetimes separately. All three solutions require a NuGet package called <a href="https://www.nuget.org/packages/Scrutor">Scrutor</a>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">dotnet add package Scrutor
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">dotnet add package Scrutor
 </code></pre></div><p>This package allows you to scan assemblies and register the services with implementations.</p>
 <h4 id="solution-1">Solution 1</h4>
 <p>We will create three different empty interfaces which mark the implementations for lifetime registration.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ITransient { }
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">interface</span> <span class="n">ITransient</span> <span class="p">{</span> <span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IScoped { }
+<span class="k">public</span> <span class="k">interface</span> <span class="n">IScoped</span> <span class="p">{</span> <span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ISingleton { }
+<span class="k">public</span> <span class="k">interface</span> <span class="n">ISingleton</span> <span class="p">{</span> <span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ITransientService
-{
-    <span style="color:#66d9ef">string</span> GetValue();
-}
+<span class="k">public</span> <span class="k">interface</span> <span class="n">ITransientService</span>
+<span class="p">{</span>
+    <span class="kt">string</span> <span class="n">GetValue</span><span class="p">();</span>
+<span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IScopedService
-{
-    <span style="color:#66d9ef">string</span> GetValue();
-}
+<span class="k">public</span> <span class="k">interface</span> <span class="n">IScopedService</span>
+<span class="p">{</span>
+    <span class="kt">string</span> <span class="n">GetValue</span><span class="p">();</span>
+<span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ISingletonService
-{
-    <span style="color:#66d9ef">string</span> GetValue();
-}
+<span class="k">public</span> <span class="k">interface</span> <span class="n">ISingletonService</span>
+<span class="p">{</span>
+    <span class="kt">string</span> <span class="n">GetValue</span><span class="p">();</span>
+<span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TransientService</span> : ITransientService, ITransient
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid;
-    }
-}
+<span class="k">public</span> <span class="k">class</span> <span class="nc">TransientService</span> <span class="p">:</span> <span class="n">ITransientService</span><span class="p">,</span> <span class="n">ITransient</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScopedService</span> : IScopedService, IScoped
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid;
-    }
-}
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ScopedService</span> <span class="p">:</span> <span class="n">IScopedService</span><span class="p">,</span> <span class="n">IScoped</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SingletonService</span> : ISingletonService, ISingleton
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid;
-    }
-}
+<span class="k">public</span> <span class="k">class</span> <span class="nc">SingletonService</span> <span class="p">:</span> <span class="n">ISingletonService</span><span class="p">,</span> <span class="n">ISingleton</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><p><code>ITransient</code>, <code>IScoped</code> and <code>ISingleton</code> interfaces will represent each one of the lifetimes. Next thing is <code>Startup.cs</code> file where magic happens.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-...
-    services.Scan(i =&gt;
-        i.FromCallingAssembly()
-        .AddClasses(c =&gt; c.AssignableTo&lt;ITransient&gt;())
-        .AsImplementedInterfaces()
-        .WithTransientLifetime()
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">void</span> <span class="n">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">...</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">Scan</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span>
+        <span class="n">i</span><span class="p">.</span><span class="n">FromCallingAssembly</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">AddClasses</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">AssignableTo</span><span class="p">&lt;</span><span class="n">ITransient</span><span class="p">&gt;())</span>
+        <span class="p">.</span><span class="n">AsImplementedInterfaces</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">WithTransientLifetime</span><span class="p">()</span>
 
-        .AddClasses(c =&gt; c.AssignableTo&lt;IScoped&gt;())
-        .AsImplementedInterfaces()
-        .WithScopedLifetime()
+        <span class="p">.</span><span class="n">AddClasses</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">AssignableTo</span><span class="p">&lt;</span><span class="n">IScoped</span><span class="p">&gt;())</span>
+        <span class="p">.</span><span class="n">AsImplementedInterfaces</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">WithScopedLifetime</span><span class="p">()</span>
 
-        .AddClasses(c =&gt; c.AssignableTo&lt;ISingleton&gt;())
-        .AsImplementedInterfaces()
-        .WithSingletonLifetime()
-        );
-...
-}
+        <span class="p">.</span><span class="n">AddClasses</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">AssignableTo</span><span class="p">&lt;</span><span class="n">ISingleton</span><span class="p">&gt;())</span>
+        <span class="p">.</span><span class="n">AsImplementedInterfaces</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">WithSingletonLifetime</span><span class="p">()</span>
+        <span class="p">);</span>
+<span class="p">...</span>
+<span class="p">}</span>
 </code></pre></div><p>The following code will scan the current assembly with respect to given lifetime interfaces and register them into DI container.</p>
 <h4 id="solution-2">Solution 2</h4>
 <p>We can create attributes just like interfaces and use them similar to the first solution.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TransientAttribute</span> : Attribute
-{
-    <span style="color:#66d9ef">public</span> TransientAttribute()
-    {
-    }
-}
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">TransientAttribute</span> <span class="p">:</span> <span class="n">Attribute</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">TransientAttribute</span><span class="p">()</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScopedAttribute</span> : Attribute
-{
-    <span style="color:#66d9ef">public</span> ScopedAttribute()
-    {
-    }
-}
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ScopedAttribute</span> <span class="p">:</span> <span class="n">Attribute</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">ScopedAttribute</span><span class="p">()</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SingletonAttribute</span> : Attribute
-{
-    <span style="color:#66d9ef">public</span> SingletonAttribute()
-    {
-    }
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Transient]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TransientAttrService</span> : ITransientService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid + <span style="color:#e6db74">&#34; by Attribute&#34;</span>;
-    }
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Scoped]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScopedAttrService</span> : IScopedService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid + <span style="color:#e6db74">&#34; by Attribute&#34;</span>;
-    }
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Singleton]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SingletonAttrService</span> : ISingletonService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid + <span style="color:#e6db74">&#34; by Attribute&#34;</span>;
-    }
-}
+<span class="k">public</span> <span class="k">class</span> <span class="nc">SingletonAttribute</span> <span class="p">:</span> <span class="n">Attribute</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">SingletonAttribute</span><span class="p">()</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[Transient]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">TransientAttrService</span> <span class="p">:</span> <span class="n">ITransientService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span> <span class="p">+</span> <span class="s">&#34; by Attribute&#34;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[Scoped]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ScopedAttrService</span> <span class="p">:</span> <span class="n">IScopedService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span> <span class="p">+</span> <span class="s">&#34; by Attribute&#34;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[Singleton]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">SingletonAttrService</span> <span class="p">:</span> <span class="n">ISingletonService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span> <span class="p">+</span> <span class="s">&#34; by Attribute&#34;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><p>We can register the attributes with <code>WithAttribute&lt;T&gt;</code> in <code>Startup.cs</code> file.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-...
-   services.Scan(i =&gt; 
-        i.FromCallingAssembly()
-        .AddClasses(c =&gt; c.WithAttribute&lt;TransientAttribute&gt;())
-        .AsImplementedInterfaces()
-        .WithTransientLifetime()
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">void</span> <span class="n">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">...</span>
+   <span class="n">services</span><span class="p">.</span><span class="n">Scan</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> 
+        <span class="n">i</span><span class="p">.</span><span class="n">FromCallingAssembly</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">AddClasses</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">WithAttribute</span><span class="p">&lt;</span><span class="n">TransientAttribute</span><span class="p">&gt;())</span>
+        <span class="p">.</span><span class="n">AsImplementedInterfaces</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">WithTransientLifetime</span><span class="p">()</span>
         
-        .AddClasses(c =&gt; c.WithAttribute&lt;ScopedAttribute&gt;())
-        .AsImplementedInterfaces()
-        .WithScopedLifetime()
+        <span class="p">.</span><span class="n">AddClasses</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">WithAttribute</span><span class="p">&lt;</span><span class="n">ScopedAttribute</span><span class="p">&gt;())</span>
+        <span class="p">.</span><span class="n">AsImplementedInterfaces</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">WithScopedLifetime</span><span class="p">()</span>
         
-        .AddClasses(c =&gt; c.WithAttribute&lt;SingletonAttribute&gt;())
-        .AsImplementedInterfaces()
-        .WithSingletonLifetime()
-    );
-...
-}
+        <span class="p">.</span><span class="n">AddClasses</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">WithAttribute</span><span class="p">&lt;</span><span class="n">SingletonAttribute</span><span class="p">&gt;())</span>
+        <span class="p">.</span><span class="n">AsImplementedInterfaces</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">WithSingletonLifetime</span><span class="p">()</span>
+    <span class="p">);</span>
+<span class="p">...</span>
+<span class="p">}</span>
 </code></pre></div><p>Now we can use these attributes in the service implementations.</p>
 <h4 id="solution-3">Solution 3</h4>
 <p>So far, we handled the lifetimes separately. Let’s create a common attribute which contains a lifetime value and then decorate services with that attribute.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InjectableAttribute</span> : Attribute
-{
-    <span style="color:#66d9ef">public</span> ServiceLifetime Lifetime { <span style="color:#66d9ef">get</span>; }
-    <span style="color:#66d9ef">public</span> InjectableAttribute(ServiceLifetime lifeTime = ServiceLifetime.Transient)
-    {
-        Lifetime = lifeTime;
-    }
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Injectable(ServiceLifetime.Transient)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TransientInjectableService</span> : ITransientService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid + <span style="color:#e6db74">&#34; by Injectable&#34;</span>;
-    }
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Injectable(ServiceLifetime.Scoped)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScopedInjectableService</span> : IScopedService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid + <span style="color:#e6db74">&#34; by Injectable&#34;</span>;
-    }
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Injectable(ServiceLifetime.Singleton)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SingletonInjectableService</span> : ISingletonService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> guid = Guid.NewGuid().ToString();
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> GetValue()
-    {
-        <span style="color:#66d9ef">return</span> guid + <span style="color:#e6db74">&#34; by Injectable&#34;</span>;
-    }
-}
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">InjectableAttribute</span> <span class="p">:</span> <span class="n">Attribute</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">ServiceLifetime</span> <span class="n">Lifetime</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="n">InjectableAttribute</span><span class="p">(</span><span class="n">ServiceLifetime</span> <span class="n">lifeTime</span> <span class="p">=</span> <span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Transient</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Lifetime</span> <span class="p">=</span> <span class="n">lifeTime</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[Injectable(ServiceLifetime.Transient)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">TransientInjectableService</span> <span class="p">:</span> <span class="n">ITransientService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span> <span class="p">+</span> <span class="s">&#34; by Injectable&#34;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[Injectable(ServiceLifetime.Scoped)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ScopedInjectableService</span> <span class="p">:</span> <span class="n">IScopedService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span> <span class="p">+</span> <span class="s">&#34; by Injectable&#34;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[Injectable(ServiceLifetime.Singleton)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">SingletonInjectableService</span> <span class="p">:</span> <span class="n">ISingletonService</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="n">guid</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">GetValue</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">guid</span> <span class="p">+</span> <span class="s">&#34; by Injectable&#34;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><p>This looks better because now we can handle all lifetimes using the <code>ServiceLifetime</code> value provided by Microsoft’s library. Now, in order to scan services, I have created an extension method that iterates through all lifetime types.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScrutorExtensions</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IImplementationTypeSelector InjectableAttributes(<span style="color:#66d9ef">this</span> IImplementationTypeSelector selector)
-    {
-        <span style="color:#66d9ef">var</span> lifeTimes = Enum.GetValues(<span style="color:#66d9ef">typeof</span>(ServiceLifetime)).Cast&lt;ServiceLifetime&gt;();
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">ScrutorExtensions</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="n">IImplementationTypeSelector</span> <span class="n">InjectableAttributes</span><span class="p">(</span><span class="k">this</span> <span class="n">IImplementationTypeSelector</span> <span class="n">selector</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">var</span> <span class="n">lifeTimes</span> <span class="p">=</span> <span class="n">Enum</span><span class="p">.</span><span class="n">GetValues</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">)).</span><span class="n">Cast</span><span class="p">&lt;</span><span class="n">ServiceLifetime</span><span class="p">&gt;();</span>
 
-        <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> lifeTimes)
-            selector = selector.InjectableAttribute(item);
+        <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">item</span> <span class="k">in</span> <span class="n">lifeTimes</span><span class="p">)</span>
+            <span class="n">selector</span> <span class="p">=</span> <span class="n">selector</span><span class="p">.</span><span class="n">InjectableAttribute</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
 
-        <span style="color:#66d9ef">return</span> selector;
-    }
+        <span class="k">return</span> <span class="n">selector</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IImplementationTypeSelector InjectableAttribute(<span style="color:#66d9ef">this</span> IImplementationTypeSelector selector, ServiceLifetime lifeTime)
-    {
-        <span style="color:#66d9ef">return</span> selector.AddClasses(c =&gt; c.WithAttribute&lt;InjectableAttribute&gt;(i =&gt; i.Lifetime == lifeTime))
-            .AsImplementedInterfaces()
-            .WithLifetime(lifeTime);
-    }
-}
+    <span class="k">public</span> <span class="k">static</span> <span class="n">IImplementationTypeSelector</span> <span class="n">InjectableAttribute</span><span class="p">(</span><span class="k">this</span> <span class="n">IImplementationTypeSelector</span> <span class="n">selector</span><span class="p">,</span> <span class="n">ServiceLifetime</span> <span class="n">lifeTime</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">selector</span><span class="p">.</span><span class="n">AddClasses</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">WithAttribute</span><span class="p">&lt;</span><span class="n">InjectableAttribute</span><span class="p">&gt;(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Lifetime</span> <span class="p">==</span> <span class="n">lifeTime</span><span class="p">))</span>
+            <span class="p">.</span><span class="n">AsImplementedInterfaces</span><span class="p">()</span>
+            <span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">lifeTime</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><p>Calling the extension method on <code>Startup.cs</code> . You can use either of them.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-    ...
-    services.Scan(i =&gt;
-        i.FromCallingAssembly()
-        .InjectableAttributes()
-    );
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">void</span> <span class="n">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">Scan</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span>
+        <span class="n">i</span><span class="p">.</span><span class="n">FromCallingAssembly</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">InjectableAttributes</span><span class="p">()</span>
+    <span class="p">);</span>
 
-    <span style="color:#75715e">/* Or */</span>
-    services.Scan(i =&gt;
-        i.FromCallingAssembly()
-        .InjectableAttribute(ServiceLifetime.Transient)
-        .InjectableAttribute(ServiceLifetime.Scoped)
-        .InjectableAttribute(ServiceLifetime.Singleton)
-    );
-    ...
-}
+    <span class="cm">/* Or */</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">Scan</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span>
+        <span class="n">i</span><span class="p">.</span><span class="n">FromCallingAssembly</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">InjectableAttribute</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Transient</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">InjectableAttribute</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Scoped</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">InjectableAttribute</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)</span>
+    <span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
 </code></pre></div><h3 id="run-theexamples">Run the examples</h3>
 <p>You can switch the startup settings and run the following controller.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
-</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceController</span> : ControllerBase
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ITransientService _transientService;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IScopedService _scopedService;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ISingletonService _singletonService;
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[ApiController]</span>
+<span class="na">[Route(&#34;[controller]</span><span class="s">&#34;)]
+</span><span class="s"></span><span class="k">public</span> <span class="k">class</span> <span class="nc">ServiceController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">ITransientService</span> <span class="n">_transientService</span><span class="p">;</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IScopedService</span> <span class="n">_scopedService</span><span class="p">;</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">ISingletonService</span> <span class="n">_singletonService</span><span class="p">;</span>
 
-    <span style="color:#66d9ef">public</span> ServiceController(ITransientService transientService, IScopedService scopedService, ISingletonService singletonService)
-    {
-        _transientService = transientService;
-        _scopedService = scopedService;
-        _singletonService = singletonService;
-    }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [HttpGet(&#34;Transient&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Transient()
-    {
-        <span style="color:#66d9ef">return</span> _transientService.GetValue();
-    }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [HttpGet(&#34;Scoped&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Scoped()
-    {
-        <span style="color:#66d9ef">return</span> _scopedService.GetValue();
-    }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [HttpGet(&#34;Singleton&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Singleton()
-    {
-        <span style="color:#66d9ef">return</span> _singletonService.GetValue();
-    }
-}
+    <span class="k">public</span> <span class="n">ServiceController</span><span class="p">(</span><span class="n">ITransientService</span> <span class="n">transientService</span><span class="p">,</span> <span class="n">IScopedService</span> <span class="n">scopedService</span><span class="p">,</span> <span class="n">ISingletonService</span> <span class="n">singletonService</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">_transientService</span> <span class="p">=</span> <span class="n">transientService</span><span class="p">;</span>
+        <span class="n">_scopedService</span> <span class="p">=</span> <span class="n">scopedService</span><span class="p">;</span>
+        <span class="n">_singletonService</span> <span class="p">=</span> <span class="n">singletonService</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="na">
+</span><span class="na">    [HttpGet(&#34;Transient&#34;)]</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Transient</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">_transientService</span><span class="p">.</span><span class="n">GetValue</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="na">
+</span><span class="na">    [HttpGet(&#34;Scoped&#34;)]</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Scoped</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">_scopedService</span><span class="p">.</span><span class="n">GetValue</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="na">
+</span><span class="na">    [HttpGet(&#34;Singleton&#34;)]</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Singleton</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">_singletonService</span><span class="p">.</span><span class="n">GetValue</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><p>Last solution is my favorite. It uses the ServiceLifetime as a parameter and you don’t need to repeat yourself for every single lifetime.</p>
 <h3 id="assembly">Assembly</h3>
 <p>Examples above use <code>FromCallingAssembly</code> at the beginning of each scan, which would register services only in that specific ASP.NET Core Application. If you have separated your services from Application layer into a class library, you might want to use an entry point for that class library. For example, you can create a dummy class <code>ServiceEntryPoint</code> in that library and call <code>FromAssemblyOf&lt;ServiceEntryPoint&gt;()</code> then continue applying the rest of the settings.</p>
 <h3 id="bonus">Bonus</h3>
 <p>In order to make things more easier, I would like to draw your attention to the power of reflection. Let’s say you have services that ends with postfix e.g <code>CountryBusinessService</code> , <code>OrderBusinessService</code> , <code>XBusinessService</code> . You can register them however you want, such as the example below.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-    ...
-    services.Scan(i =&gt;
-        i.FromCallingAssembly()
-        .AddClasses(c =&gt; c.Where(i =&gt; i.IsClass &amp;&amp; i.Name.EndsWith(<span style="color:#e6db74">&#34;BusinessService&#34;</span>)))
-        .AsImplementedInterfaces()
-        .WithTransientLifetime()
-    );
-    ...
-}
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">void</span> <span class="n">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">services</span><span class="p">.</span><span class="n">Scan</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span>
+        <span class="n">i</span><span class="p">.</span><span class="n">FromCallingAssembly</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">AddClasses</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">IsClass</span> <span class="p">&amp;&amp;</span> <span class="n">i</span><span class="p">.</span><span class="n">Name</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&#34;BusinessService&#34;</span><span class="p">)))</span>
+        <span class="p">.</span><span class="n">AsImplementedInterfaces</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">WithTransientLifetime</span><span class="p">()</span>
+    <span class="p">);</span>
+    <span class="p">...</span>
+<span class="p">}</span>
 </code></pre></div><h4 id="serviceprovider">[ServiceProvider]</h4>
 <p>Scrutor has an attribute which works similar to the third solution. However, I could not find the documentation about how to use it. Therefore, I will not include it here.</p>
 <p>Thanks for reading, you can reach out the source code from <a href="https://github.com/lyzerk/medium/tree/master/DIScan/attrService">here</a> !</p>
@@ -404,6 +404,10 @@
     
     
         <li>
+            <a href="/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/">ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies<aside class="dates">Sep 13 2020</aside></a>
+        </li>
+    
+        <li>
             <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
         </li>
     
@@ -417,10 +421,6 @@
     
         <li>
             <a href="/posts/signalr-core-heartbeat-and-redis/">SignalR Core: Heartbeat and Redis<aside class="dates">Dec 23 2019</aside></a>
-        </li>
-    
-        <li>
-            <a href="/posts/fabric-js-history-operations-undo-redo-and-useful-tips/">Fabric.js History Operations (undo, redo) and Useful Tips<aside class="dates">Aug 15 2019</aside></a>
         </li>
     
 </ul>
