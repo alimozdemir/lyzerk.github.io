@@ -6,7 +6,7 @@
     <description>Recent content on Alim Özdemir</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 13 Sep 2020 17:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Mar 2021 10:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,45 @@
     <item>
       <title>aspnetcore</title>
       <link>/tags/aspnetcore/</link>
-      <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
+      <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
       
       <guid>/tags/aspnetcore/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>httpclient</title>
+      <link>/tags/httpclient/</link>
+      <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
+      
+      <guid>/tags/httpclient/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>json.net</title>
+      <link>/tags/json.net/</link>
+      <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
+      
+      <guid>/tags/json.net/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pipeline</title>
+      <link>/tags/pipeline/</link>
+      <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
+      
+      <guid>/tags/pipeline/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>stream</title>
+      <link>/tags/stream/</link>
+      <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
+      
+      <guid>/tags/stream/</guid>
       <description></description>
     </item>
     

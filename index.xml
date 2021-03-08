@@ -6,10 +6,22 @@
     <description>Recent content on Alim Özdemir</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 13 Sep 2020 17:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Mar 2021 10:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ASP.NET Core: Concatenating JSON endpoints</title>
+      <link>/posts/aspnet-core-concatenating-json-endpoints/</link>
+      <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
+      
+      <guid>/posts/aspnet-core-concatenating-json-endpoints/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;TLDR; We have redirected an http client response into ASP.NET Core response with the desired structure.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Most commonly faced scenario about API design is you want to serialize a POCO class or a different type of objects to JSON with direct serializer. Then get the serialized value and use it. If you are handling big objects/data/files, then you have to be careful with what you do. Otherwise, it can have devastating impacts on the performance.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies</title>
