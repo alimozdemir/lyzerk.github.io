@@ -82,7 +82,7 @@
                     </h1>
                     <h2 class="headline">
                     Mar 6, 2021 10:00
-                    · 976 words
+                    · 1005 words
                     · 5 minute read
                       <span class="tags">
                       
@@ -252,6 +252,7 @@
 <h1 id="conclusion">Conclusion</h1>
 <p>This article is based on an unique case. Most of the time we don&rsquo;t use JRaw and Stream objects for endpoints. However, when we need to implement such a scenario, every single byte becomes important. <strong>Basically, we have redirected the http client response into ASP.NET Core response with the desired structure.</strong></p>
 <h2 id="notes">Notes</h2>
+<p>Since the first solution allocate the string object in Large Object Heap (LOH) the memory usage got high. Therefore, second solution is using 4k buffers and allocate at GC0-GC1.</p>
 <p>Json.NET is a very good library for such an advanced cases. Unfortunately, it does not have async support.</p>
 <p>I have disabled server garbage collection for the tests. When it is enabled, the first solution still triggers GC more. The optimized solution trigger GC more less. Also, CPU usage is more stable with the optimized solution.</p>
 <p><img src="/img/concatenate/compare.png" alt="Compare"></p>
