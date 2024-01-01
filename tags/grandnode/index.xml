@@ -7,18 +7,13 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 20 Feb 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="/tags/grandnode/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="/tags/grandnode/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GrandNode Payment Iyzico</title>
       <link>/projects/grandnode-payment-iyzico/</link>
       <pubDate>Wed, 20 Feb 2019 00:00:00 +0000</pubDate>
-      
       <guid>/projects/grandnode-payment-iyzico/</guid>
       <description>You can found details at https://github.com/lyzerk/Grand.Plugin.Payments.Iyzico</description>
     </item>
-    
   </channel>
 </rss>

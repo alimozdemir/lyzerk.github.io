@@ -30,7 +30,7 @@
 		<meta name="author" content="Alim Özdemir">
 		<meta name="keywords" content="aspnetcore,jwt,entityframework,identity,cookie">
 		<meta name="description" content="Software engineer">
-		<meta name="generator" content="Hugo 0.72.0" />
+		<meta name="generator" content="Hugo 0.121.1">
 		<title>ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
 
@@ -49,8 +49,6 @@
 		
 
 		
-		<link href="/index.xml" rel="alternate" type="application/rss+xml" title="Alim Özdemir" />
-		
 
 		
 	</head>
@@ -59,7 +57,7 @@
        <nav class="main-nav">
 	
 	
-		<a href='/'> <span class="arrow">←</span> Home</a>
+		<a href='/'> Home</a>
 	
 	<a href='/posts'>Archive</a>
 	<a href='/projects'>Projects</a>
@@ -68,8 +66,6 @@
 
 	
 
-	
-	<a class="cta" href="/index.xml">Subscribe</a>
 	
 </nav>
 
@@ -111,93 +107,92 @@
 <p><img src="/img/cookie_monster.jpg" alt="The blog picture"></p>
 <p>As I mentioned before, localStorage, sessionStorage and in-memory storages are candidates for this kind of questions. In web, also we have &ldquo;cookies&rdquo;. Best part of the cookies are you can manage them from server-side. For example, when a user logged in, you can put the user sensitive content into her/his cookies without handle it from client-side scripts.</p>
 <p>Firstly, I would like show difference between handling other storages and cookies. The below code shows a simple comparison with <code>axios</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">async</span> <span class="nx">loginRaw</span><span class="p">(</span><span class="nx">username</span><span class="p">,</span> <span class="nx">password</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="nx">username</span><span class="p">,</span>
-    <span class="nx">password</span>
-  <span class="p">});</span>
-
-  <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kr">const</span> <span class="nx">token</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
-    <span class="nx">sessionStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">,</span> <span class="nx">token</span><span class="p">)</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="nx">async</span> <span class="nx">loginCookie</span><span class="p">(</span><span class="nx">username</span><span class="p">,</span> <span class="nx">password</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="p">{</span>
-    <span class="nx">username</span><span class="p">,</span>
-    <span class="nx">password</span>
-  <span class="p">});</span>
-
-  <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// the response already set the token into browser&#39;s cookie.
-</span><span class="c1"></span>    <span class="k">this</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Secondly, Let&rsquo;s give some details about the implementation. I will use three cookie property with login. Just focus on <code>X-Access-Token</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[HttpPost(&#34;login&#34;)]</span>
-<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">LoginApi</span><span class="p">([</span><span class="n">FromBody</span><span class="p">]</span> <span class="n">LoginModel</span> <span class="n">model</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ModelState</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="kt">var</span> <span class="n">signIn</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_signInManager</span><span class="p">.</span><span class="n">PasswordSignInAsync</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">Username</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">Password</span><span class="p">,</span> <span class="k">false</span><span class="p">,</span> <span class="k">false</span><span class="p">);</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="n">signIn</span><span class="p">.</span><span class="n">Succeeded</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="kt">var</span> <span class="n">user</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_userManager</span><span class="p">.</span><span class="n">FindByEmailAsync</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">Username</span><span class="p">);</span>
-            <span class="kt">var</span> <span class="n">token</span> <span class="p">=</span> <span class="n">_jwtCreator</span><span class="p">.</span><span class="n">Generate</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">Email</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">Id</span><span class="p">);</span>
-
-            <span class="n">user</span><span class="p">.</span><span class="n">RefreshToken</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
-
-            <span class="k">await</span> <span class="n">_userManager</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
-
-            <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Access-Token&#34;</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
-            <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Username&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">UserName</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
-            <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Refresh-Token&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">RefreshToken</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
-
-            <span class="k">return</span> <span class="n">Ok</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="k">else</span>
-        <span class="p">{</span>
-            <span class="k">return</span> <span class="n">BadRequest</span><span class="p">(</span><span class="k">new</span> <span class="p">{</span> <span class="n">signIn</span><span class="p">.</span><span class="n">IsLockedOut</span><span class="p">,</span> <span class="n">signIn</span><span class="p">.</span><span class="n">IsNotAllowed</span><span class="p">,</span> <span class="n">signIn</span><span class="p">.</span><span class="n">RequiresTwoFactor</span> <span class="p">});</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">else</span>
-        <span class="k">return</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">ModelState</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>And finally, ASP.NET Core still waits the token from Authorization Header. Therefore, we have to set the token from the cookies. Startup.cs:</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="n">services</span><span class="p">.</span><span class="n">AddAuthentication</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
-  <span class="p">...</span>
-<span class="p">})</span>
-    <span class="p">.</span><span class="n">AddJwtBearer</span><span class="p">(</span><span class="n">options</span> <span class="p">=&gt;</span>
-    <span class="p">{</span>
-        <span class="p">...</span>
-        <span class="n">options</span><span class="p">.</span><span class="n">Events</span><span class="p">.</span><span class="n">OnMessageReceived</span> <span class="p">=</span> <span class="n">context</span> <span class="p">=&gt;</span> <span class="p">{</span>
-
-            <span class="k">if</span> <span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="s">&#34;X-Access-Token&#34;</span><span class="p">))</span>
-            <span class="p">{</span>
-                <span class="n">context</span><span class="p">.</span><span class="n">Token</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">[</span><span class="s">&#34;X-Access-Token&#34;</span><span class="p">];</span>
-            <span class="p">}</span>
-
-            <span class="k">return</span> <span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
-        <span class="p">};</span>
-        <span class="p">...</span>
-    <span class="p">})</span>
-
-</code></pre></div><h3 id="httponly-andsamesite">HttpOnly and SameSite</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">async</span> <span class="nx">loginRaw</span><span class="p">(</span><span class="nx">username</span><span class="p">,</span> <span class="nx">password</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">username</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">password</span>
+</span></span><span class="line"><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">token</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">sessionStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">,</span> <span class="nx">token</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">async</span> <span class="nx">loginCookie</span><span class="p">(</span><span class="nx">username</span><span class="p">,</span> <span class="nx">password</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">username</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">password</span>
+</span></span><span class="line"><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// the response already set the token into browser&#39;s cookie.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">this</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Secondly, Let&rsquo;s give some details about the implementation. I will use three cookie property with login. Just focus on <code>X-Access-Token</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="na">[HttpPost(&#34;login&#34;)]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">LoginApi</span><span class="p">([</span><span class="n">FromBody</span><span class="p">]</span> <span class="n">LoginModel</span> <span class="n">model</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ModelState</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">var</span> <span class="n">signIn</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_signInManager</span><span class="p">.</span><span class="n">PasswordSignInAsync</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">Username</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">Password</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">signIn</span><span class="p">.</span><span class="n">Succeeded</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">var</span> <span class="n">user</span> <span class="p">=</span> <span class="k">await</span> <span class="n">_userManager</span><span class="p">.</span><span class="n">FindByEmailAsync</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">Username</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">var</span> <span class="n">token</span> <span class="p">=</span> <span class="n">_jwtCreator</span><span class="p">.</span><span class="n">Generate</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">Email</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">Id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">user</span><span class="p">.</span><span class="n">RefreshToken</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">await</span> <span class="n">_userManager</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Access-Token&#34;</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Username&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">UserName</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Refresh-Token&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">RefreshToken</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">Ok</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">BadRequest</span><span class="p">(</span><span class="k">new</span> <span class="p">{</span> <span class="n">signIn</span><span class="p">.</span><span class="n">IsLockedOut</span><span class="p">,</span> <span class="n">signIn</span><span class="p">.</span><span class="n">IsNotAllowed</span><span class="p">,</span> <span class="n">signIn</span><span class="p">.</span><span class="n">RequiresTwoFactor</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">BadRequest</span><span class="p">(</span><span class="n">ModelState</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>And finally, ASP.NET Core still waits the token from Authorization Header. Therefore, we have to set the token from the cookies. Startup.cs:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="n">services</span><span class="p">.</span><span class="n">AddAuthentication</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">AddJwtBearer</span><span class="p">(</span><span class="n">options</span> <span class="p">=&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">...</span>
+</span></span><span class="line"><span class="cl">        <span class="n">options</span><span class="p">.</span><span class="n">Events</span><span class="p">.</span><span class="n">OnMessageReceived</span> <span class="p">=</span> <span class="n">context</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="s">&#34;X-Access-Token&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">context</span><span class="p">.</span><span class="n">Token</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">[</span><span class="s">&#34;X-Access-Token&#34;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">};</span>
+</span></span><span class="line"><span class="cl">        <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span></code></pre></div><h3 id="httponly-andsamesite">HttpOnly and SameSite</h3>
 <p>Only the cookies without HttpOnly flag are accessible from client-side script. Therefore, you just making things hard for the other people. Also, you will be  avoided from <code>XSS</code> and <code>XSRF</code> attacks with <code>HttpOnly</code> and <code>SameSite=Strict</code> properties.</p>
 <h2 id="how-should-i-send-the-token">How should I send the token ?</h2>
 <p>Other storages are accessible from the client-side hence you just write an interceptor and write the token into <code>Authorization</code> Header. After that the server-side handles the authentication.</p>
-<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">axios</span><span class="p">.</span><span class="nx">interceptors</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">request</span> <span class="p">=&gt;</span> <span class="p">{</span>
-    <span class="kr">const</span> <span class="nx">token</span> <span class="o">=</span> <span class="nx">sessionStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">auth</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">auth</span><span class="p">)</span>
-      <span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">common</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="nx">token</span><span class="p">;</span>
-
-    <span class="k">return</span> <span class="nx">request</span><span class="p">;</span>
-<span class="p">})</span>
-</code></pre></div><p>As I mentioned above, after cookie with HttpOnly flag you couldn&rsquo;t access the token on client-side. <code>XMLHttpRequest</code> will access those cookies for us. Whenever there is a request the <code>XMLHttpRequest</code> sends all the cookies to the server-side.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">axios</span><span class="p">.</span><span class="nx">interceptors</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">request</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">token</span> <span class="o">=</span> <span class="nx">sessionStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">auth</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">auth</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">common</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="nx">token</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">request</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></div><p>As I mentioned above, after cookie with HttpOnly flag you couldn&rsquo;t access the token on client-side. <code>XMLHttpRequest</code> will access those cookies for us. Whenever there is a request the <code>XMLHttpRequest</code> sends all the cookies to the server-side.</p>
 <blockquote>
 <p>Note: If your Authentication Server is separated  from your website. You can change the SameSite property on cookies. After that <code>XMLHttpRequest</code> or <code>Axios</code> with <code>withCredentials</code> property will do the work.</p>
 </blockquote>
@@ -208,30 +203,30 @@
 </blockquote>
 <p>Once a refresh token is used then it should be disposed. Even if the refresh token is exposed it could be used only once. Then when the user login again the stolen refresh token will be invalid.</p>
 <p>I will give an example about how you can handle the refresh token. You can call this endpoint from your client-side.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[HttpGet(&#34;refresh&#34;)]</span>
-<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">Refresh</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(!(</span><span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">TryGetValue</span><span class="p">(</span><span class="s">&#34;X-Username&#34;</span><span class="p">,</span> <span class="k">out</span> <span class="kt">var</span> <span class="n">userName</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">TryGetValue</span><span class="p">(</span><span class="s">&#34;X-Refresh-Token&#34;</span><span class="p">,</span> <span class="k">out</span> <span class="kt">var</span> <span class="n">refreshToken</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">BadRequest</span><span class="p">();</span>
-
-    <span class="kt">var</span> <span class="n">user</span> <span class="p">=</span> <span class="n">_userManager</span><span class="p">.</span><span class="n">Users</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">UserName</span> <span class="p">==</span> <span class="n">userName</span> <span class="p">&amp;&amp;</span> <span class="n">i</span><span class="p">.</span><span class="n">RefreshToken</span> <span class="p">==</span> <span class="n">refreshToken</span><span class="p">);</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">user</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BadRequest</span><span class="p">();</span>
-
-    <span class="kt">var</span> <span class="n">token</span> <span class="p">=</span> <span class="n">_jwtCreator</span><span class="p">.</span><span class="n">Generate</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">Email</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">Id</span><span class="p">);</span>
-
-    <span class="n">user</span><span class="p">.</span><span class="n">RefreshToken</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
-
-    <span class="k">await</span> <span class="n">_userManager</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
-
-    <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Access-Token&#34;</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
-    <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Username&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">UserName</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
-    <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Refresh-Token&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">RefreshToken</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="k">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
-
-    <span class="k">return</span> <span class="n">Ok</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div><h1 id="conclusion">Conclusion</h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="na">[HttpGet(&#34;refresh&#34;)]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">IActionResult</span><span class="p">&gt;</span> <span class="n">Refresh</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(!(</span><span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">TryGetValue</span><span class="p">(</span><span class="s">&#34;X-Username&#34;</span><span class="p">,</span> <span class="k">out</span> <span class="kt">var</span> <span class="n">userName</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">TryGetValue</span><span class="p">(</span><span class="s">&#34;X-Refresh-Token&#34;</span><span class="p">,</span> <span class="k">out</span> <span class="kt">var</span> <span class="n">refreshToken</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">BadRequest</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">user</span> <span class="p">=</span> <span class="n">_userManager</span><span class="p">.</span><span class="n">Users</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">UserName</span> <span class="p">==</span> <span class="n">userName</span> <span class="p">&amp;&amp;</span> <span class="n">i</span><span class="p">.</span><span class="n">RefreshToken</span> <span class="p">==</span> <span class="n">refreshToken</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">user</span> <span class="p">==</span> <span class="kc">null</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">BadRequest</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">token</span> <span class="p">=</span> <span class="n">_jwtCreator</span><span class="p">.</span><span class="n">Generate</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">Email</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">Id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">user</span><span class="p">.</span><span class="n">RefreshToken</span> <span class="p">=</span> <span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">await</span> <span class="n">_userManager</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Access-Token&#34;</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Username&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">UserName</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Response</span><span class="p">.</span><span class="n">Cookies</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="s">&#34;X-Refresh-Token&#34;</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">RefreshToken</span><span class="p">,</span> <span class="k">new</span> <span class="n">CookieOptions</span><span class="p">()</span> <span class="p">{</span> <span class="n">HttpOnly</span> <span class="p">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">SameSite</span> <span class="p">=</span> <span class="n">SameSiteMode</span><span class="p">.</span><span class="n">Strict</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">Ok</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h1 id="conclusion">Conclusion</h1>
 <p>Tokens are not completely safe, but we can increase the security with couple of measures. So  cookies are a very well storage for the tokens. And, refresh token will prevent the user from re-login. You can reach the source code from <a href="https://github.com/lyzerk/medium/tree/master/AuthJWTRefresh">Github</a>.</p>
 <p>Have a nice day !</p>
                 </section>
@@ -253,6 +248,10 @@
         </li>
     
         <li>
+            <a href="/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/">ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies<aside class="dates">Sep 13 2020</aside></a>
+        </li>
+    
+        <li>
             <a href="/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/">ASP.NET Core: A powerful API Design with OData, EF and SQLKata<aside class="dates">Jun 9 2020</aside></a>
         </li>
     
@@ -262,10 +261,6 @@
     
         <li>
             <a href="/projects/nuget-promptcli/">[NUGET] PromptCLI<aside class="dates">Apr 26 2020</aside></a>
-        </li>
-    
-        <li>
-            <a href="/posts/angular-2-base-component-alternative/">Angular 2&#43;: Base Component Alternative<aside class="dates">Jan 26 2020</aside></a>
         </li>
     
 </ul>
@@ -301,7 +296,7 @@
     
     <p class="small">
     
-       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
+       © Copyright 2024 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
     
     </p>
 </footer>
@@ -321,7 +316,7 @@
 
 
   
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -333,7 +328,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
 
 
 

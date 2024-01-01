@@ -1,326 +1,197 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>/tags/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/aspnet-core-concatenating-json-endpoints/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/aspnetcore/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/httpclient/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/json.net/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/pipeline/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/programming/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/stream/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/</loc>
     <lastmod>2020-09-13T17:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/cookie/</loc>
     <lastmod>2020-09-13T17:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/jwt/</loc>
     <lastmod>2020-09-13T17:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/refresh-token/</loc>
     <lastmod>2020-09-13T17:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/about/</loc>
     <lastmod>2020-06-09T17:45:46+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</loc>
     <lastmod>2020-06-09T17:45:46+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/odata/</loc>
     <lastmod>2020-06-09T17:45:46+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/orm/</loc>
     <lastmod>2020-06-09T17:45:46+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/sql/</loc>
     <lastmod>2020-06-09T17:45:46+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/better-di-service-registration-with-assembly-scan/</loc>
     <lastmod>2020-05-30T19:16:17+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/dependency-injection/</loc>
     <lastmod>2020-05-30T19:16:17+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/dotnet/</loc>
     <lastmod>2020-05-30T19:16:17+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/projects/nuget-promptcli/</loc>
     <lastmod>2020-04-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/cli/</loc>
     <lastmod>2020-04-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/inquirerjs/</loc>
     <lastmod>2020-04-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/nuget/</loc>
     <lastmod>2020-04-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/package/</loc>
     <lastmod>2020-04-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/projects/</loc>
     <lastmod>2020-04-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/angular/</loc>
     <lastmod>2020-01-26T19:56:57+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/angular-2-base-component-alternative/</loc>
     <lastmod>2020-01-26T19:56:57+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/typescript/</loc>
     <lastmod>2020-01-26T19:56:57+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/signalr/</loc>
     <lastmod>2019-12-23T09:51:18+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/signalr-core-heartbeat-and-redis/</loc>
     <lastmod>2019-12-23T09:51:18+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/fabric-js-history-operations-undo-redo-and-useful-tips/</loc>
     <lastmod>2019-08-15T08:25:21+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/fabricjs/</loc>
     <lastmod>2019-08-15T08:25:21+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/javascript/</loc>
     <lastmod>2019-08-15T08:25:21+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/projects/npm-fabric-history/</loc>
     <lastmod>2019-08-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/npm/</loc>
     <lastmod>2019-08-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/docker/</loc>
     <lastmod>2019-07-19T06:32:49+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/hangfire/</loc>
     <lastmod>2019-07-19T06:32:49+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/hangfire-docker-with-multiple-servers/</loc>
     <lastmod>2019-07-19T06:32:49+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/design-pattern-serisi-3-pipeline/</loc>
     <lastmod>2019-07-12T13:41:04+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/design-patterns/</loc>
     <lastmod>2019-07-12T13:41:04+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/engineering/</loc>
     <lastmod>2019-07-12T13:41:04+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/tasarim-kalibi/</loc>
     <lastmod>2019-07-12T13:41:04+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/grandnode/</loc>
     <lastmod>2019-02-20T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/projects/grandnode-payment-iyzico/</loc>
     <lastmod>2019-02-20T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/iyzico/</loc>
     <lastmod>2019-02-20T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/machine-learning/</loc>
     <lastmod>2019-01-30T11:36:33+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/machine-learning/</loc>
     <lastmod>2019-01-30T11:36:33+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</loc>
     <lastmod>2019-01-30T11:36:33+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/mlnet/</loc>
     <lastmod>2019-01-30T11:36:33+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</loc>
     <lastmod>2019-01-14T09:10:19+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/tool/</loc>
     <lastmod>2019-01-14T09:10:19+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/tool/</loc>
     <lastmod>2019-01-14T09:10:19+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/design-pattern-serisi-2-object-pool/</loc>
     <lastmod>2018-09-05T12:01:55+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/design-pattern-serisi-1-singleton/</loc>
     <lastmod>2018-09-03T06:56:15+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/projects/triggr-lightweight-source-code-monitoring/</loc>
     <lastmod>2018-09-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/projects/nuget-ddown/</loc>
     <lastmod>2018-01-13T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/downloader/</loc>
     <lastmod>2018-01-13T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/posts/deployment-of-signalr-with-nginx/</loc>
     <lastmod>2017-12-19T21:52:17+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/nginx/</loc>
     <lastmod>2017-12-19T21:52:17+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/websocket/</loc>
     <lastmod>2017-12-19T21:52:17+00:00</lastmod>
   </url>
-  
 </urlset>

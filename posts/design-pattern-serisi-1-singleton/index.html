@@ -30,7 +30,7 @@
 		<meta name="author" content="Alim Özdemir">
 		<meta name="keywords" content="dotnet,design patterns,tasarim kalibi,singleton">
 		<meta name="description" content="Software engineer">
-		<meta name="generator" content="Hugo 0.72.0" />
+		<meta name="generator" content="Hugo 0.121.1">
 		<title>Design Pattern Serisi 1: Singleton &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
 
@@ -49,8 +49,6 @@
 		
 
 		
-		<link href="/index.xml" rel="alternate" type="application/rss+xml" title="Alim Özdemir" />
-		
 
 		
 	</head>
@@ -59,7 +57,7 @@
        <nav class="main-nav">
 	
 	
-		<a href='/'> <span class="arrow">←</span> Home</a>
+		<a href='/'> Home</a>
 	
 	<a href='/posts'>Archive</a>
 	<a href='/projects'>Projects</a>
@@ -68,8 +66,6 @@
 
 	
 
-	
-	<a class="cta" href="/index.xml">Subscribe</a>
 	
 </nav>
 
@@ -107,78 +103,78 @@
 <p><img src="/img/1__b1Z3NB5cxQL5preMW4nCiw.png" alt="Singleton Pattern Class Diagram">
 Singleton Pattern Class Diagram</p>
 <p>Bu design pattern en basit olanlarından biridir. Varsayalımki projenizde öyle bir sınıfa ihtiyaç var ki sadece sizin tarafınızda oluşturulup tek bir noktadan kullanılmasını istiyorsunuz. Bu durumda bu design pattern devreye giriyor ve küçük nüanslarla bizi büyük dertlerden kurtarabiliyor. Elde etmek istediğimiz yapı sol taraftaki Class Diagram’ında gösterilmektedir. Öncelikle ilk aşamadan başlayarak örnek sınıfımızı oluşturup gösterelim. Daha sonra bu sınıfı adım adım nasıl Singleton Pattern yapacağımızı görelim.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V1</span> <span class="p">:</span> <span class="n">IActionHistory</span>
-<span class="p">{</span>
-    <span class="k">private</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">_history</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-
-    <span class="k">public</span> <span class="n">ActionHistory_V1</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">File</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">))</span>
-        <span class="p">{</span>
-            <span class="kt">var</span> <span class="n">lines</span> <span class="p">=</span> <span class="n">File</span><span class="p">.</span><span class="n">ReadAllLines</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">);</span>
-
-            <span class="n">_history</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;(</span><span class="n">lines</span><span class="p">.</span><span class="n">ToList</span><span class="p">());</span>
-        <span class="p">}</span>
-        <span class="k">else</span>
-            <span class="n">_history</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;();</span>
-    <span class="p">}</span>
-    <span class="k">public</span> <span class="k">void</span> <span class="n">AddAction</span><span class="p">(</span><span class="kt">string</span> <span class="n">action</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">_history</span><span class="p">.</span><span class="n">Push</span><span class="p">(</span><span class="n">action</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">public</span> <span class="k">void</span> <span class="n">Save</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="n">File</span><span class="p">.</span><span class="n">WriteAllLines</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">,</span> <span class="n">_history</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">public</span> <span class="kt">string</span> <span class="n">RetriveLastAction</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="k">return</span> <span class="n">_history</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">RetriveAllActions</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="k">return</span> <span class="n">_history</span><span class="p">.</span><span class="n">ToList</span><span class="p">();</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Uygulamanın ilk versiyonu</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V1</span> <span class="p">:</span> <span class="n">IActionHistory</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">_history</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">ActionHistory_V1</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">File</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">var</span> <span class="n">lines</span> <span class="p">=</span> <span class="n">File</span><span class="p">.</span><span class="n">ReadAllLines</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">_history</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;(</span><span class="n">lines</span><span class="p">.</span><span class="n">ToList</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">            <span class="n">_history</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Stack</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="k">void</span> <span class="n">AddAction</span><span class="p">(</span><span class="kt">string</span> <span class="n">action</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">_history</span><span class="p">.</span><span class="n">Push</span><span class="p">(</span><span class="n">action</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="k">void</span> <span class="n">Save</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">File</span><span class="p">.</span><span class="n">WriteAllLines</span><span class="p">(</span><span class="s">&#34;actions.txt&#34;</span><span class="p">,</span> <span class="n">_history</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">string</span> <span class="n">RetriveLastAction</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">_history</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">RetriveAllActions</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">_history</span><span class="p">.</span><span class="n">ToList</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Uygulamanın ilk versiyonu</p>
 <p>Aksiyon geçmişini hafızada tutan ve gerektiği zaman kaydedebilen bir sınıf oluşturdum. Böyle bir sınıfın bir projede tek bir elden kullanılması doğru bir yaklaşım sağlayacaktır. Yukarıdaki hali ile kullanmak istersek sadece yeni bir instance açmamız bize kullanımını sağlayacaktır. Ancak, bu sınıf birden fazla oluşturulursa her bir instance kendine ait <code>Stack&lt;string&gt;</code> tutacaktır ve ona göre dosyaya kaydetme işlemi yapacaktır ancak biz bunu istemiyoruz.</p>
 <p>Öncelikle, Singleton Pattern’ın en can alıcı kısmı constructor kısmının erişebilirlik düzeyini <code>public</code> den <code>private</code> yapmamız gerekmekte. Bu sayede bu sınıfı kendi içi dışında hiç bir yerde oluşturamayacağız. Oluşturmaya çalıştığımızda da bu hata ile karşılaşacağız.</p>
 <blockquote>
 <p>ActionHistory_V1.ActionHistory_V1()’ is inaccessible due to its protection level</p>
 </blockquote>
 <p>Bu yaklaşım ile bu sınıfı sadece tek bir yerde yani kendi içinde oluşturabileceğiz. Sınıfı bu şekilde düzenleyebiliriz.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V2</span> <span class="p">:</span> <span class="n">IActionHistory</span>
-<span class="p">{</span>
-    <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="n">ActionHistory_V2</span> <span class="n">instance</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ActionHistory_V2</span><span class="p">();</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="n">ActionHistory_V2</span> <span class="n">Instance</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
-
-    <span class="k">private</span> <span class="n">ActionHistory_V2</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="p">....</span>
-    <span class="p">}</span>
-    
-    <span class="p">....</span>
-<span class="p">}</span>
-</code></pre></div><p>Uygulamanın ikinci versiyonu</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V2</span> <span class="p">:</span> <span class="n">IActionHistory</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="k">readonly</span> <span class="n">ActionHistory_V2</span> <span class="n">instance</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ActionHistory_V2</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="n">ActionHistory_V2</span> <span class="n">Instance</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">ActionHistory_V2</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">....</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="p">....</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Uygulamanın ikinci versiyonu</p>
 <p>Bu şekilde projede aşağıdaki şekilde kullanımı sağlanacaktır. Sınıf içerisinde buluna Instance özelliğine erişerek sınıfı elde etmemiz yetecektir. Daha sonrasında sınıfı istediğimiz şekilde kullanmamız için hazır.</p>
 <p>IActionHistory history = ActionHistory_V2.Instance;<br>
 history.AddAction(“delete”);<br>
 var lastAction = history.RetrieveLastAction();</p>
 <p>Ancak burada da bir sorun ile karşılaşıyoruz, o da bu oluşturduğumuz sınıf daha ağır yüklü bi sınıf olabilir o yüzden programın başlangıcında oluşturulması (static olarak tanımladığımız ve oluşturduğumuz için program açıldığında sınıfı oluşturacaktır.), programın açılış süresini etkileyebilir. Bunun için <code>Instance</code> özelliği (property) ilk istenildiğinde oluşturulması akılcı bir çözüm olabilir. Daha bitmedi ! burada aynı anda birden fazla erişim yapılırsa instance birden fazla oluşturulabilir, o yüzden bu kısmın <code>Critical Section</code>olarak dikkate alınması gerekmektedir. Bu yüzden o kod bloğunu <code>lock</code> keywordu ile kilitleyip <code>thread-safe</code> yapabiliriz. Ancak ben sizi bunlarla uğraştırmayacağım.</p>
 <p>.NET de bulunan <code>Lazy&lt;T&gt;</code> yapısını kullanarak, bu objenin hem istenildiği zamanda hem de <code>thread-safe</code> olarak oluşturulmasını sağlayacağız.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V3</span> <span class="p">:</span> <span class="n">IActionHistory</span>
-<span class="p">{</span>
-    <span class="k">private</span> <span class="k">static</span> <span class="n">Lazy</span><span class="p">&lt;</span><span class="n">ActionHistory_V3</span><span class="p">&gt;</span> <span class="n">instance</span> <span class="p">=</span>
-                    <span class="k">new</span> <span class="n">Lazy</span><span class="p">&lt;</span><span class="n">ActionHistory_V3</span><span class="p">&gt;(()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">ActionHistory_V3</span><span class="p">());</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="n">ActionHistory_V3</span> <span class="n">Instance</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="n">instance</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
-
-    <span class="k">private</span> <span class="n">ActionHistory_V3</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="p">....</span>
-    <span class="p">}</span>
-    
-    <span class="p">....</span>
-<span class="p">}</span>
-</code></pre></div><p>Uygulamanın son versiyonu</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">ActionHistory_V3</span> <span class="p">:</span> <span class="n">IActionHistory</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Lazy</span><span class="p">&lt;</span><span class="n">ActionHistory_V3</span><span class="p">&gt;</span> <span class="n">instance</span> <span class="p">=</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">new</span> <span class="n">Lazy</span><span class="p">&lt;</span><span class="n">ActionHistory_V3</span><span class="p">&gt;(()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">ActionHistory_V3</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="n">ActionHistory_V3</span> <span class="n">Instance</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="n">instance</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">ActionHistory_V3</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">....</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="p">....</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Uygulamanın son versiyonu</p>
 <p>Bu çözüm ile birlikte ilk kullanım sırasında, gerektiğinde sınıfı oluşturacak ve programın açılış hızında yavaşlama sağlamayacaktır. Yine de bu yaklaşımda her sınıfa göre değişebilir. Siz kendi sınıfınızın amacına ve özelliklerine göre ayrı bir şekilde tasarım yapmanız gerekebilir. Bu yüzden bu tür yaklaşımlarda kurallara uymak yerine kuralları esneterek kendinize göre bir çözüm üretmeniz gerekecektir.</p>
 <p>Yukarıdaki kodların tamamlanmış haline <a href="https://github.com/lyzerk/medium/tree/master/DesignPatternSingleton">buradan</a> erişebilirsiniz. Bir sonraki yazıda görüşmek üzere.</p>
 <h4 id="kaynaklar">Kaynaklar</h4>
@@ -253,7 +249,7 @@ _In software engineering, the singleton pattern is a software design pattern tha
     
     <p class="small">
     
-       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
+       © Copyright 2024 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
     
     </p>
 </footer>
@@ -273,7 +269,7 @@ _In software engineering, the singleton pattern is a software design pattern tha
 
 
   
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -285,7 +281,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
 
 
 

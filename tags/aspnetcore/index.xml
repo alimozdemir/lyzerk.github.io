@@ -7,66 +7,48 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sat, 06 Mar 2021 10:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="/tags/aspnetcore/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="/tags/aspnetcore/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ASP.NET Core: Concatenating JSON endpoints</title>
       <link>/posts/aspnet-core-concatenating-json-endpoints/</link>
       <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
-      
       <guid>/posts/aspnet-core-concatenating-json-endpoints/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;TLDR; We have redirected an http client response into ASP.NET Core response with the desired structure.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Most commonly faced scenario about API design is you want to serialize a POCO class or a different type of objects to JSON with direct serializer. Then get the serialized value and use it. If you are handling big objects/data/files, then you have to be careful with what you do. Otherwise, it can have devastating impacts on the performance.&lt;/p&gt;</description>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;TLDR; We have redirected an http client response into ASP.NET Core response with the desired structure.&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;p&gt;Most commonly faced scenario about API design is you want to serialize a POCO class or a different type of objects to JSON with direct serializer. Then get the serialized value and use it. If you are handling big objects/data/files, then you have to be careful with what you do. Otherwise, it can have devastating impacts on the performance.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies</title>
       <link>/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/</link>
       <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
-      
       <guid>/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/</guid>
       <description>&lt;p&gt;I would like to talk about the SPA client authentication. Most of the blog implementations are stores the token into localStorage, sessionStorage or in-memory storage (redux/vuex/ngrx). It depends on your needs.  For instance, you don&amp;rsquo;t need high security with your In-House applications. For other cases, you need to increase your security. Today, I will try to explain that with my best.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>ASP.NET Core: A powerful API Design with OData, EF and SQLKata</title>
       <link>/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</link>
       <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
-      
       <guid>/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</guid>
       <description>&lt;p&gt;Rather than reinventing the wheel, you may need a fast and reliable solution in a short time span. In this case, your framework should be able to support all your requirements. ASP.NET Core is doing that very well.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>SignalR Core: Heartbeat and Redis</title>
       <link>/posts/signalr-core-heartbeat-and-redis/</link>
       <pubDate>Mon, 23 Dec 2019 09:51:18 +0000</pubDate>
-      
       <guid>/posts/signalr-core-heartbeat-and-redis/</guid>
       <description>&lt;p&gt;Realtime applications are hard to design in .NET world, we have SignalR Core which gives us a painless interface for developing such applications. SignalR Core is a very new library, here I will be discussing a problem case which came with the latest versions.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Hangfire Docker with Multiple Servers</title>
       <link>/posts/hangfire-docker-with-multiple-servers/</link>
       <pubDate>Fri, 19 Jul 2019 06:32:49 +0000</pubDate>
-      
       <guid>/posts/hangfire-docker-with-multiple-servers/</guid>
       <description>&lt;p&gt;I’ve been using Hangfire for almost 2 years. It’s a wonderful job schedule API with persistent storage. Community have a lot of examples about how to use Hangfire. However, almost all of them use the application (UI) as a hangfire server. Here, I will explain how to use Hangfire with docker and multiple servers. Let’s begin.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Deployment of SignalR with nginx</title>
       <link>/posts/deployment-of-signalr-with-nginx/</link>
       <pubDate>Tue, 19 Dec 2017 21:52:17 +0000</pubDate>
-      
       <guid>/posts/deployment-of-signalr-with-nginx/</guid>
       <description>At the beginning of the semester, I took software engineering course which has a term project. It requires us to do real-time web application. After discussion with team members, we chose ASP.NET Core with SignalR. While I was writing this story, SignalR is on alpha stage (1.0.0-alpha2). Therefore, it has issues. Such as, the documentation is incomplete, some of the features are under development and there is no information about unit testing or functionality testing etc.</description>
     </item>
-    
   </channel>
 </rss>

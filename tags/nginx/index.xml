@@ -7,18 +7,13 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 19 Dec 2017 21:52:17 +0000</lastBuildDate>
-    
-	<atom:link href="/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Deployment of SignalR with nginx</title>
       <link>/posts/deployment-of-signalr-with-nginx/</link>
       <pubDate>Tue, 19 Dec 2017 21:52:17 +0000</pubDate>
-      
       <guid>/posts/deployment-of-signalr-with-nginx/</guid>
       <description>At the beginning of the semester, I took software engineering course which has a term project. It requires us to do real-time web application. After discussion with team members, we chose ASP.NET Core with SignalR. While I was writing this story, SignalR is on alpha stage (1.0.0-alpha2). Therefore, it has issues. Such as, the documentation is incomplete, some of the features are under development and there is no information about unit testing or functionality testing etc.</description>
     </item>
-    
   </channel>
 </rss>

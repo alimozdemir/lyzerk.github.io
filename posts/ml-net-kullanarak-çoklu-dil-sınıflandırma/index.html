@@ -30,7 +30,7 @@
 		<meta name="author" content="Alim Özdemir">
 		<meta name="keywords" content="dotnet,mlnet,naive bayes,classification,sınıflandırma">
 		<meta name="description" content="Software engineer">
-		<meta name="generator" content="Hugo 0.72.0" />
+		<meta name="generator" content="Hugo 0.121.1">
 		<title>ML.NET kullanarak çoklu dil sınıflandırma &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
 
@@ -49,8 +49,6 @@
 		
 
 		
-		<link href="/index.xml" rel="alternate" type="application/rss+xml" title="Alim Özdemir" />
-		
 
 		
 	</head>
@@ -59,7 +57,7 @@
        <nav class="main-nav">
 	
 	
-		<a href='/'> <span class="arrow">←</span> Home</a>
+		<a href='/'> Home</a>
 	
 	<a href='/posts'>Archive</a>
 	<a href='/projects'>Projects</a>
@@ -68,8 +66,6 @@
 
 	
 
-	
-	<a class="cta" href="/index.xml">Subscribe</a>
 	
 </nav>
 
@@ -118,35 +114,35 @@ en Native Americans were also often&hellip;</p>
 <p>Sıra modelimizi hazırlayamaya geldi. Ben bu makaleyi ML.NET 0.5.0 versiyonu ile hazırlamaya başlamıştım ancak 0.6.0 versiyonunda eski API’ların hepsi Legacy namespace’inin altına taşınarak yeni yapıya geçince, ben de bu yeni halinin oturmasını bekledim ve sonunda 0.9.0 versiyonu ile birlikte kodumu yeniden düzenleyerek makaleme devam edebildim.</p>
 <h4 id="pipeline-vemodel">Pipeline ve Model</h4>
 <p>Hazırlamış olduğumuz verileri ML.NET API tarafından tanıtmamız gerekiyor. ML.NET temel olarak bir ana sınıf ile ilerliyor o da <code>MLContext</code> sınıfı, bu sınıf ile birlikte verilerimizi tanımlıyoruz.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="kt">string</span> <span class="n">dataPath</span> <span class="p">=</span> <span class="s">&#34;train.txt&#34;</span><span class="p">,</span> <span class="n">testDataPath</span> <span class="p">=</span> <span class="s">&#34;test.txt&#34;</span><span class="p">;</span>
-<span class="kt">var</span> <span class="n">context</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MLContext</span><span class="p">();</span>
-
-<span class="c1">// Create textloader for our structure
-</span><span class="c1"></span><span class="kt">var</span> <span class="n">textLoader</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Data</span><span class="p">.</span><span class="n">CreateTextReader</span><span class="p">(</span><span class="k">new</span> <span class="n">TextLoader</span><span class="p">.</span><span class="n">Arguments</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">Separator</span> <span class="p">=</span> <span class="s">&#34;\t&#34;</span><span class="p">,</span>
-    <span class="n">Column</span> <span class="p">=</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span>
-                    <span class="k">new</span> <span class="n">TextLoader</span><span class="p">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#34;Label&#34;</span><span class="p">,</span> <span class="n">DataKind</span><span class="p">.</span><span class="n">Text</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span>
-                    <span class="k">new</span> <span class="n">TextLoader</span><span class="p">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#34;Sentence&#34;</span><span class="p">,</span> <span class="n">DataKind</span><span class="p">.</span><span class="n">Text</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
-                <span class="p">}</span>
-<span class="p">});</span>
-
-<span class="kt">var</span> <span class="n">trainDataView</span> <span class="p">=</span> <span class="n">textLoader</span><span class="p">.</span><span class="n">Read</span><span class="p">(</span><span class="n">dataPath</span><span class="p">);</span>
-<span class="kt">var</span> <span class="n">testDataView</span> <span class="p">=</span> <span class="n">textLoader</span><span class="p">.</span><span class="n">Read</span><span class="p">(</span><span class="n">testDataPath</span><span class="p">);</span>
-</code></pre></div><p><code>CreateTextReader</code> methodu ile birlikte girilen verilerin şemasını belirliyoruz. Read methodu ile bu şema dosyalarının yollarını birbirine bağlıyoruz. Ayrıca belirtmek isterim ki, buraya kadar hiç bir dosya yükleme işlemi yapılmadı.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kt">string</span> <span class="n">dataPath</span> <span class="p">=</span> <span class="s">&#34;train.txt&#34;</span><span class="p">,</span> <span class="n">testDataPath</span> <span class="p">=</span> <span class="s">&#34;test.txt&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">context</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MLContext</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create textloader for our structure</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">textLoader</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Data</span><span class="p">.</span><span class="n">CreateTextReader</span><span class="p">(</span><span class="k">new</span> <span class="n">TextLoader</span><span class="p">.</span><span class="n">Arguments</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Separator</span> <span class="p">=</span> <span class="s">&#34;\t&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Column</span> <span class="p">=</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">new</span> <span class="n">TextLoader</span><span class="p">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#34;Label&#34;</span><span class="p">,</span> <span class="n">DataKind</span><span class="p">.</span><span class="n">Text</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">new</span> <span class="n">TextLoader</span><span class="p">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#34;Sentence&#34;</span><span class="p">,</span> <span class="n">DataKind</span><span class="p">.</span><span class="n">Text</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">trainDataView</span> <span class="p">=</span> <span class="n">textLoader</span><span class="p">.</span><span class="n">Read</span><span class="p">(</span><span class="n">dataPath</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">testDataView</span> <span class="p">=</span> <span class="n">textLoader</span><span class="p">.</span><span class="n">Read</span><span class="p">(</span><span class="n">testDataPath</span><span class="p">);</span>
+</span></span></code></pre></div><p><code>CreateTextReader</code> methodu ile birlikte girilen verilerin şemasını belirliyoruz. Read methodu ile bu şema dosyalarının yollarını birbirine bağlıyoruz. Ayrıca belirtmek isterim ki, buraya kadar hiç bir dosya yükleme işlemi yapılmadı.</p>
 <p>Sıra da pipeline dediğimiz, bir dizi işlemi ardı ardına yapmakta olan veri yapısını oluşturacağız. Burada yapının güzelliğinden bahsetmek istiyorum, verilmiş olan verilerin teker teker sonuç kısmına kadar hangi işlemlerden geçeceğini alttaki kod parçacığında belirtiyoruz.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="c1">// Create data process pipeline
-</span><span class="c1">// First we have to change label value into ML.NET KeyType
-</span><span class="c1"></span><span class="kt">var</span> <span class="n">dataProcessPipeline</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Transforms</span><span class="p">.</span><span class="n">Conversion</span><span class="p">.</span><span class="n">MapValueToKey</span><span class="p">(</span><span class="s">&#34;Label&#34;</span><span class="p">)</span>
-    <span class="c1">// Then, we have to normalize text
-</span><span class="c1"></span>    <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Transforms</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">NormalizeText</span><span class="p">(</span><span class="s">&#34;Sentence&#34;</span><span class="p">,</span> <span class="s">&#34;NormalizedSentence&#34;</span><span class="p">))</span>
-    <span class="c1">// Featurize the given text with n-grams
-</span><span class="c1"></span>    <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Transforms</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">FeaturizeText</span><span class="p">(</span><span class="s">&#34;NormalizedSentence&#34;</span><span class="p">,</span> <span class="s">&#34;Features&#34;</span><span class="p">))</span>
-    <span class="c1">// Give the naive bayes algorithm
-</span><span class="c1"></span>    <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">MulticlassClassification</span><span class="p">.</span><span class="n">Trainers</span><span class="p">.</span><span class="n">NaiveBayes</span><span class="p">())</span>
-    <span class="c1">// Convert back the label value to it&#39;s origin
-</span><span class="c1"></span>    <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Transforms</span><span class="p">.</span><span class="n">Conversion</span><span class="p">.</span><span class="n">MapKeyToValue</span><span class="p">(</span><span class="s">&#34;PredictedLabel&#34;</span><span class="p">));</span>
-</code></pre></div><ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="c1">// Create data process pipeline</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// First we have to change label value into ML.NET KeyType</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">dataProcessPipeline</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Transforms</span><span class="p">.</span><span class="n">Conversion</span><span class="p">.</span><span class="n">MapValueToKey</span><span class="p">(</span><span class="s">&#34;Label&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Then, we have to normalize text</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Transforms</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">NormalizeText</span><span class="p">(</span><span class="s">&#34;Sentence&#34;</span><span class="p">,</span> <span class="s">&#34;NormalizedSentence&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Featurize the given text with n-grams</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Transforms</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">FeaturizeText</span><span class="p">(</span><span class="s">&#34;NormalizedSentence&#34;</span><span class="p">,</span> <span class="s">&#34;Features&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Give the naive bayes algorithm</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">MulticlassClassification</span><span class="p">.</span><span class="n">Trainers</span><span class="p">.</span><span class="n">NaiveBayes</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Convert back the label value to it&#39;s origin</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Transforms</span><span class="p">.</span><span class="n">Conversion</span><span class="p">.</span><span class="n">MapKeyToValue</span><span class="p">(</span><span class="s">&#34;PredictedLabel&#34;</span><span class="p">));</span>
+</span></span></code></pre></div><ol>
 <li>Öncelikle, “Label” değişkeni string kabul edilmemekte bu yüzden onu ML.NET içerisinde bulunan KeyType tipine çeviriyoruz. MapValueToKey(“Label”)</li>
 <li>Daha sonra verilen cümlelerdeki özel karakterleri/büyük küçük harfleri kaldırıyoruz (normalize) ediyoruz. NormalizeText(“Sentence”, “NormalizedSentence”). Burada yakalanması gereken nokta, normalize edilmiş veri artık “NormalizedSentence” olarak adlandırılması.</li>
 <li>Burada ML.NET’in bir özelliği olan FeaturizeText methodunu kullanacağız. Verilen text değerini n-gramlara ayırmakta, örneğin 2-gram için “merhaba” kelimesini “me”, “er”, “rh”, “ha”, “ab”, “ba”. Şeklinde ayırıp bir dizi oluşturmaktadır. Burada dikkat edilmesi gereken nokta pipeline üzerinde ML algoritması verilmeden önce “Features” alanının oluşması lazım. O yüzden bu methottan çıkan değere “Features” ismini veriyoruz.</li>
@@ -154,54 +150,54 @@ en Native Americans were also often&hellip;</p>
 <li>En son olarak da yaptığımız tüm bu iş hattından çıkan KeyType tipindeki sonucumuzu “Label” da ki değerlere geri çeviriyoruz.</li>
 </ol>
 <p>Şimdi bu pipeline’a ilk aşamada oluşturmuş olduğumuz IDataView arayüzümüzü verip modelimizi oluşturacağız. (Şimdi dosyaları okumaya başladık !)</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="c1">// Create our model with train data
-</span><span class="c1"></span><span class="kt">var</span> <span class="n">model</span> <span class="p">=</span> <span class="n">dataProcessPipeline</span><span class="p">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">trainDataView</span><span class="p">);</span>
-</code></pre></div><p>Artık bu model sınıfımız ile birlikte tahminlerimizi gerçekleştirebiliriz. Öncelikle tahmin mekanizması için 2 adet sınıfa ihtiyacımız var, biri yukarıda tanıtmış olduğumuz pipeline’a eş değer olan sınıf (Label ve Sentence). Diğeri ise sonuç sınıfımız. Bunları tanımlayarak başlıyoruz.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">SentenceData</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="kt">string</span> <span class="n">Label</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-    <span class="k">public</span> <span class="kt">string</span> <span class="n">Sentence</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">}</span>
-<span class="k">public</span> <span class="k">class</span> <span class="nc">PredictionData</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="kt">string</span> <span class="n">PredictedLabel</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Tek bir cümle ile modelimizi test edelim. Blizzard’ın ünlü kart oyunu Heartstone’un ispanyolca kısmından aldığım bir cümleyi test etmek için kullanacağım.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="c1">// Create single prediction engine
-</span><span class="c1"></span><span class="kt">var</span> <span class="n">predictionEngine</span> <span class="p">=</span> <span class="n">model</span><span class="p">.</span><span class="n">CreatePredictionEngine</span><span class="p">&lt;</span><span class="n">SentenceData</span><span class="p">,</span> <span class="n">PredictionData</span><span class="p">&gt;(</span><span class="n">context</span><span class="p">);</span>
-<span class="c1">// Create the testing data
-</span><span class="c1"></span><span class="kt">var</span> <span class="n">testData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SentenceData</span><span class="p">()</span> <span class="p">{</span> <span class="n">Sentence</span> <span class="p">=</span> <span class="s">&#34;Enfunda tu espada, saca tu baraja y prepárate para disfrutar con Hearthstone, un trepidante juego de cartas de estrategia, fácil de aprender y salvajemente divertido. Inicia una partida gratuita y utiliza tus mejores cartas para lanzar hechizos, invocar criaturas y dar órdenes a los héroes de Warcraft en épicos y estratégicos duelos.&#34;</span> <span class="p">};</span>
-<span class="c1">// Predict the testing data
-</span><span class="c1"></span><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">predictionEngine</span><span class="p">.</span><span class="n">Predict</span><span class="p">(</span><span class="n">testData</span><span class="p">);</span>
-
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Predicted language {0}&#34;</span><span class="p">,</span> <span class="n">result</span><span class="p">.</span><span class="n">PredictedLabel</span><span class="p">);</span>
-</code></pre></div><p>Veee sonuç beklediğimiz gibi çıkıyor !</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="c1">// Create our model with train data</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">model</span> <span class="p">=</span> <span class="n">dataProcessPipeline</span><span class="p">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">trainDataView</span><span class="p">);</span>
+</span></span></code></pre></div><p>Artık bu model sınıfımız ile birlikte tahminlerimizi gerçekleştirebiliriz. Öncelikle tahmin mekanizması için 2 adet sınıfa ihtiyacımız var, biri yukarıda tanıtmış olduğumuz pipeline’a eş değer olan sınıf (Label ve Sentence). Diğeri ise sonuç sınıfımız. Bunları tanımlayarak başlıyoruz.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">SentenceData</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">string</span> <span class="n">Label</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">string</span> <span class="n">Sentence</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">PredictionData</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">string</span> <span class="n">PredictedLabel</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Tek bir cümle ile modelimizi test edelim. Blizzard’ın ünlü kart oyunu Heartstone’un ispanyolca kısmından aldığım bir cümleyi test etmek için kullanacağım.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="c1">// Create single prediction engine</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">predictionEngine</span> <span class="p">=</span> <span class="n">model</span><span class="p">.</span><span class="n">CreatePredictionEngine</span><span class="p">&lt;</span><span class="n">SentenceData</span><span class="p">,</span> <span class="n">PredictionData</span><span class="p">&gt;(</span><span class="n">context</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Create the testing data</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">testData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SentenceData</span><span class="p">()</span> <span class="p">{</span> <span class="n">Sentence</span> <span class="p">=</span> <span class="s">&#34;Enfunda tu espada, saca tu baraja y prepárate para disfrutar con Hearthstone, un trepidante juego de cartas de estrategia, fácil de aprender y salvajemente divertido. Inicia una partida gratuita y utiliza tus mejores cartas para lanzar hechizos, invocar criaturas y dar órdenes a los héroes de Warcraft en épicos y estratégicos duelos.&#34;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Predict the testing data</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">predictionEngine</span><span class="p">.</span><span class="n">Predict</span><span class="p">(</span><span class="n">testData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Predicted language {0}&#34;</span><span class="p">,</span> <span class="n">result</span><span class="p">.</span><span class="n">PredictedLabel</span><span class="p">);</span>
+</span></span></code></pre></div><p>Veee sonuç beklediğimiz gibi çıkıyor !</p>
 <p>Predicted language es</p>
 <h4 id="modelimiz-ne-kadar-başarılı-oldu">Modelimiz ne kadar başarılı oldu ?</h4>
 <p>Sıra modelimizi değerlendirme sürecine geldi. Veri kümesinin hazırlanması kısmında gerçek verinin 1/4&rsquo;ünü bu aşama için ayırmıştık.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="kt">var</span> <span class="n">testPredictions</span> <span class="p">=</span> <span class="n">model</span><span class="p">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">testDataView</span><span class="p">);</span>
-<span class="kt">var</span> <span class="n">metrics</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">MulticlassClassification</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">(</span><span class="n">testPredictions</span><span class="p">);</span>
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">();</span>
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Model quality metrics evaluation&#34;</span><span class="p">);</span>
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;------------------------------------------&#34;</span><span class="p">);</span>
-<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&#34;Accuracy Macro: {metrics.AccuracyMacro}&#34;</span><span class="p">);</span>
-</code></pre></div><p>İlk satırda modelimiz ile test verimizi ilişkilendiriyoruz, ikinci satırda ise bu ilişkilendirdiğimiz modeli değerlendirmeye alıyoruz.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">testPredictions</span> <span class="p">=</span> <span class="n">model</span><span class="p">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">testDataView</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">var</span> <span class="n">metrics</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">MulticlassClassification</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">(</span><span class="n">testPredictions</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;Model quality metrics evaluation&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&#34;------------------------------------------&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&#34;Accuracy Macro: {metrics.AccuracyMacro}&#34;</span><span class="p">);</span>
+</span></span></code></pre></div><p>İlk satırda modelimiz ile test verimizi ilişkilendiriyoruz, ikinci satırda ise bu ilişkilendirdiğimiz modeli değerlendirmeye alıyoruz.</p>
 <p>Model quality metrics evaluation<br>
 — — — — — — — — — — — — — — — — — — — — —<br>
 Accuracy Macro: 0.985645367576614</p>
 <p>Görüldüğü üzere doğruluk değerimiz yüksek çıktı ama bu aklımıza başka bir sorunu getirebilir. Modelimiz <em>overfit</em> mi oldu ? bu yüzden veriyi ve modeli daha detaylı inceleyip ona göre bakmamız gerekecek ama ben daha kolaya kaçacağım ve makaleyi de uzun tutmamak adına twitter üzerinde modelimizi test edeceğim.</p>
 <p>Bunun için Netflix’in Türkiye (<a href="http://www.twitter.com/netflixturkiye">netflixturkiye</a>), Amerika (<a href="http://www.twitter.com/netflix">netflix</a>) ve İspanya (<a href="http://www.twitter.com/NetflixES">NetflixES</a>) twitter hesaplarının son 400 tweetini test edeceğim. Reply tweetlerini exclude ediyorum.</p>
 <p>Not: İçerisinde sadece link, resim ve ya mention içeren tweetleri doğru tahmin edemiyor haliyle.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="n">TweetTest</span><span class="p">.</span><span class="n">UsersTimelineTest</span><span class="p">(</span><span class="n">predictionEngine</span><span class="p">,</span> <span class="s">&#34;NetflixES&#34;</span><span class="p">,</span> <span class="s">&#34;es&#34;</span><span class="p">,</span> <span class="m">400</span><span class="p">);</span>
-<span class="n">TweetTest</span><span class="p">.</span><span class="n">UsersTimelineTest</span><span class="p">(</span><span class="n">predictionEngine</span><span class="p">,</span> <span class="s">&#34;netflix&#34;</span><span class="p">,</span> <span class="s">&#34;en&#34;</span><span class="p">,</span> <span class="m">400</span><span class="p">);</span>
-<span class="n">TweetTest</span><span class="p">.</span><span class="n">UsersTimelineTest</span><span class="p">(</span><span class="n">predictionEngine</span><span class="p">,</span> <span class="s">&#34;netflixturkiye&#34;</span><span class="p">,</span> <span class="s">&#34;tr&#34;</span><span class="p">,</span> <span class="m">400</span><span class="p">);</span>
-</code></pre></div><p>Örnek kodumuz bu şekilde siz isterseniz farklı tweet hesaplarında deneyebilirsiniz. (twittersettings.json dosyası oluşturup API authentication bilgilerini girmeniz gerekmektedir.)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="n">TweetTest</span><span class="p">.</span><span class="n">UsersTimelineTest</span><span class="p">(</span><span class="n">predictionEngine</span><span class="p">,</span> <span class="s">&#34;NetflixES&#34;</span><span class="p">,</span> <span class="s">&#34;es&#34;</span><span class="p">,</span> <span class="m">400</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">TweetTest</span><span class="p">.</span><span class="n">UsersTimelineTest</span><span class="p">(</span><span class="n">predictionEngine</span><span class="p">,</span> <span class="s">&#34;netflix&#34;</span><span class="p">,</span> <span class="s">&#34;en&#34;</span><span class="p">,</span> <span class="m">400</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">TweetTest</span><span class="p">.</span><span class="n">UsersTimelineTest</span><span class="p">(</span><span class="n">predictionEngine</span><span class="p">,</span> <span class="s">&#34;netflixturkiye&#34;</span><span class="p">,</span> <span class="s">&#34;tr&#34;</span><span class="p">,</span> <span class="m">400</span><span class="p">);</span>
+</span></span></code></pre></div><p>Örnek kodumuz bu şekilde siz isterseniz farklı tweet hesaplarında deneyebilirsiniz. (twittersettings.json dosyası oluşturup API authentication bilgilerini girmeniz gerekmektedir.)</p>
 <p>Getting <a href="http://twitter.com/NetflixES" title="Twitter profile for @NetflixES">@NetflixES</a>&rsquo;s recent tweets..<br>
-Last 78 tweets from 80 are in &lsquo;es&rsquo; class<br>
+Last 78 tweets from 80 are in &rsquo;es&rsquo; class<br>
 Getting <a href="http://twitter.com/netflix" title="Twitter profile for @netflix">@netflix</a>&rsquo;s recent tweets..<br>
-Last 116 tweets from 121 are in &lsquo;en&rsquo; class<br>
+Last 116 tweets from 121 are in &rsquo;en&rsquo; class<br>
 Getting <a href="http://twitter.com/netflixturkiye" title="Twitter profile for @netflixturkiye">@netflixturkiye</a>&rsquo;s recent tweets..<br>
-Last 53 tweets from 56 are in &lsquo;tr&rsquo; class</p>
+Last 53 tweets from 56 are in &rsquo;tr&rsquo; class</p>
 <p>Sonuçlar istediğimiz türde çıkıyor, büyük bir oranda doğru tahmin edilmiş. <a href="https://github.com/lyzerk/medium/blob/master/MLNet/MulticlassLanguageClassifier/CSharp/tweet.txt">tweet.txt</a> dosyasından benim makaleyi yazarken ki sonuçlarıma bakabiliriz. Dosyayı incelediğimizde en çok fark İngilizce olanda var, bakıldığında ispanyolca tweetler atıldığını görebiliyoruz. Ayrıca bir kaç kelimeyi de tanıyamadığını gözlemleyebiliyoruz. Bunun için eğitim havuzumuzu genişletmemizde fayda var.</p>
 <h4 id="sonuç">Sonuç</h4>
 <p>Bu yöntem ile metinleri belirli özniteliklere göre sınıflandırabilirsiniz. Son olarak bu makaledeki kaynak koda aşağıdan ulaşabilirsiniz.</p>
@@ -280,7 +276,7 @@ _Learn how to build custom AI solutions and integrate them into your .NET appli
     
     <p class="small">
     
-       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
+       © Copyright 2024 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
     
     </p>
 </footer>
@@ -300,7 +296,7 @@ _Learn how to build custom AI solutions and integrate them into your .NET appli
 
 
   
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -312,7 +308,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
 
 
 

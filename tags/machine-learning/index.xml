@@ -7,19 +7,13 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 30 Jan 2019 11:36:33 +0000</lastBuildDate>
-    
-	<atom:link href="/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ML.NET kullanarak çoklu dil sınıflandırma</title>
       <link>/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</link>
       <pubDate>Wed, 30 Jan 2019 11:36:33 +0000</pubDate>
-      
       <guid>/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</guid>
-      <description>&lt;p&gt;Herkese yeniden merhaba,&lt;/p&gt;
-&lt;p&gt;Bu yazımda Microsoft’un makine öğrenmesi kütüphanesi olan ML.NET’i kullanarak dil sınıflandırma yapacağım. Örnek vermek gerekirse, dökümanları, yazıları vb. şeylerin dillerini tespit edebileceğiz. İşe kendi eğitim ve test verilerimizi oluşturarak başlayacağım.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Herkese yeniden merhaba,&lt;/p&gt;&#xA;&lt;p&gt;Bu yazımda Microsoft’un makine öğrenmesi kütüphanesi olan ML.NET’i kullanarak dil sınıflandırma yapacağım. Örnek vermek gerekirse, dökümanları, yazıları vb. şeylerin dillerini tespit edebileceğiz. İşe kendi eğitim ve test verilerimizi oluşturarak başlayacağım.&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>

@@ -7,315 +7,244 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sat, 06 Mar 2021 10:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>aspnetcore</title>
       <link>/tags/aspnetcore/</link>
       <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
-      
       <guid>/tags/aspnetcore/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>httpclient</title>
       <link>/tags/httpclient/</link>
       <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
-      
       <guid>/tags/httpclient/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>json.net</title>
       <link>/tags/json.net/</link>
       <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
-      
       <guid>/tags/json.net/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>pipeline</title>
       <link>/tags/pipeline/</link>
       <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
-      
       <guid>/tags/pipeline/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>stream</title>
       <link>/tags/stream/</link>
       <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
-      
       <guid>/tags/stream/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>cookie</title>
       <link>/tags/cookie/</link>
       <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
-      
       <guid>/tags/cookie/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>jwt</title>
       <link>/tags/jwt/</link>
       <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
-      
       <guid>/tags/jwt/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>refresh-token</title>
       <link>/tags/refresh-token/</link>
       <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
-      
       <guid>/tags/refresh-token/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>odata</title>
       <link>/tags/odata/</link>
       <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
-      
       <guid>/tags/odata/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>orm</title>
       <link>/tags/orm/</link>
       <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
-      
       <guid>/tags/orm/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>sql</title>
       <link>/tags/sql/</link>
       <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
-      
       <guid>/tags/sql/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>dependency injection</title>
       <link>/tags/dependency-injection/</link>
       <pubDate>Sat, 30 May 2020 19:16:17 +0000</pubDate>
-      
       <guid>/tags/dependency-injection/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>dotnet</title>
       <link>/tags/dotnet/</link>
       <pubDate>Sat, 30 May 2020 19:16:17 +0000</pubDate>
-      
       <guid>/tags/dotnet/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>cli</title>
       <link>/tags/cli/</link>
       <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
-      
       <guid>/tags/cli/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>inquirerjs</title>
       <link>/tags/inquirerjs/</link>
       <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
-      
       <guid>/tags/inquirerjs/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>nuget</title>
       <link>/tags/nuget/</link>
       <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
-      
       <guid>/tags/nuget/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>angular</title>
       <link>/tags/angular/</link>
       <pubDate>Sun, 26 Jan 2020 19:56:57 +0000</pubDate>
-      
       <guid>/tags/angular/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>typescript</title>
       <link>/tags/typescript/</link>
       <pubDate>Sun, 26 Jan 2020 19:56:57 +0000</pubDate>
-      
       <guid>/tags/typescript/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>signalr</title>
       <link>/tags/signalr/</link>
       <pubDate>Mon, 23 Dec 2019 09:51:18 +0000</pubDate>
-      
       <guid>/tags/signalr/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>fabricjs</title>
       <link>/tags/fabricjs/</link>
       <pubDate>Thu, 15 Aug 2019 08:25:21 +0000</pubDate>
-      
       <guid>/tags/fabricjs/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>javascript</title>
       <link>/tags/javascript/</link>
       <pubDate>Thu, 15 Aug 2019 08:25:21 +0000</pubDate>
-      
       <guid>/tags/javascript/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>npm</title>
       <link>/tags/npm/</link>
       <pubDate>Sun, 11 Aug 2019 00:00:00 +0000</pubDate>
-      
       <guid>/tags/npm/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>docker</title>
       <link>/tags/docker/</link>
       <pubDate>Fri, 19 Jul 2019 06:32:49 +0000</pubDate>
-      
       <guid>/tags/docker/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>hangfire</title>
       <link>/tags/hangfire/</link>
       <pubDate>Fri, 19 Jul 2019 06:32:49 +0000</pubDate>
-      
       <guid>/tags/hangfire/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>design patterns</title>
       <link>/tags/design-patterns/</link>
       <pubDate>Fri, 12 Jul 2019 13:41:04 +0000</pubDate>
-      
       <guid>/tags/design-patterns/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>tasarim kalibi</title>
       <link>/tags/tasarim-kalibi/</link>
       <pubDate>Fri, 12 Jul 2019 13:41:04 +0000</pubDate>
-      
       <guid>/tags/tasarim-kalibi/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>grandnode</title>
       <link>/tags/grandnode/</link>
       <pubDate>Wed, 20 Feb 2019 00:00:00 +0000</pubDate>
-      
       <guid>/tags/grandnode/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>iyzico</title>
       <link>/tags/iyzico/</link>
       <pubDate>Wed, 20 Feb 2019 00:00:00 +0000</pubDate>
-      
       <guid>/tags/iyzico/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>machine learning</title>
       <link>/tags/machine-learning/</link>
       <pubDate>Wed, 30 Jan 2019 11:36:33 +0000</pubDate>
-      
       <guid>/tags/machine-learning/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>mlnet</title>
       <link>/tags/mlnet/</link>
       <pubDate>Wed, 30 Jan 2019 11:36:33 +0000</pubDate>
-      
       <guid>/tags/mlnet/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>tool</title>
       <link>/tags/tool/</link>
       <pubDate>Mon, 14 Jan 2019 09:10:19 +0000</pubDate>
-      
       <guid>/tags/tool/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>downloader</title>
       <link>/tags/downloader/</link>
       <pubDate>Sat, 13 Jan 2018 00:00:00 +0000</pubDate>
-      
       <guid>/tags/downloader/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>nginx</title>
       <link>/tags/nginx/</link>
       <pubDate>Tue, 19 Dec 2017 21:52:17 +0000</pubDate>
-      
       <guid>/tags/nginx/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>websocket</title>
       <link>/tags/websocket/</link>
       <pubDate>Tue, 19 Dec 2017 21:52:17 +0000</pubDate>
-      
       <guid>/tags/websocket/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

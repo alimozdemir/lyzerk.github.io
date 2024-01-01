@@ -7,36 +7,27 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sun, 26 Apr 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="/tags/nuget/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="/tags/nuget/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>[NUGET] PromptCLI</title>
       <link>/projects/nuget-promptcli/</link>
       <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
-      
       <guid>/projects/nuget-promptcli/</guid>
-      <description></description>
+      <description> </description>
     </item>
-    
     <item>
       <title>GrandNode Payment Iyzico</title>
       <link>/projects/grandnode-payment-iyzico/</link>
       <pubDate>Wed, 20 Feb 2019 00:00:00 +0000</pubDate>
-      
       <guid>/projects/grandnode-payment-iyzico/</guid>
       <description>You can found details at https://github.com/lyzerk/Grand.Plugin.Payments.Iyzico</description>
     </item>
-    
     <item>
       <title>[NUGET] DDown</title>
       <link>/projects/nuget-ddown/</link>
       <pubDate>Sat, 13 Jan 2018 00:00:00 +0000</pubDate>
-      
       <guid>/projects/nuget-ddown/</guid>
-      <description></description>
+      <description> </description>
     </item>
-    
   </channel>
 </rss>

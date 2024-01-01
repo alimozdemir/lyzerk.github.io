@@ -7,194 +7,146 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sat, 06 Mar 2021 10:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ASP.NET Core: Concatenating JSON endpoints</title>
       <link>/posts/aspnet-core-concatenating-json-endpoints/</link>
       <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
-      
       <guid>/posts/aspnet-core-concatenating-json-endpoints/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;TLDR; We have redirected an http client response into ASP.NET Core response with the desired structure.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Most commonly faced scenario about API design is you want to serialize a POCO class or a different type of objects to JSON with direct serializer. Then get the serialized value and use it. If you are handling big objects/data/files, then you have to be careful with what you do. Otherwise, it can have devastating impacts on the performance.&lt;/p&gt;</description>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;TLDR; We have redirected an http client response into ASP.NET Core response with the desired structure.&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;p&gt;Most commonly faced scenario about API design is you want to serialize a POCO class or a different type of objects to JSON with direct serializer. Then get the serialized value and use it. If you are handling big objects/data/files, then you have to be careful with what you do. Otherwise, it can have devastating impacts on the performance.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies</title>
       <link>/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/</link>
       <pubDate>Sun, 13 Sep 2020 17:00:00 +0000</pubDate>
-      
       <guid>/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/</guid>
       <description>&lt;p&gt;I would like to talk about the SPA client authentication. Most of the blog implementations are stores the token into localStorage, sessionStorage or in-memory storage (redux/vuex/ngrx). It depends on your needs.  For instance, you don&amp;rsquo;t need high security with your In-House applications. For other cases, you need to increase your security. Today, I will try to explain that with my best.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
-      
       <guid>/about/</guid>
       <description>A Computer Engineer graduate from Istanbul Technical University. I started my professional life in 2013. I am currently working at LC Waikiki, I code with C#, Javascript, Typescript and T-SQL, and I am also writing in Python, C ++ and Powershell from time to time. For the last couple of years, I mainly code my projects with Angular 6+, VueJS, Electron, WinForm, DevExpress / DevExtreme. Besides software development, I am interested in Git, AzureDevOps, Docker, nginx, IIS and Rancher.</description>
     </item>
-    
     <item>
       <title>ASP.NET Core: A powerful API Design with OData, EF and SQLKata</title>
       <link>/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</link>
       <pubDate>Tue, 09 Jun 2020 17:45:46 +0000</pubDate>
-      
       <guid>/posts/asp-net-core-a-powerful-api-design-with-odata-ef-and-sqlkata/</guid>
       <description>&lt;p&gt;Rather than reinventing the wheel, you may need a fast and reliable solution in a short time span. In this case, your framework should be able to support all your requirements. ASP.NET Core is doing that very well.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Better DI Service Registration with Assembly Scan</title>
       <link>/posts/better-di-service-registration-with-assembly-scan/</link>
       <pubDate>Sat, 30 May 2020 19:16:17 +0000</pubDate>
-      
       <guid>/posts/better-di-service-registration-with-assembly-scan/</guid>
       <description>&lt;p&gt;Today, I will talk about a better way to register services for Microsoft’s DI container. Let’s have a look at the standard way of service registration.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>[NUGET] PromptCLI</title>
       <link>/projects/nuget-promptcli/</link>
       <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
-      
       <guid>/projects/nuget-promptcli/</guid>
-      <description></description>
+      <description> </description>
     </item>
-    
     <item>
       <title>Angular 2&#43;: Base Component Alternative</title>
       <link>/posts/angular-2-base-component-alternative/</link>
       <pubDate>Sun, 26 Jan 2020 19:56:57 +0000</pubDate>
-      
       <guid>/posts/angular-2-base-component-alternative/</guid>
       <description>&lt;p&gt;Hello again, base functionality is an &lt;em&gt;inevitable&lt;/em&gt; requirement. I’m going to talk about a different base component approach in the Angular. Most of the examples create a base component and inject services to it. Later, you create components from it. However, internet has many examples that could lead you to write bad code.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>SignalR Core: Heartbeat and Redis</title>
       <link>/posts/signalr-core-heartbeat-and-redis/</link>
       <pubDate>Mon, 23 Dec 2019 09:51:18 +0000</pubDate>
-      
       <guid>/posts/signalr-core-heartbeat-and-redis/</guid>
       <description>&lt;p&gt;Realtime applications are hard to design in .NET world, we have SignalR Core which gives us a painless interface for developing such applications. SignalR Core is a very new library, here I will be discussing a problem case which came with the latest versions.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Fabric.js History Operations (undo, redo) and Useful Tips</title>
       <link>/posts/fabric-js-history-operations-undo-redo-and-useful-tips/</link>
       <pubDate>Thu, 15 Aug 2019 08:25:21 +0000</pubDate>
-      
       <guid>/posts/fabric-js-history-operations-undo-redo-and-useful-tips/</guid>
       <description>&lt;p&gt;Hello again, today’s subject is a javascript library called Fabric.js. I have worked with this library a couple of times in the past. However, you have to improvise while using the library features for advanced usages. I needed common features for my projects. Such as, history implementation (redo, undo), clipping the canvas, export image with high resolution and so on. I think this blog post will help other people for required such kind of features.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>[NPM] fabric-history</title>
       <link>/projects/npm-fabric-history/</link>
       <pubDate>Sun, 11 Aug 2019 00:00:00 +0000</pubDate>
-      
       <guid>/projects/npm-fabric-history/</guid>
-      <description></description>
+      <description> </description>
     </item>
-    
     <item>
       <title>Hangfire Docker with Multiple Servers</title>
       <link>/posts/hangfire-docker-with-multiple-servers/</link>
       <pubDate>Fri, 19 Jul 2019 06:32:49 +0000</pubDate>
-      
       <guid>/posts/hangfire-docker-with-multiple-servers/</guid>
       <description>&lt;p&gt;I’ve been using Hangfire for almost 2 years. It’s a wonderful job schedule API with persistent storage. Community have a lot of examples about how to use Hangfire. However, almost all of them use the application (UI) as a hangfire server. Here, I will explain how to use Hangfire with docker and multiple servers. Let’s begin.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Design Pattern Serisi 3: Pipeline</title>
       <link>/posts/design-pattern-serisi-3-pipeline/</link>
       <pubDate>Fri, 12 Jul 2019 13:41:04 +0000</pubDate>
-      
       <guid>/posts/design-pattern-serisi-3-pipeline/</guid>
       <description>&lt;p&gt;Temiz ve yalın kod yazmak yazılım dünyasında olmazsa olmaz şeylerin başında geliyor. Bunu sağlamak için bir çok yol var bizde bunlardan birine değineceğiz.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>GrandNode Payment Iyzico</title>
       <link>/projects/grandnode-payment-iyzico/</link>
       <pubDate>Wed, 20 Feb 2019 00:00:00 +0000</pubDate>
-      
       <guid>/projects/grandnode-payment-iyzico/</guid>
       <description>You can found details at https://github.com/lyzerk/Grand.Plugin.Payments.Iyzico</description>
     </item>
-    
     <item>
       <title>ML.NET kullanarak çoklu dil sınıflandırma</title>
       <link>/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</link>
       <pubDate>Wed, 30 Jan 2019 11:36:33 +0000</pubDate>
-      
       <guid>/posts/ml-net-kullanarak-%C3%A7oklu-dil-s%C4%B1n%C4%B1fland%C4%B1rma/</guid>
-      <description>&lt;p&gt;Herkese yeniden merhaba,&lt;/p&gt;
-&lt;p&gt;Bu yazımda Microsoft’un makine öğrenmesi kütüphanesi olan ML.NET’i kullanarak dil sınıflandırma yapacağım. Örnek vermek gerekirse, dökümanları, yazıları vb. şeylerin dillerini tespit edebileceğiz. İşe kendi eğitim ve test verilerimizi oluşturarak başlayacağım.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Herkese yeniden merhaba,&lt;/p&gt;&#xA;&lt;p&gt;Bu yazımda Microsoft’un makine öğrenmesi kütüphanesi olan ML.NET’i kullanarak dil sınıflandırma yapacağım. Örnek vermek gerekirse, dökümanları, yazıları vb. şeylerin dillerini tespit edebileceğiz. İşe kendi eğitim ve test verilerimizi oluşturarak başlayacağım.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>deget/ddown; a downloader cli/api for dotnet</title>
       <link>/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</link>
       <pubDate>Mon, 14 Jan 2019 09:10:19 +0000</pubDate>
-      
       <guid>/posts/deget-ddown-a-downloader-cli-api-for-dotnet/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;/img/1__uCwhJpWZUQVkkXTvVr__m2A.png&#34; alt=&#34;The blog image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Hello&lt;/strong&gt; everyone, I would like to introduce my first global tool for dotnet core ecosystem. This is one of my side projects that I have completed in my free time. It is a downloader just like ‘wget’ command in unix. It has partitioning, pause and resume features. Also, it is not only a CLI tool, but has a nuget package that you can include to your projects for downloading files.&lt;/p&gt;</description>
+      <description>&lt;p&gt;&lt;img src=&#34;/img/1__uCwhJpWZUQVkkXTvVr__m2A.png&#34; alt=&#34;The blog image&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Hello&lt;/strong&gt; everyone, I would like to introduce my first global tool for dotnet core ecosystem. This is one of my side projects that I have completed in my free time. It is a downloader just like ‘wget’ command in unix. It has partitioning, pause and resume features. Also, it is not only a CLI tool, but has a nuget package that you can include to your projects for downloading files.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Design Pattern Serisi 2: Object Pool</title>
       <link>/posts/design-pattern-serisi-2-object-pool/</link>
       <pubDate>Wed, 05 Sep 2018 12:01:55 +0000</pubDate>
-      
       <guid>/posts/design-pattern-serisi-2-object-pool/</guid>
       <description>&lt;p&gt;Merhaba, bu seferki yazımda bir başka design pattern anlatacağım. Projelerimizde sınıfların oluşturulması bazen pahalıya patlayabiliyor. Bellekten gereksiz yer ayırma (allocation) durumunda performans sorunları ortaya çıkabiliyor. Bu tür performans sorunlarını çözmek için sınıfların yeniden oluşturulmasını engellemek bir çözüm olabilir. Bunun için Object Pool Design Pattern bulunmakta. Ayrıca, .NET Framework SQL Connection üzerinde bu Design Pattern kullanılmaktadır.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Design Pattern Serisi 1: Singleton</title>
       <link>/posts/design-pattern-serisi-1-singleton/</link>
       <pubDate>Mon, 03 Sep 2018 06:56:15 +0000</pubDate>
-      
       <guid>/posts/design-pattern-serisi-1-singleton/</guid>
       <description>&lt;p&gt;Herkese merhaba, öncelikle neden başlıkta ingilizce terimler kullandığıma değinmek istiyorum. Yazılım dünyasında ağırlıklı dilin ingilizce olduğu ve bu tür terimlerin türkçe karşılığı bana çok anlamlı gelmediği için bu şekilde başlık atma gereği duydum. Design Pattern için Tasarım Deseni çevirisi yapılabilir. Belki TDK buna farklı bir isim verirse daha güzel olabilir ancak ben yine de bu tür ünlü terimleri ingilizce bırakarak makale serime devam etmek istiyorum.&lt;/p&gt;</description>
     </item>
-    
     <item>
       <title>Triggr: Lightweight source code monitoring</title>
       <link>/projects/triggr-lightweight-source-code-monitoring/</link>
       <pubDate>Sat, 01 Sep 2018 00:00:00 +0000</pubDate>
-      
       <guid>/projects/triggr-lightweight-source-code-monitoring/</guid>
       <description>Existing tools for monitoring the quality of codebases modified by multiple developers tend to be centralized and inflexible. These tools increase the visibility of quality by producing effective reports and visualizations when a change is made to the codebase and triggering alerts when undesirable situations occur. However, their configuration is invariably both (a) centrally managed in that individual maintainers cannot define local rules to receive customized feedback when a change occurs in a specific part of the code in which they are particularly interested, and (b) coarse-grained in that analyses cannot be turned on and off below the file level.</description>
     </item>
-    
     <item>
       <title>[NUGET] DDown</title>
       <link>/projects/nuget-ddown/</link>
       <pubDate>Sat, 13 Jan 2018 00:00:00 +0000</pubDate>
-      
       <guid>/projects/nuget-ddown/</guid>
-      <description></description>
+      <description> </description>
     </item>
-    
     <item>
       <title>Deployment of SignalR with nginx</title>
       <link>/posts/deployment-of-signalr-with-nginx/</link>
       <pubDate>Tue, 19 Dec 2017 21:52:17 +0000</pubDate>
-      
       <guid>/posts/deployment-of-signalr-with-nginx/</guid>
       <description>At the beginning of the semester, I took software engineering course which has a term project. It requires us to do real-time web application. After discussion with team members, we chose ASP.NET Core with SignalR. While I was writing this story, SignalR is on alpha stage (1.0.0-alpha2). Therefore, it has issues. Such as, the documentation is incomplete, some of the features are under development and there is no information about unit testing or functionality testing etc.</description>
     </item>
-    
   </channel>
 </rss>

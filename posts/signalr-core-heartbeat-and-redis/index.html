@@ -30,7 +30,7 @@
 		<meta name="author" content="Alim Özdemir">
 		<meta name="keywords" content="dotnet,aspnetcore,signalr">
 		<meta name="description" content="Software engineer">
-		<meta name="generator" content="Hugo 0.72.0" />
+		<meta name="generator" content="Hugo 0.121.1">
 		<title>SignalR Core: Heartbeat and Redis &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
 
@@ -49,8 +49,6 @@
 		
 
 		
-		<link href="/index.xml" rel="alternate" type="application/rss+xml" title="Alim Özdemir" />
-		
 
 		
 	</head>
@@ -59,7 +57,7 @@
        <nav class="main-nav">
 	
 	
-		<a href='/'> <span class="arrow">←</span> Home</a>
+		<a href='/'> Home</a>
 	
 	<a href='/posts'>Archive</a>
 	<a href='/projects'>Projects</a>
@@ -68,8 +66,6 @@
 
 	
 
-	
-	<a class="cta" href="/index.xml">Subscribe</a>
 	
 </nav>
 
@@ -103,20 +99,20 @@
                 <section id="post-body">
                     <p>Realtime applications are hard to design in .NET world, we have SignalR Core which gives us a painless interface for developing such applications. SignalR Core is a very new library, here I will be discussing a problem case which came with the latest versions.</p>
 <p>The story come up with a problem that I faced. I have been storing the client information on Redis. My application records client information with <code>OnConnectedAsync</code> method and remove it with <code>OnDisconnectedAsync</code> method. Moreover, we have an object called _clientList for inserting and removing clients, and for updating a clients information.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="n">OnConnectedAsync</span><span class="p">()</span>  
-<span class="p">{</span>  
-    <span class="p">...</span>  
-    <span class="n">_clientList</span><span class="p">.</span><span class="n">CreateUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
-    <span class="p">...</span>  
-<span class="p">}</span>
-
-<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="n">OnDisconnectedAsync</span><span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>  
-<span class="p">{</span>  
-    <span class="p">...</span>  
-    <span class="n">_clientList</span><span class="p">.</span><span class="n">RemoveUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
-    <span class="p">...</span>  
-<span class="p">}</span>
-</code></pre></div><p>This seems good enough for cases without a failure. However, we have to consider the worst case. <code>_clientList</code> must be reliable for the reading the data. Which means, we should be able to see the most up-to-date status information for the online users.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span> <span class="n">OnConnectedAsync</span><span class="p">()</span>  
+</span></span><span class="line"><span class="cl"><span class="p">{</span>  
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>  
+</span></span><span class="line"><span class="cl">    <span class="n">_clientList</span><span class="p">.</span><span class="n">CreateUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>  
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span> <span class="n">OnDisconnectedAsync</span><span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>  
+</span></span><span class="line"><span class="cl"><span class="p">{</span>  
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>  
+</span></span><span class="line"><span class="cl">    <span class="n">_clientList</span><span class="p">.</span><span class="n">RemoveUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>  
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>This seems good enough for cases without a failure. However, we have to consider the worst case. <code>_clientList</code> must be reliable for the reading the data. Which means, we should be able to see the most up-to-date status information for the online users.</p>
 <p><strong>Further note</strong>; the story’s code does not include a Redis implementation.</p>
 <h4 id="scenario-1">Scenario 1</h4>
 <p>Redis has crashed and a new connection has establisted. <code>_clientList.CreateUser</code> method will also crash. And, we can’t see the new client on the Redis.</p>
@@ -126,38 +122,38 @@
 <p>You have to cover these scenarios for better realtime applications. Let’s start.</p>
 <h3 id="solutions">Solutions</h3>
 <p><strong><em>Scenario 1</em></strong> has a basic solution. You can ignore the new connections while Redis is down. Which means, you don’t allow new connections. In order to accomplish this, basically call the <code>Context.Abort()</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span> <span class="n">OnConnectedAsync</span><span class="p">()</span>  
-<span class="p">{</span>
-
-    <span class="k">try</span> <span class="p">{</span>  
-       <span class="p">...</span>  
-       <span class="n">_clientList</span><span class="p">.</span><span class="n">CreateUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
-       <span class="p">...</span>  
-    <span class="p">}</span>  
-    <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>  
-       <span class="c1">// put your logger logic here  
-</span><span class="c1"></span>       <span class="n">Context</span><span class="p">.</span><span class="n">Abort</span><span class="p">();</span>
-
-    <span class="p">}</span>  
-<span class="p">}</span>
-</code></pre></div><p>After that, you can show such a message to user ‘Server is offline’. Problem solved for reliable data. Next step would be to solve the problem in Redis.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span> <span class="n">OnConnectedAsync</span><span class="p">()</span>  
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">       <span class="p">...</span>  
+</span></span><span class="line"><span class="cl">       <span class="n">_clientList</span><span class="p">.</span><span class="n">CreateUser</span><span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">       <span class="p">...</span>  
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>  
+</span></span><span class="line"><span class="cl">    <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">       <span class="c1">// put your logger logic here  </span>
+</span></span><span class="line"><span class="cl">       <span class="n">Context</span><span class="p">.</span><span class="n">Abort</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>  
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>After that, you can show such a message to user ‘Server is offline’. Problem solved for reliable data. Next step would be to solve the problem in Redis.</p>
 <blockquote>
 <p><strong>For advanced usage</strong>, this is not a proper solution. You have to make sure that Redis is always online, or have a backup plan in order to prevent server uptime loss.</p>
 </blockquote>
 <p><strong><em>Scenario 2</em></strong>, the main point of this story. Data stuck on the Redis. And, we can’t rely the data anymore. SignalR sending ping to the clients for testing their connections. It called as Heartbeat.</p>
 <p>Old SignalR was using an extra interface to control existing connections. <code>ITransportHeartbeat</code>, it has collection of existing connections, so we can remove stuck data with iteration. I won’t delve into details here, you can refere the David Flow’s code <a href="https://github.com/DamianEdwards/NDCLondon2013/blob/master/UserPresence/PresenceMonitor.cs">here</a>. However, taking all connections and processing them might cause some performance issues. In order to solve this, SignalR takes a different approach by implementing a new method between its ping/pong cycles on its own Backend.</p>
 <p>ASP.NET Core has Connection Features. And, it includes <code>IConnectionHeartbeatFeature</code> interface. You must use the following code inside of a hub. Let&rsquo;s see the code.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">private</span> <span class="k">void</span> <span class="n">Heartbeat</span><span class="p">()</span>  
-<span class="p">{</span>  
-     <span class="kt">var</span> <span class="n">heartbeat</span> <span class="p">=</span> <span class="n">Context</span><span class="p">.</span><span class="n">Features</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">IConnectionHeartbeatFeature</span><span class="p">&gt;();</span>
-
-     <span class="n">heartbeat</span><span class="p">.</span><span class="n">OnHeartbeat</span><span class="p">(</span><span class="n">state</span> <span class="p">=&gt;</span> <span class="p">{</span>  
-        <span class="p">(</span><span class="n">HttpContext</span> <span class="n">context</span> <span class="p">,</span><span class="kt">string</span> <span class="n">connectionId</span><span class="p">)</span> <span class="p">=</span> <span class="p">((</span><span class="n">HttpContext</span><span class="p">,</span>   <span class="kt">string</span><span class="p">))</span><span class="n">state</span><span class="p">;</span>  
-         <span class="kt">var</span> <span class="n">ClientList</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">RequestServices</span><span class="p">.</span><span class="n">GetService</span><span class="p">&lt;</span><span class="n">IClientList</span><span class="p">&gt;();</span>  
-         <span class="n">ClientList</span><span class="p">.</span><span class="n">LatestPing</span><span class="p">(</span><span class="n">connectionId</span><span class="p">);</span>  
-    <span class="p">},</span> <span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">GetHttpContext</span><span class="p">(),</span> <span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">));</span>  
-<span class="p">}</span>
-</code></pre></div><p>Call the Heartbeat method on <code>OnConnectedAsync</code>. Also, if you want to use a service from DI, You have to request with <code>context.RequestServices.GetService</code> . Then, we just update the client’s LatestPing parameter. This property will be updated on Redis.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">private</span> <span class="k">void</span> <span class="n">Heartbeat</span><span class="p">()</span>  
+</span></span><span class="line"><span class="cl"><span class="p">{</span>  
+</span></span><span class="line"><span class="cl">     <span class="kt">var</span> <span class="n">heartbeat</span> <span class="p">=</span> <span class="n">Context</span><span class="p">.</span><span class="n">Features</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">IConnectionHeartbeatFeature</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">     <span class="n">heartbeat</span><span class="p">.</span><span class="n">OnHeartbeat</span><span class="p">(</span><span class="n">state</span> <span class="p">=&gt;</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="n">HttpContext</span> <span class="n">context</span> <span class="p">,</span><span class="kt">string</span> <span class="n">connectionId</span><span class="p">)</span> <span class="p">=</span> <span class="p">((</span><span class="n">HttpContext</span><span class="p">,</span>   <span class="kt">string</span><span class="p">))</span><span class="n">state</span><span class="p">;</span>  
+</span></span><span class="line"><span class="cl">         <span class="kt">var</span> <span class="n">ClientList</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">RequestServices</span><span class="p">.</span><span class="n">GetService</span><span class="p">&lt;</span><span class="n">IClientList</span><span class="p">&gt;();</span>  
+</span></span><span class="line"><span class="cl">         <span class="n">ClientList</span><span class="p">.</span><span class="n">LatestPing</span><span class="p">(</span><span class="n">connectionId</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">    <span class="p">},</span> <span class="p">(</span><span class="n">Context</span><span class="p">.</span><span class="n">GetHttpContext</span><span class="p">(),</span> <span class="n">Context</span><span class="p">.</span><span class="n">ConnectionId</span><span class="p">));</span>  
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Call the Heartbeat method on <code>OnConnectedAsync</code>. Also, if you want to use a service from DI, You have to request with <code>context.RequestServices.GetService</code> . Then, we just update the client’s LatestPing parameter. This property will be updated on Redis.</p>
 <p>To verify, the results check the <a href="http://localhost:5000/api/clients">http://localhost:5000/api/clients</a></p>
 <p><img src="/img/1__2oXntW9P1OF0zLUAsHe3Mw.png" alt="Result">
 Result</p>
@@ -232,7 +228,7 @@ Result</p>
     
     <p class="small">
     
-       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
+       © Copyright 2024 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
     
     </p>
 </footer>
@@ -252,7 +248,7 @@ Result</p>
 
 
   
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -264,7 +260,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
 
 
 

@@ -30,7 +30,7 @@
 		<meta name="author" content="Alim Özdemir">
 		<meta name="keywords" content="dotnet,design patterns,tasarim kalibi,pipeline">
 		<meta name="description" content="Software engineer">
-		<meta name="generator" content="Hugo 0.72.0" />
+		<meta name="generator" content="Hugo 0.121.1">
 		<title>Design Pattern Serisi 3: Pipeline &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
 
@@ -49,8 +49,6 @@
 		
 
 		
-		<link href="/index.xml" rel="alternate" type="application/rss+xml" title="Alim Özdemir" />
-		
 
 		
 	</head>
@@ -59,7 +57,7 @@
        <nav class="main-nav">
 	
 	
-		<a href='/'> <span class="arrow">←</span> Home</a>
+		<a href='/'> Home</a>
 	
 	<a href='/posts'>Archive</a>
 	<a href='/projects'>Projects</a>
@@ -68,8 +66,6 @@
 
 	
 
-	
-	<a class="cta" href="/index.xml">Subscribe</a>
 	
 </nav>
 
@@ -104,48 +100,48 @@
                     <p>Temiz ve yalın kod yazmak yazılım dünyasında olmazsa olmaz şeylerin başında geliyor. Bunu sağlamak için bir çok yol var bizde bunlardan birine değineceğiz.</p>
 <p>Bu yaklaşım birden fazla yerde kullanılıyor, örneğin ASP.NET Core üzerinde http istekleri bir pipeline (veri hattı) ile işlenmekte ve bu işlenme sırasında aralara iyi bir şekilde müdahale edilebilmektedir. Ayrıca, ML.NET’de bu yaklaşım üzerine kurulmuştur. Benim şahsi kanaatim, bu yapıyı birden fazla şekilde hayata geçirebilirsiniz, o yüzden doğaçlama yapmaktan çekinmeyin. Fazla sözü uzatmadan örneğimize geçelim.</p>
 <p>Benim yapacağım örnekte yapı 3 farklı bölümden oluşmaktadır. Bunlardan ilki işlerin türeyeceği interface, işlerin daha kolay anlaşılmasını ve unit test yazarken bize kolaylık sağlayacak <code>IPipeObject</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">interface</span> <span class="n">IPipeObject</span>
-<span class="p">{</span>
-  <span class="n">IPipeObject</span> <span class="n">NextPipe</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-  <span class="k">void</span> <span class="n">Next</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">);</span>
-  <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>İçerisinde bulunan şeylere gelirsek, yapılacak işi <code>Invoke</code> methodu yapacak.<code>Next</code> ve <code>NextPipe</code> ise bir sonraki işe geçmemizde yardımcı olacak. Burada dikkat edilmesi gereken nokta <code>Next</code> ve <code>Invoke</code> methodlarının bir state objesi almış olduğu, bu obje sayesinde iki iş (pipe) arasında veri taşınmaktadır.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">interface</span> <span class="nc">IPipeObject</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">IPipeObject</span> <span class="n">NextPipe</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">void</span> <span class="n">Next</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>İçerisinde bulunan şeylere gelirsek, yapılacak işi <code>Invoke</code> methodu yapacak.<code>Next</code> ve <code>NextPipe</code> ise bir sonraki işe geçmemizde yardımcı olacak. Burada dikkat edilmesi gereken nokta <code>Next</code> ve <code>Invoke</code> methodlarının bir state objesi almış olduğu, bu obje sayesinde iki iş (pipe) arasında veri taşınmaktadır.</p>
 <p>Bir diğeri ise, bu interface sınıfının bir parçasının implement’e edilmiş halinin bulunduğu <code>PipeObject</code> .</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">PipeObject</span> <span class="p">:</span> <span class="n">IPipeObject</span>
-<span class="p">{</span>
-  <span class="k">public</span> <span class="n">IPipeObject</span> <span class="n">NextPipe</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-
-  <span class="k">public</span> <span class="k">void</span> <span class="n">Next</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="n">NextPipe</span><span class="p">?.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">state</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">public</span> <span class="k">abstract</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>Bu sınıfta ise, bir sonra ki işi çağırmamızı sağlayacak olan <code>Next</code> methodunun uygulanışını yapıyoruz. Yukarıda dediğim gibi bu işi birden fazla şekilde yapabiliriz, örneğin <code>Next</code> methodunu kaldırıp, <code>NextPipe</code> üzerindende gidilip bir sonraki iş çağrılabilir.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">abstract</span> <span class="k">class</span> <span class="nc">PipeObject</span> <span class="p">:</span> <span class="n">IPipeObject</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">IPipeObject</span> <span class="n">NextPipe</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="k">void</span> <span class="n">Next</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">.</span><span class="n">NextPipe</span><span class="p">?.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">state</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kd">abstract</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Bu sınıfta ise, bir sonra ki işi çağırmamızı sağlayacak olan <code>Next</code> methodunun uygulanışını yapıyoruz. Yukarıda dediğim gibi bu işi birden fazla şekilde yapabiliriz, örneğin <code>Next</code> methodunu kaldırıp, <code>NextPipe</code> üzerindende gidilip bir sonraki iş çağrılabilir.</p>
 <p>Son ana sınıfımız ise, iş hattımızı başlatacak ve gerekli bilgileri barındıracak sınıf <code>Pipeline</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">Pipeline</span>
-<span class="p">{</span>
-    <span class="k">private</span> <span class="n">IPipeObject</span> <span class="n">_pipeStart</span><span class="p">,</span> <span class="n">_pipeEnd</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="n">Pipeline</span> <span class="n">Append</span><span class="p">(</span><span class="n">IPipeObject</span> <span class="n">pipe</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">_pipeStart</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
-            <span class="n">_pipeStart</span> <span class="p">=</span> <span class="n">pipe</span><span class="p">;</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="n">_pipeEnd</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-            <span class="n">_pipeEnd</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">pipe</span><span class="p">;</span>
-
-        <span class="n">_pipeEnd</span> <span class="p">=</span> <span class="n">pipe</span><span class="p">;</span>
-        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">public</span> <span class="k">void</span> <span class="n">Start</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span> <span class="p">=</span> <span class="k">null</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">_pipeStart</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">state</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Sınıf veri hattının başlangıç ve bitiş noktasını tutmakta, bunlar bizim bir sonraki işi, eklenen işe bağlarken yardımcı olacak. <code>Append</code> method’u eğer veri hattında hiç bir iş yoksa, veri hattının başlangıcını belirlemekte. Ve eğer, ikinci iş ve sonraki işler ekleniyorsa, kuyruk şeklinde işleri birbirine bağlamaktadır. <code>_pipeEnd</code> değişkeni sürekli en son eklenen işi işaret etmektedir. Bu şekilde eklenen tüm işler birbirine bağlanmaktadır. <code>Start</code> methodu ile birlikte de iş hattımızı bir değer ile başlatabilmekteyiz.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">Pipeline</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">IPipeObject</span> <span class="n">_pipeStart</span><span class="p">,</span> <span class="n">_pipeEnd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Pipeline</span> <span class="n">Append</span><span class="p">(</span><span class="n">IPipeObject</span> <span class="n">pipe</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">_pipeStart</span> <span class="p">==</span> <span class="kc">null</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">_pipeStart</span> <span class="p">=</span> <span class="n">pipe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">_pipeEnd</span> <span class="p">!=</span> <span class="kc">null</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">_pipeEnd</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">pipe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">_pipeEnd</span> <span class="p">=</span> <span class="n">pipe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="k">void</span> <span class="n">Start</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span> <span class="p">=</span> <span class="kc">null</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">_pipeStart</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">state</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Sınıf veri hattının başlangıç ve bitiş noktasını tutmakta, bunlar bizim bir sonraki işi, eklenen işe bağlarken yardımcı olacak. <code>Append</code> method’u eğer veri hattında hiç bir iş yoksa, veri hattının başlangıcını belirlemekte. Ve eğer, ikinci iş ve sonraki işler ekleniyorsa, kuyruk şeklinde işleri birbirine bağlamaktadır. <code>_pipeEnd</code> değişkeni sürekli en son eklenen işi işaret etmektedir. Bu şekilde eklenen tüm işler birbirine bağlanmaktadır. <code>Start</code> methodu ile birlikte de iş hattımızı bir değer ile başlatabilmekteyiz.</p>
 <p>Ana hatlar tamamlandıysa, şimdi örnek bir veri hattı oluşturabiliriz. Örneğimiz girilen cümleyi belirli işlemlerden geçirerek ekrana yazdırmak olacak. Bunun için aşağıdaki grafiği inceleyebiliriz.</p>
 <p><img src="/img/1____rmi8y7yxQSL8dVXnVA__4A.png" alt="Örnek Pipeline 1">
 Örnek Pipeline 1</p>
@@ -156,168 +152,168 @@
 <li>Boşluklardan arındır <code>IgnoreWhiteSpaces</code></li>
 <li>Ekrana yazdır <code>Outputer</code></li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">class</span> <span class="nc">Lower</span> <span class="p">:</span> <span class="n">PipeObject</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="kt">var</span> <span class="n">str</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
-
-        <span class="k">this</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">ToLower</span><span class="p">());</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">Split</span> <span class="p">:</span> <span class="n">PipeObject</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="kt">var</span> <span class="n">str</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
-
-        <span class="kt">var</span> <span class="n">split</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">Split</span><span class="p">();</span>
-
-        <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">item</span> <span class="k">in</span> <span class="n">split</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="k">this</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">IgnoreWhiteSpaces</span> <span class="p">:</span> <span class="n">PipeObject</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="kt">var</span> <span class="n">str</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
-
-        <span class="k">if</span> <span class="p">(!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">str</span><span class="p">))</span>
-            <span class="k">this</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">ConsoleOutput</span> <span class="p">:</span> <span class="n">PipeObject</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="kt">var</span> <span class="n">item</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
-
-        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Lafı uzatmamak için bu işlerin hepsini tek gist’te göstereceğim,<code>Invoke</code> methodlarına bakarsak her yapılan iş çok basit ve temiz bir şekilde yapıldığını görebiliriz. Ayrıca,<code>Next</code> methodu ile birlikte veriyi bir sonraki veri hattına gönderiyoruz. Şimdi kodu çalıştırıp sonuçları görebiliriz.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">class</span> <span class="nc">Program</span>
-<span class="p">{</span>
-    <span class="k">static</span> <span class="k">void</span> <span class="n">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">Pipeline</span> <span class="n">pipeline</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Pipeline</span><span class="p">();</span>
-
-        <span class="n">pipeline</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">new</span> <span class="n">Lower</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">new</span> <span class="n">Split</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">new</span> <span class="n">IgnoreWhiteSpaces</span><span class="p">())</span>
-            <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">new</span> <span class="n">ConsoleOutput</span><span class="p">());</span>
-
-        <span class="kt">string</span> <span class="n">line</span> <span class="p">=</span> <span class="s">&#34;   Lorem    ipsum dolor sit amet, consectetur adipiscing   elit.  &#34;</span><span class="p">;</span>
-
-        <span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Sonuç</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Lower</span> <span class="p">:</span> <span class="n">PipeObject</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">override</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">var</span> <span class="n">str</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">ToLower</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Split</span> <span class="p">:</span> <span class="n">PipeObject</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">override</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">var</span> <span class="n">str</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kt">var</span> <span class="n">split</span> <span class="p">=</span> <span class="n">str</span><span class="p">.</span><span class="n">Split</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">item</span> <span class="k">in</span> <span class="n">split</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">IgnoreWhiteSpaces</span> <span class="p">:</span> <span class="n">PipeObject</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">override</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">var</span> <span class="n">str</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">str</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">ConsoleOutput</span> <span class="p">:</span> <span class="n">PipeObject</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">override</span> <span class="k">void</span> <span class="n">Invoke</span><span class="p">(</span><span class="kt">object</span> <span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">var</span> <span class="n">item</span> <span class="p">=</span> <span class="p">(</span><span class="kt">string</span><span class="p">)</span><span class="n">state</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Lafı uzatmamak için bu işlerin hepsini tek gist’te göstereceğim,<code>Invoke</code> methodlarına bakarsak her yapılan iş çok basit ve temiz bir şekilde yapıldığını görebiliriz. Ayrıca,<code>Next</code> methodu ile birlikte veriyi bir sonraki veri hattına gönderiyoruz. Şimdi kodu çalıştırıp sonuçları görebiliriz.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Program</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">static</span> <span class="k">void</span> <span class="n">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Pipeline</span> <span class="n">pipeline</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Pipeline</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">pipeline</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">new</span> <span class="n">Lower</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">new</span> <span class="n">Split</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">new</span> <span class="n">IgnoreWhiteSpaces</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="k">new</span> <span class="n">ConsoleOutput</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kt">string</span> <span class="n">line</span> <span class="p">=</span> <span class="s">&#34;   Lorem    ipsum dolor sit amet, consectetur adipiscing   elit.  &#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">pipeline</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Sonuç</p>
 <p><img src="/img/1__eePVFdv5U5OL9DB769FLWg.png" alt=""></p>
 <h4 id="tests">Tests</h4>
 <p>Bu kadar gelmişken unit test yazmadan olmaz. Hemen xUnit üzerinden tüm sınıflarımız için testlerimizi yazıyoruz. Burada sadece önemli testleri göstereceğim.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[Fact]</span>
-<span class="k">public</span> <span class="k">void</span> <span class="n">AppendPipe_PointNextPipe</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="c1">// This test verifies that pipeobjects are connected with each other
-</span><span class="c1"></span>    <span class="kt">var</span> <span class="n">mock1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
-    <span class="kt">var</span> <span class="n">mock2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
-    <span class="kt">var</span> <span class="n">mock3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
-    <span class="kt">var</span> <span class="n">mock4</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
-    <span class="kt">var</span> <span class="n">pipeline</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Pipeline</span><span class="p">();</span>
-
-    <span class="n">pipeline</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">mock1</span><span class="p">.</span><span class="n">Object</span><span class="p">)</span>
-        <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">mock2</span><span class="p">.</span><span class="n">Object</span><span class="p">)</span>
-        <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">mock3</span><span class="p">.</span><span class="n">Object</span><span class="p">)</span>
-        <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">mock4</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
-
-    <span class="n">mock1</span><span class="p">.</span><span class="n">VerifySet</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock2</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
-    <span class="n">mock2</span><span class="p">.</span><span class="n">VerifySet</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock3</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
-    <span class="n">mock3</span><span class="p">.</span><span class="n">VerifySet</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock4</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
-
-    <span class="n">Assert</span><span class="p">.</span><span class="n">Equal</span><span class="p">(</span><span class="n">mock1</span><span class="p">.</span><span class="n">Object</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">.</span><span class="n">Head</span><span class="p">);</span>
-    <span class="n">Assert</span><span class="p">.</span><span class="n">Equal</span><span class="p">(</span><span class="n">mock4</span><span class="p">.</span><span class="n">Object</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">.</span><span class="n">Tail</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>Pipeline sınıfındaki <code>Append</code> methodu doğru çalışmasını kontrol etmemiz için yukarıdaki test’i yazıyoruz. Önceden de belirttiğim gibi interface bize unit test yazarken yardımcı olacak demiştim, 4 adet <code>IPipeObject</code> mock’luyoruz. Ve her birini <code>Append</code> ederek <code>NextPipe</code> değişkenlerinin birbirlerine ardışık olarak atanıp atanmadıklarını kontrol ediyorum. Buna ilaveten veri hattının başlangıç ve bitiş noktasını da kontrol ediyorum.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="na">[Fact]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">void</span> <span class="n">AppendPipe_PointNextPipe</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// This test verifies that pipeobjects are connected with each other</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">mock1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">mock2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">mock3</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">mock4</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">pipeline</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Pipeline</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">pipeline</span><span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">mock1</span><span class="p">.</span><span class="n">Object</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">mock2</span><span class="p">.</span><span class="n">Object</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">mock3</span><span class="p">.</span><span class="n">Object</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">Append</span><span class="p">(</span><span class="n">mock4</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">mock1</span><span class="p">.</span><span class="n">VerifySet</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock2</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mock2</span><span class="p">.</span><span class="n">VerifySet</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock3</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mock3</span><span class="p">.</span><span class="n">VerifySet</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock4</span><span class="p">.</span><span class="n">Object</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">Assert</span><span class="p">.</span><span class="n">Equal</span><span class="p">(</span><span class="n">mock1</span><span class="p">.</span><span class="n">Object</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">.</span><span class="n">Head</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Assert</span><span class="p">.</span><span class="n">Equal</span><span class="p">(</span><span class="n">mock4</span><span class="p">.</span><span class="n">Object</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">.</span><span class="n">Tail</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Pipeline sınıfındaki <code>Append</code> methodu doğru çalışmasını kontrol etmemiz için yukarıdaki test’i yazıyoruz. Önceden de belirttiğim gibi interface bize unit test yazarken yardımcı olacak demiştim, 4 adet <code>IPipeObject</code> mock’luyoruz. Ve her birini <code>Append</code> ederek <code>NextPipe</code> değişkenlerinin birbirlerine ardışık olarak atanıp atanmadıklarını kontrol ediyorum. Buna ilaveten veri hattının başlangıç ve bitiş noktasını da kontrol ediyorum.</p>
 <p>Asıl amacımız olan veri hattındaki işlerin testlerini test etmemiz mühim. Veri hattına giren ve çıkan veriyi kolayca kontrol edebilmekteyiz.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">
-</span><span class="na">[Fact]</span>
-<span class="k">public</span> <span class="k">void</span> <span class="n">LowerPipe_InputOutput_VerifyNextInvoke</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
-    <span class="kt">var</span> <span class="n">lower</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Lower</span><span class="p">();</span>
-    <span class="c1">// Set a mock object to the next pipe
-</span><span class="c1"></span>    <span class="n">lower</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">;</span>
-
-    <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="s">&#34;HelLo&#34;</span><span class="p">;</span>
-    <span class="c1">// Do the work
-</span><span class="c1"></span>    <span class="n">lower</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
-
-    <span class="c1">//Output
-</span><span class="c1"></span>    <span class="kt">string</span> <span class="n">expected</span> <span class="p">=</span> <span class="n">input</span><span class="p">.</span><span class="n">ToLower</span><span class="p">();</span>
-    
-    <span class="c1">// Check if the next pipe&#39;s invoke method is called with right parameter
-</span><span class="c1"></span>    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">));</span>
-
-    <span class="n">mock</span><span class="p">.</span><span class="n">VerifyNoOtherCalls</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div><p>Yukarıda tanımlamış olduğumuz <code>PipeObject</code> lerin her birinin testini aşağıda görebilirsiniz.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[Fact]</span>
-<span class="k">public</span> <span class="k">void</span> <span class="n">SplitPipe_InputOutput_VerifyNextInvoke</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
-    <span class="kt">var</span> <span class="n">split</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Split</span><span class="p">();</span>
-
-    <span class="n">split</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">;</span>
-    <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="s">&#34;a sentence with split requires&#34;</span><span class="p">;</span>
-    <span class="n">split</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
-
-    <span class="kt">var</span> <span class="n">expected</span> <span class="p">=</span> <span class="n">input</span><span class="p">.</span><span class="n">Split</span><span class="p">();</span>
-    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">0</span><span class="p">]));</span>
-    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">1</span><span class="p">]));</span>
-    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">2</span><span class="p">]));</span>
-    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">3</span><span class="p">]));</span>
-    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">4</span><span class="p">]));</span>
-
-    <span class="n">mock</span><span class="p">.</span><span class="n">VerifyNoOtherCalls</span><span class="p">();</span>
-<span class="p">}</span>
-<span class="na">
-</span><span class="na">[Fact]</span>
-<span class="k">public</span> <span class="k">void</span> <span class="n">IgnoreWhiteSpacesPipe_Input_VerifyNextInvoke</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
-    <span class="kt">var</span> <span class="n">whiteSpaces</span> <span class="p">=</span> <span class="k">new</span> <span class="n">IgnoreWhiteSpaces</span><span class="p">();</span>
-
-    <span class="n">whiteSpaces</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">;</span>
-    <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="s">&#34;1&#34;</span><span class="p">;</span>
-    <span class="n">whiteSpaces</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
-
-    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">));</span>
-
-    <span class="n">mock</span><span class="p">.</span><span class="n">VerifyNoOtherCalls</span><span class="p">();</span>
-<span class="p">}</span>
-<span class="na">
-</span><span class="na">[Fact]</span>
-<span class="k">public</span> <span class="k">void</span> <span class="n">IgnoreWhiteSpacesPipe_Input_VerifyNoNextInvoke</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
-    <span class="kt">var</span> <span class="n">whiteSpaces</span> <span class="p">=</span> <span class="k">new</span> <span class="n">IgnoreWhiteSpaces</span><span class="p">();</span>
-
-    <span class="n">whiteSpaces</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">;</span>
-    <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="s">&#34;   &#34;</span><span class="p">;</span>
-    <span class="n">whiteSpaces</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
-
-    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">Times</span><span class="p">.</span><span class="n">Never</span><span class="p">);</span>
-
-    <span class="n">mock</span><span class="p">.</span><span class="n">VerifyNoOtherCalls</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div><h4 id="sonuç">Sonuç</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">[Fact]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">void</span> <span class="n">LowerPipe_InputOutput_VerifyNextInvoke</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">lower</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Lower</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Set a mock object to the next pipe</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lower</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="s">&#34;HelLo&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Do the work</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lower</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//Output</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">string</span> <span class="n">expected</span> <span class="p">=</span> <span class="n">input</span><span class="p">.</span><span class="n">ToLower</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// Check if the next pipe&#39;s invoke method is called with right parameter</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">VerifyNoOtherCalls</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Yukarıda tanımlamış olduğumuz <code>PipeObject</code> lerin her birinin testini aşağıda görebilirsiniz.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="na">[Fact]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">void</span> <span class="n">SplitPipe_InputOutput_VerifyNextInvoke</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">split</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Split</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">split</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="s">&#34;a sentence with split requires&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">split</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">expected</span> <span class="p">=</span> <span class="n">input</span><span class="p">.</span><span class="n">Split</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">0</span><span class="p">]));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">1</span><span class="p">]));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">2</span><span class="p">]));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">3</span><span class="p">]));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">expected</span><span class="p">[</span><span class="m">4</span><span class="p">]));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">VerifyNoOtherCalls</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">[Fact]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">void</span> <span class="n">IgnoreWhiteSpacesPipe_Input_VerifyNextInvoke</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">whiteSpaces</span> <span class="p">=</span> <span class="k">new</span> <span class="n">IgnoreWhiteSpaces</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">whiteSpaces</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="s">&#34;1&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">whiteSpaces</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">VerifyNoOtherCalls</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">[Fact]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">void</span> <span class="n">IgnoreWhiteSpacesPipe_Input_VerifyNoNextInvoke</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">mock</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Mock</span><span class="p">&lt;</span><span class="n">IPipeObject</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">whiteSpaces</span> <span class="p">=</span> <span class="k">new</span> <span class="n">IgnoreWhiteSpaces</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">whiteSpaces</span><span class="p">.</span><span class="n">NextPipe</span> <span class="p">=</span> <span class="n">mock</span><span class="p">.</span><span class="n">Object</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="s">&#34;   &#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">whiteSpaces</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">Times</span><span class="p">.</span><span class="n">Never</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">mock</span><span class="p">.</span><span class="n">VerifyNoOtherCalls</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="sonuç">Sonuç</h4>
 <p>Bu yapı ile birlikte daha temiz ve düzenli kod yazabilmenin bir yolunu göstermiş olduk. Yukarıdaki kodların proje haline aşağıdan erişebilirsiniz.</p>
 <p><a href="https://github.com/lyzerk/medium/tree/master/DesignPatternPipeline" title="https://github.com/lyzerk/medium/tree/master/DesignPatternPipeline"><strong>lyzerk/medium</strong><br>
 _Medium&rsquo;s story work repository. Contribute to lyzerk/medium development by creating an account on GitHub._github.com</a><a href="https://github.com/lyzerk/medium/tree/master/DesignPatternPipeline"></a></p>
@@ -393,7 +389,7 @@ _ML.NET gives you the ability to add machine learning to .NET applications. Wit
     
     <p class="small">
     
-       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
+       © Copyright 2024 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
     
     </p>
 </footer>
@@ -413,7 +409,7 @@ _ML.NET gives you the ability to add machine learning to .NET applications. Wit
 
 
   
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -425,7 +421,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
 
 
 

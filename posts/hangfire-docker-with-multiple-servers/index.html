@@ -30,7 +30,7 @@
 		<meta name="author" content="Alim Özdemir">
 		<meta name="keywords" content="dotnet,hangfire,docker,aspnetcore,worker">
 		<meta name="description" content="Software engineer">
-		<meta name="generator" content="Hugo 0.72.0" />
+		<meta name="generator" content="Hugo 0.121.1">
 		<title>Hangfire Docker with Multiple Servers &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
 
@@ -49,8 +49,6 @@
 		
 
 		
-		<link href="/index.xml" rel="alternate" type="application/rss+xml" title="Alim Özdemir" />
-		
 
 		
 	</head>
@@ -59,7 +57,7 @@
        <nav class="main-nav">
 	
 	
-		<a href='/'> <span class="arrow">←</span> Home</a>
+		<a href='/'> Home</a>
 	
 	<a href='/posts'>Archive</a>
 	<a href='/projects'>Projects</a>
@@ -68,8 +66,6 @@
 
 	
 
-	
-	<a class="cta" href="/index.xml">Subscribe</a>
 	
 </nav>
 
@@ -82,8 +78,8 @@
                     </h1>
                     <h2 class="headline">
                     Jul 19, 2019 06:32
-                    · 1215 words
-                    · 6 minute read
+                    · 1309 words
+                    · 7 minute read
                       <span class="tags">
                       
                       
@@ -106,219 +102,219 @@
                     <p>I’ve been using Hangfire for almost 2 years. It’s a wonderful job schedule API with persistent storage. Community have a lot of examples about how to use Hangfire. However, almost all of them use the application (UI) as a hangfire server. Here, I will explain how to use Hangfire with docker and multiple servers. Let’s begin.</p>
 <h4 id="ui">UI</h4>
 <p>First, let’s create an API. I will show my example on ASP.NET Core 2.2 with PostgreSQL. Open your terminal.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ mkdir Hangfire.UI  
-$ <span class="nb">cd</span> Hangfire.UI  
-$ dotnet new webapi
-</code></pre></div><p>Then we need the Hangfire packages.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ dotnet add package Hangfire.Core  
-$ dotnet add package Hangfire.AspNetCore  
-$ dotnet add package Hangfire.PostgreSql
-</code></pre></div><p>Open <code>Startup.cs</code> and add those lines into <code>ConfigureServices</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="n">services</span><span class="p">.</span><span class="n">AddHangfire</span><span class="p">(</span><span class="n">configuration</span> <span class="p">=&gt;</span> <span class="n">configuration</span>
-    <span class="p">.</span><span class="n">SetDataCompatibilityLevel</span><span class="p">(</span><span class="n">CompatibilityLevel</span><span class="p">.</span><span class="n">Version_170</span><span class="p">)</span>
-    <span class="p">.</span><span class="n">UseSimpleAssemblyNameTypeSerializer</span><span class="p">()</span>
-    <span class="p">.</span><span class="n">UseRecommendedSerializerSettings</span><span class="p">()</span>
-    <span class="p">.</span><span class="n">UsePostgreSqlStorage</span><span class="p">(</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetConnectionString</span><span class="p">(</span><span class="s">&#34;HangfireConnection&#34;</span><span class="p">)));</span>
-</code></pre></div><p>Next, open <code>appsettings.json</code> and add the connection string</p>
-<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="s2">&#34;ConnectionStrings&#34;</span><span class="err">:</span> <span class="p">{</span> 
-  <span class="nt">&#34;HangfireConnection&#34;</span><span class="p">:</span> <span class="s2">&#34;Server=postgresql;Port=5432;Database=demo;User Id=demo; Password=111111;&#34;</span>
-<span class="p">}</span>
-</code></pre></div><p>Don’t change the server part of connection string, PostgreSQL will be exposed with that name.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ mkdir Hangfire.UI  
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> Hangfire.UI  
+</span></span><span class="line"><span class="cl">$ dotnet new webapi
+</span></span></code></pre></div><p>Then we need the Hangfire packages.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ dotnet add package Hangfire.Core  
+</span></span><span class="line"><span class="cl">$ dotnet add package Hangfire.AspNetCore  
+</span></span><span class="line"><span class="cl">$ dotnet add package Hangfire.PostgreSql
+</span></span></code></pre></div><p>Open <code>Startup.cs</code> and add those lines into <code>ConfigureServices</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="n">services</span><span class="p">.</span><span class="n">AddHangfire</span><span class="p">(</span><span class="n">configuration</span> <span class="p">=&gt;</span> <span class="n">configuration</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">SetDataCompatibilityLevel</span><span class="p">(</span><span class="n">CompatibilityLevel</span><span class="p">.</span><span class="n">Version_170</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">UseSimpleAssemblyNameTypeSerializer</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">UseRecommendedSerializerSettings</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">UsePostgreSqlStorage</span><span class="p">(</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetConnectionString</span><span class="p">(</span><span class="s">&#34;HangfireConnection&#34;</span><span class="p">)));</span>
+</span></span></code></pre></div><p>Next, open <code>appsettings.json</code> and add the connection string</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="s2">&#34;ConnectionStrings&#34;</span><span class="err">:</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;HangfireConnection&#34;</span><span class="p">:</span> <span class="s2">&#34;Server=postgresql;Port=5432;Database=demo;User Id=demo; Password=111111;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Don’t change the server part of connection string, PostgreSQL will be exposed with that name.</p>
 <p>Next and the most important thing, dashboard settings. By default, dashboard can only be reached by localhost. Since we are using docker, it will stay in the image. Therefore, we have to expose the dashboard. Open <code>Startup.cs</code> and copy following code.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp">
-<span class="cm">/* Configure method */</span>
-
-<span class="p">....</span>
-
-<span class="n">app</span><span class="p">.</span><span class="n">UseHangfireDashboard</span><span class="p">(</span><span class="s">&#34;/hangfire&#34;</span><span class="p">,</span> <span class="k">new</span> <span class="n">DashboardOptions</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">Authorization</span> <span class="p">=</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="k">new</span> <span class="n">AllowAllConnectionsFilter</span><span class="p">()</span> <span class="p">},</span>
-    <span class="n">IgnoreAntiforgeryToken</span> <span class="p">=</span> <span class="k">true</span>
-<span class="p">});</span>
-
-<span class="p">....</span>
-
-<span class="k">public</span> <span class="k">class</span> <span class="nc">AllowAllConnectionsFilter</span> <span class="p">:</span> <span class="n">IDashboardAuthorizationFilter</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="kt">bool</span> <span class="n">Authorize</span><span class="p">(</span><span class="n">DashboardContext</span> <span class="n">context</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// Allow outside. You need an authentication scenario for this part.
-</span><span class="c1"></span>        <span class="c1">// DON&#39;T GO PRODUCTION WITH THIS LINES.
-</span><span class="c1"></span>        <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>As I mentioned in the code, do not use this code in the production directly. You have to create your own scenario (e.g. only admin roles can reach hangfire.). Also, we have disabled anti forgery token for now, the security is not our first concern here. UI part is done.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* Configure method */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">....</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">app</span><span class="p">.</span><span class="n">UseHangfireDashboard</span><span class="p">(</span><span class="s">&#34;/hangfire&#34;</span><span class="p">,</span> <span class="k">new</span> <span class="n">DashboardOptions</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Authorization</span> <span class="p">=</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="k">new</span> <span class="n">AllowAllConnectionsFilter</span><span class="p">()</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="n">IgnoreAntiforgeryToken</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">....</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">AllowAllConnectionsFilter</span> <span class="p">:</span> <span class="n">IDashboardAuthorizationFilter</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">bool</span> <span class="n">Authorize</span><span class="p">(</span><span class="n">DashboardContext</span> <span class="n">context</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Allow outside. You need an authentication scenario for this part.</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// DON&#39;T GO PRODUCTION WITH THIS LINES.</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>As I mentioned in the code, do not use this code in the production directly. You have to create your own scenario (e.g. only admin roles can reach hangfire.). Also, we have disabled anti forgery token for now, the security is not our first concern here. UI part is done.</p>
 <h4 id="background-server">Background Server</h4>
 <p>Secondly, we need a separate background server project. Create this project besides <code>Hangfire.UI</code> project.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ mkdir Hangfire.Server  
-$ <span class="nb">cd</span> Hangfire.Server  
-$ dotnet new console
-</code></pre></div><p>Run following package commands</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ dotnet add package Hangfire.Core  
-$ dotnet add package Hangfire.PostgreSql
-</code></pre></div><p>The console must stay alive, all the time. Therefore we will use one of the best solutions of .NET Core<code>HostBuilder</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">static</span> <span class="k">async</span> <span class="n">Task</span> <span class="n">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">GlobalConfiguration</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">UsePostgreSqlStorage</span><span class="p">(</span><span class="s">&#34;Server=postgresql;Port=5432;Database=demo;User Id=demo; Password=111111;&#34;</span><span class="p">);</span>
-
-    <span class="kt">var</span> <span class="n">hostBuilder</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HostBuilder</span><span class="p">()</span>
-        <span class="c1">// Add configuration, logging, ...
-</span><span class="c1"></span>        <span class="p">.</span><span class="n">ConfigureServices</span><span class="p">((</span><span class="n">hostContext</span><span class="p">,</span> <span class="n">services</span><span class="p">)</span> <span class="p">=&gt;</span>
-        <span class="p">{</span>
-            <span class="c1">// Add your services with depedency injection.
-</span><span class="c1"></span>        <span class="p">});</span>
-
-    <span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">server</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BackgroundJobServer</span><span class="p">(</span><span class="k">new</span> <span class="n">BackgroundJobServerOptions</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="n">WorkerCount</span> <span class="p">=</span> <span class="m">1</span>
-    <span class="p">}))</span>
-    <span class="p">{</span>
-        <span class="k">await</span> <span class="n">hostBuilder</span><span class="p">.</span><span class="n">RunConsoleAsync</span><span class="p">();</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>We are setting the connection string and creating a background server with respect to it. I have set<code>WorkerCount</code> as <code>1</code> for demonstration, you can use <code>Environment.ProcessorCount * 5</code> at production. Also, <code>BackgroundServerOptions</code> class has a <code>Activator</code>property which allows you to use Dependency Injection with your jobs (e.g. <a href="https://github.com/lyzerk/Triggr/blob/master/src/Triggr.UI/Services/HangfireActivator.cs">Example</a>).<code>RunConsoleAsync</code> will suspend the main thread and prevent the server termination.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ mkdir Hangfire.Server  
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> Hangfire.Server  
+</span></span><span class="line"><span class="cl">$ dotnet new console
+</span></span></code></pre></div><p>Run following package commands</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ dotnet add package Hangfire.Core  
+</span></span><span class="line"><span class="cl">$ dotnet add package Hangfire.PostgreSql
+</span></span></code></pre></div><p>The console must stay alive, all the time. Therefore we will use one of the best solutions of .NET Core<code>HostBuilder</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">static</span> <span class="kd">async</span> <span class="n">Task</span> <span class="n">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">GlobalConfiguration</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">UsePostgreSqlStorage</span><span class="p">(</span><span class="s">&#34;Server=postgresql;Port=5432;Database=demo;User Id=demo; Password=111111;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">hostBuilder</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HostBuilder</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Add configuration, logging, ...</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">ConfigureServices</span><span class="p">((</span><span class="n">hostContext</span><span class="p">,</span> <span class="n">services</span><span class="p">)</span> <span class="p">=&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// Add your services with depedency injection.</span>
+</span></span><span class="line"><span class="cl">        <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">server</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BackgroundJobServer</span><span class="p">(</span><span class="k">new</span> <span class="n">BackgroundJobServerOptions</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">WorkerCount</span> <span class="p">=</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">await</span> <span class="n">hostBuilder</span><span class="p">.</span><span class="n">RunConsoleAsync</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>We are setting the connection string and creating a background server with respect to it. I have set<code>WorkerCount</code> as <code>1</code> for demonstration, you can use <code>Environment.ProcessorCount * 5</code> at production. Also, <code>BackgroundServerOptions</code> class has a <code>Activator</code>property which allows you to use Dependency Injection with your jobs (e.g. <a href="https://github.com/lyzerk/Triggr/blob/master/src/Triggr.UI/Services/HangfireActivator.cs">Example</a>).<code>RunConsoleAsync</code> will suspend the main thread and prevent the server termination.</p>
 <p>Output of the Background Server;</p>
-<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">hang.server1\_1  | Application started. Press Ctrl+C to shut down.  
-hang.server1\_1  | Hosting environment: Production  
-hang.server1\_1  | Content root path: /app/
-</code></pre></div><h4 id="jobs">Jobs</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">hang.server1\_1  | Application started. Press Ctrl+C to shut down.  
+</span></span><span class="line"><span class="cl">hang.server1\_1  | Hosting environment: Production  
+</span></span><span class="line"><span class="cl">hang.server1\_1  | Content root path: /app/
+</span></span></code></pre></div><h4 id="jobs">Jobs</h4>
 <p>The <em>UI</em> and <em>Server</em> projects must share the same code base for the Jobs. Therefore, I will create a new library project beside those projects.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ mkdir Hangfire.Jobs  
-$ <span class="nb">cd</span> Hangfire.Jobs  
-$ dotnet new classlib
-</code></pre></div><p>A sample job using <code>Thread.Sleep(ms)</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">MyJob</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">void</span> <span class="n">DoJob</span><span class="p">(</span><span class="kt">int</span> <span class="n">sleep</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>This common project can be added to the <em>UI</em> and <em>Server</em> projects with following command.</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ dotnet add reference ../Hangfire.Jobs
-</code></pre></div><p>We are done with the infrastructure. Additionally, we need to enqueue the example job (MyJob). At <code>Hangfire.UI</code> there should be <code>ValuesController</code> where you can put an example job there. Or you can create your own controller for jobs.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="na">[ApiController]</span>
-<span class="k">public</span> <span class="k">class</span> <span class="nc">ValuesController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
-<span class="p">{</span>
-    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IBackgroundJobClient</span> <span class="n">_client</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="n">ValuesController</span><span class="p">(</span><span class="n">IBackgroundJobClient</span> <span class="n">client</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">_client</span> <span class="p">=</span> <span class="n">client</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="c1">// GET api/values
-</span><span class="c1"></span><span class="na">    [HttpGet]</span>
-    <span class="k">public</span> <span class="n">ActionResult</span><span class="p">&lt;</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;&gt;</span> <span class="n">Get</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="n">Random</span> <span class="n">rnd</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Random</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="n">Ticks</span><span class="p">);</span>
-        <span class="n">_client</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">&lt;</span><span class="n">MyJob</span><span class="p">&gt;(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">DoJob</span><span class="p">(</span><span class="n">rnd</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="m">10000</span><span class="p">,</span> <span class="m">20000</span><span class="p">)));</span>
-
-        <span class="k">return</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">&#34;value1&#34;</span><span class="p">,</span> <span class="s">&#34;value2&#34;</span> <span class="p">};</span>
-    <span class="p">}</span>
-    
-    <span class="p">.....</span>
-<span class="p">}</span>
-</code></pre></div><p>The above code will enqueue the example job with random interval when anyone hit the <code>Get()</code> action.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ mkdir Hangfire.Jobs  
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> Hangfire.Jobs  
+</span></span><span class="line"><span class="cl">$ dotnet new classlib
+</span></span></code></pre></div><p>A sample job using <code>Thread.Sleep(ms)</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">MyJob</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="k">void</span> <span class="n">DoJob</span><span class="p">(</span><span class="kt">int</span> <span class="n">sleep</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>This common project can be added to the <em>UI</em> and <em>Server</em> projects with following command.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ dotnet add reference ../Hangfire.Jobs
+</span></span></code></pre></div><p>We are done with the infrastructure. Additionally, we need to enqueue the example job (MyJob). At <code>Hangfire.UI</code> there should be <code>ValuesController</code> where you can put an example job there. Or you can create your own controller for jobs.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="na">[ApiController]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">ValuesController</span> <span class="p">:</span> <span class="n">ControllerBase</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="k">readonly</span> <span class="n">IBackgroundJobClient</span> <span class="n">_client</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">ValuesController</span><span class="p">(</span><span class="n">IBackgroundJobClient</span> <span class="n">client</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">_client</span> <span class="p">=</span> <span class="n">client</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// GET api/values</span>
+</span></span><span class="line"><span class="cl"><span class="na">    [HttpGet]</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">ActionResult</span><span class="p">&lt;</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;&gt;</span> <span class="n">Get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Random</span> <span class="n">rnd</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Random</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="n">Ticks</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">_client</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">&lt;</span><span class="n">MyJob</span><span class="p">&gt;(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">DoJob</span><span class="p">(</span><span class="n">rnd</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="m">10000</span><span class="p">,</span> <span class="m">20000</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">&#34;value1&#34;</span><span class="p">,</span> <span class="s">&#34;value2&#34;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="p">.....</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>The above code will enqueue the example job with random interval when anyone hit the <code>Get()</code> action.</p>
 <p>We are done with the codebase. We have separated the Hangfire Background Server and Dashboard, and created a common class library for jobs. What we have to do in the next part is, dockerize the projects and create environment with those containers.</p>
 <h4 id="docker">Docker</h4>
 <p>Since, the both UI and Server projects are .NET Core 2.2 projects. The <code>Dockerfile</code> should be almost same. (I tried my best while creating these dockerfiles). <code>Hangfire.UI</code> ‘s Dockerfile is shown below. Open a new file named <code>Dockerfile</code> and copy following commands into it.</p>
-<div class="highlight"><pre class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="k">FROM</span><span class="s"> microsoft/dotnet:2.2-aspnetcore-runtime AS base</span><span class="err">
-</span><span class="err"></span><span class="c"># /app directory is the where the binary files are will be present</span><span class="err">
-</span><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /app</span><span class="err">
-</span><span class="err"></span><span class="c"># Output port for the ASP.NET Core</span><span class="err">
-</span><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 80</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># Start to build</span><span class="err">
-</span><span class="err"></span><span class="k">FROM</span><span class="s"> microsoft/dotnet:2.2-sdk AS build</span><span class="err">
-</span><span class="err"></span> <span class="err">
-</span><span class="err"></span><span class="c"># Copy all source files to /src folder</span><span class="err">
-</span><span class="err"></span><span class="c"># This is necessary for solutions. (Multiple projects, also you can define this by specifying projects)</span><span class="err">
-</span><span class="err"></span><span class="k">COPY</span> ./ /src<span class="err">
-</span><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /src</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="k">RUN</span> dotnet restore <span class="s2">&#34;Hangfire.UI/Hangfire.UI.csproj&#34;</span><span class="err">
-</span><span class="err"></span><span class="k">RUN</span> dotnet build <span class="s2">&#34;Hangfire.UI/Hangfire.UI.csproj&#34;</span> -c Release -o /app<span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># Rename the image as publish</span><span class="err">
-</span><span class="err"></span><span class="k">FROM</span><span class="s"> build AS publish</span><span class="err">
-</span><span class="err"></span><span class="k">RUN</span> dotnet publish <span class="s2">&#34;Hangfire.UI/Hangfire.UI.csproj&#34;</span> -c Release -o /out<span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># Building the project is done. We need the runtime image.</span><span class="err">
-</span><span class="err"></span><span class="k">FROM</span><span class="s"> base</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># Go back to /app</span><span class="err">
-</span><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /app</span><span class="err">
-</span><span class="err">
-</span><span class="err"></span><span class="c"># Copy all published files into /app folder</span><span class="err">
-</span><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>publish /out .<span class="err">
-</span><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;dotnet&#34;</span><span class="p">,</span> <span class="s2">&#34;Hangfire.UI.dll&#34;</span><span class="p">]</span><span class="err">
-</span></code></pre></div><p>Only difference between <em>UI</em> and <em>Server</em> is <code>EXPOSE 80</code> command on the file. The server project does not need any TCP port exposing.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> microsoft/dotnet:2.2-aspnetcore-runtime AS base</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># /app directory is the where the binary files are will be present</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /app</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Output port for the ASP.NET Core</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 80</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Start to build</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> microsoft/dotnet:2.2-sdk AS build</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span> <span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Copy all source files to /src folder</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># This is necessary for solutions. (Multiple projects, also you can define this by specifying projects)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> ./ /src<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /src</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> dotnet restore <span class="s2">&#34;Hangfire.UI/Hangfire.UI.csproj&#34;</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> dotnet build <span class="s2">&#34;Hangfire.UI/Hangfire.UI.csproj&#34;</span> -c Release -o /app<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Rename the image as publish</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> build AS publish</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> dotnet publish <span class="s2">&#34;Hangfire.UI/Hangfire.UI.csproj&#34;</span> -c Release -o /out<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Building the project is done. We need the runtime image.</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> base</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Go back to /app</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /app</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># Copy all published files into /app folder</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>publish /out .<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;dotnet&#34;</span><span class="p">,</span> <span class="s2">&#34;Hangfire.UI.dll&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><p>Only difference between <em>UI</em> and <em>Server</em> is <code>EXPOSE 80</code> command on the file. The server project does not need any TCP port exposing.</p>
 <p>Since we obtained multiple dockerized applications, we are almost done. Next, run the images using docker-compose command.</p>
 <h4 id="docker-compose">Docker-Compose</h4>
 <p>Docker-compose creates an environment which run multiple images and enables them to communicate with each other. Go to main folder and create <code>docker-compose.yml</code> file and copy following content into it.</p>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;3.4&#39;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="k">services</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">postgresql</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;bitnami/postgresql:latest&#39;</span><span class="w">
-</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="s1">&#39;5432:5432&#39;</span><span class="w">
-</span><span class="w">    </span><span class="k">environment</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- POSTGRESQL_USERNAME=demo<span class="w">
-</span><span class="w">      </span>- POSTGRESQL_PASSWORD=<span class="m">111111</span><span class="w">
-</span><span class="w">      </span>- POSTGRESQL_DATABASE=demo<span class="w">
-</span><span class="w">    </span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- pgdata<span class="p">:</span>/bitnami<span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- svcnw<span class="w">
-</span><span class="w">
-</span><span class="w">  </span><span class="k">hang.ui</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>hangui<span class="w">
-</span><span class="w">    </span><span class="k">restart</span><span class="p">:</span><span class="w"> </span>always<span class="w">
-</span><span class="w">    </span><span class="k">build</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">context</span><span class="p">:</span><span class="w"> </span>.<span class="w">
-</span><span class="w">      </span><span class="k">dockerfile</span><span class="p">:</span><span class="w"> </span>./Hangfire.UI/Dockerfile<span class="w">
-</span><span class="w">    </span><span class="k">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="s1">&#39;5005:80&#39;</span><span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- svcnw<span class="w">
-</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- postgresql<span class="w">
-</span><span class="w">
-</span><span class="w">  </span><span class="k">hang.server1</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>hangserver1<span class="w">
-</span><span class="w">    </span><span class="k">restart</span><span class="p">:</span><span class="w"> </span>always<span class="w">
-</span><span class="w">    </span><span class="k">build</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="k">context</span><span class="p">:</span><span class="w"> </span>.<span class="w">
-</span><span class="w">      </span><span class="k">dockerfile</span><span class="p">:</span><span class="w"> </span>./Hangfire.Server/Dockerfile<span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- svcnw<span class="w">
-</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- postgresql<span class="w">
-</span><span class="w">      </span>- hang.ui<span class="w">
-</span><span class="w">
-</span><span class="w">  </span><span class="k">hang.server2</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">image</span><span class="p">:</span><span class="w"> </span>hangserver1<span class="w">
-</span><span class="w">    </span><span class="k">restart</span><span class="p">:</span><span class="w"> </span>always<span class="w">
-</span><span class="w">    </span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- svcnw<span class="w">
-</span><span class="w">    </span><span class="k">depends_on</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- postgresql<span class="w">
-</span><span class="w">      </span>- hang.ui<span class="w">
-</span><span class="w">      </span>- hang.server1<span class="w">
-</span><span class="w">      
-</span><span class="w"></span><span class="k">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">pgdata</span><span class="p">:</span><span class="w">
-</span><span class="w"> 
-</span><span class="w"></span><span class="k">networks</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="k">svcnw</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="k">driver</span><span class="p">:</span><span class="w"> </span>bridge<span class="w">
-</span></code></pre></div><p>The compose file has a network name<code>svcnw</code> . This network will connect the images with each other. On the other hand, the dependency between images should be in a particular order.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;3.4&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">postgresql</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;bitnami/postgresql:latest&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s1">&#39;5432:5432&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">POSTGRESQL_USERNAME=demo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">POSTGRESQL_PASSWORD=111111</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">POSTGRESQL_DATABASE=demo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">pgdata:/bitnami</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">svcnw</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hang.ui</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">hangui</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l">always</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l">./Hangfire.UI/Dockerfile</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s1">&#39;5005:80&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">svcnw</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">postgresql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hang.server1</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">hangserver1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l">always</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l">./Hangfire.Server/Dockerfile</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">svcnw</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">postgresql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">hang.ui</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hang.server2</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">hangserver1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l">always</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">svcnw</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">postgresql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">hang.ui</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">hang.server1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">pgdata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">svcnw</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l">bridge</span><span class="w">
+</span></span></span></code></pre></div><p>The compose file has a network name<code>svcnw</code> . This network will connect the images with each other. On the other hand, the dependency between images should be in a particular order.</p>
 <p>PostgreSQL &gt; UI &gt; Servers.</p>
 <p>Docker-compose up multiple servers which are called as <code>hang.server1</code> and <code>hang.server2</code>. Server 2 will use the same image with Server 1, therefore we can up more than one server using the same image. Keep in mind that using docker-compose is not ideal in every scenario, we need an orchestrator such as Kubernetes so that the number of servers can be increased on demand easily.</p>
 <p>Let’s see the results. Go to project’s root folder and run</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ docker-compose up --build
-</code></pre></div><p>The docker-compose will build all images and run them. Next, you can go to</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ docker-compose up --build
+</span></span></code></pre></div><p>The docker-compose will build all images and run them. Next, you can go to</p>
 <p><a href="http://localhost:5005/hangfire/">http://localhost:5005/hangfire/</a></p>
 <p><img src="/img/1__pa__VXV3yrJ3ZMhAgHMbYNw.png" alt="Hangfire"></p>
 <p>As you can see here, there are two servers running. Let’s try the job scheduling. Load twice the following endpoint <a href="http://localhost:5005/api/values">http://localhost:5005/api/values</a> to enqueue new jobs.</p>
@@ -399,7 +395,7 @@ _Hangfire keeps background jobs and other information that relates to the proces
     
     <p class="small">
     
-       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
+       © Copyright 2024 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
     
     </p>
 </footer>
@@ -419,7 +415,7 @@ _Hangfire keeps background jobs and other information that relates to the proces
 
 
   
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -431,7 +427,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
 
 
 

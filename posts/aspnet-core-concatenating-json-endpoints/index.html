@@ -30,7 +30,7 @@
 		<meta name="author" content="Alim Özdemir">
 		<meta name="keywords" content="aspnetcore,json.net,stream,pipeline,httpclient">
 		<meta name="description" content="Software engineer">
-		<meta name="generator" content="Hugo 0.72.0" />
+		<meta name="generator" content="Hugo 0.121.1">
 		<title>ASP.NET Core: Concatenating JSON endpoints &middot; Alim Özdemir</title>
 		<link rel="shortcut icon" href="/images/favicon.ico">
 
@@ -49,8 +49,6 @@
 		
 
 		
-		<link href="/index.xml" rel="alternate" type="application/rss+xml" title="Alim Özdemir" />
-		
 
 		
 	</head>
@@ -59,7 +57,7 @@
        <nav class="main-nav">
 	
 	
-		<a href='/'> <span class="arrow">←</span> Home</a>
+		<a href='/'> Home</a>
 	
 	<a href='/posts'>Archive</a>
 	<a href='/projects'>Projects</a>
@@ -68,8 +66,6 @@
 
 	
 
-	
-	<a class="cta" href="/index.xml">Subscribe</a>
 	
 </nav>
 
@@ -113,139 +109,136 @@
 <p>Assume that you have multiple endpoints which returns JSON results and you are trying to concatenate them into a single structure. In that case, you can read the endpoints and allocate them into memory. Then manipulate them according to your wishes.</p>
 <h2 id="data-preparation-andtests">Data preparation and tests</h2>
 <p>Before everything I would like to explain the demo code. So, I have several endpoints from <a href="https://jsonplaceholder.typicode.com/">JSONPlaceholder</a>. And, I would like to collect them into a dictionary with their key value. I implemented the base code with async/await parallelism. <strong>So, no matter what, we are getting the data without blocking each other. Let&rsquo;s see the base code</strong>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="n">Sources</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;()</span>
-<span class="p">{</span>
-    <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="s">&#34;albums&#34;</span> <span class="p">},</span>
-    <span class="p">{</span> <span class="m">1</span><span class="p">,</span> <span class="s">&#34;todos&#34;</span> <span class="p">},</span>
-    <span class="p">{</span> <span class="m">2</span><span class="p">,</span> <span class="s">&#34;comments&#34;</span> <span class="p">},</span>
-    <span class="p">{</span> <span class="m">3</span><span class="p">,</span> <span class="s">&#34;photos&#34;</span> <span class="p">},</span>
-<span class="p">};</span>
-
-<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;&gt;</span> <span class="n">FetchData</span><span class="p">(</span><span class="n">Func</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;&gt;</span> <span class="n">funcPointer</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">List</span><span class="p">&lt;</span><span class="n">Task</span><span class="p">&gt;</span> <span class="n">tasks</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Task</span><span class="p">&gt;();</span>
-
-    <span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;</span> <span class="n">result</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;()</span> <span class="p">{</span> <span class="n">Data</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ConcurrentDictionary</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">JRaw</span><span class="p">&gt;()</span> <span class="p">};</span>
-
-    <span class="k">async</span> <span class="n">Task</span> <span class="n">Fetch</span><span class="p">(</span><span class="n">KeyValuePair</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="n">source</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="kt">var</span> <span class="n">fetchResult</span> <span class="p">=</span> <span class="k">await</span> <span class="n">funcPointer</span><span class="p">(</span><span class="n">source</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span>
-        <span class="n">result</span><span class="p">.</span><span class="n">Data</span><span class="p">.</span><span class="n">AddOrUpdate</span><span class="p">(</span><span class="n">source</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span> <span class="n">fetchResult</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oldValue</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">fetchResult</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">item</span> <span class="k">in</span> <span class="n">Sources</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">tasks</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">Fetch</span><span class="p">(</span><span class="n">item</span><span class="p">));</span>
-    <span class="p">}</span>
-
-    <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">WhenAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span>
-
-    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>The Json.NET is one of the most advanced JSON libraries in .NET world. The library contains a <code>JRaw</code> type that you can use it for already serialized strings. </p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="n">Sources</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="m">0</span><span class="p">,</span> <span class="s">&#34;albums&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="m">1</span><span class="p">,</span> <span class="s">&#34;todos&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="m">2</span><span class="p">,</span> <span class="s">&#34;comments&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="m">3</span><span class="p">,</span> <span class="s">&#34;photos&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;&gt;</span> <span class="n">FetchData</span><span class="p">(</span><span class="n">Func</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;&gt;</span> <span class="n">funcPointer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">List</span><span class="p">&lt;</span><span class="n">Task</span><span class="p">&gt;</span> <span class="n">tasks</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Task</span><span class="p">&gt;();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;</span> <span class="n">result</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;()</span> <span class="p">{</span> <span class="n">Data</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ConcurrentDictionary</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">JRaw</span><span class="p">&gt;()</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">async</span> <span class="n">Task</span> <span class="n">Fetch</span><span class="p">(</span><span class="n">KeyValuePair</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;</span> <span class="n">source</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">var</span> <span class="n">fetchResult</span> <span class="p">=</span> <span class="k">await</span> <span class="n">funcPointer</span><span class="p">(</span><span class="n">source</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">result</span><span class="p">.</span><span class="n">Data</span><span class="p">.</span><span class="n">AddOrUpdate</span><span class="p">(</span><span class="n">source</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span> <span class="n">fetchResult</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oldValue</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">fetchResult</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">item</span> <span class="k">in</span> <span class="n">Sources</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tasks</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">Fetch</span><span class="p">(</span><span class="n">item</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">WhenAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>The Json.NET is one of the most advanced JSON libraries in .NET world. The library contains a <code>JRaw</code> type that you can use it for already serialized strings. </p>
 <blockquote>
 <p><strong>Meaning that, don&rsquo;t serialize that value, it is already serialized.</strong></p>
 </blockquote>
 <p><code>funcPointer</code> implementation is making the request and returns a <code>JRaw</code> object. <code>FetchData</code> returns that desired structure.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;</span> <span class="n">GetAsRaw</span><span class="p">(</span><span class="kt">string</span> <span class="n">route</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">var</span> <span class="n">response</span> <span class="p">=</span> <span class="k">await</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">GetAsync</span><span class="p">(</span><span class="n">route</span><span class="p">);</span>
-    <span class="kt">var</span> <span class="n">stringData</span> <span class="p">=</span> <span class="k">await</span> <span class="n">response</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="n">ReadAsStringAsync</span><span class="p">();</span>
-
-    <span class="k">return</span> <span class="k">new</span> <span class="n">JRaw</span><span class="p">(</span><span class="n">stringData</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="na">
-</span><span class="na">[HttpGet]</span>
-<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;&gt;</span> <span class="n">Get</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="n">FetchData</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">GetA</span>  <span class="n">sRaw</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>When we call the method, the result is shown below.</p>
-<figure class="image-center">
-    <img src="/img/concatenate/result.png"
-         alt="Article desired structure"/> 
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;</span> <span class="n">GetAsRaw</span><span class="p">(</span><span class="kt">string</span> <span class="n">route</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">response</span> <span class="p">=</span> <span class="k">await</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">GetAsync</span><span class="p">(</span><span class="n">route</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">stringData</span> <span class="p">=</span> <span class="k">await</span> <span class="n">response</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="n">ReadAsStringAsync</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="n">JRaw</span><span class="p">(</span><span class="n">stringData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">[HttpGet]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;&gt;</span> <span class="n">Get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">await</span> <span class="n">FetchData</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">GetA</span>  <span class="n">sRaw</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>When we call the method, the result is shown below.</p>
+<figure class="image-center"><img src="/img/concatenate/result.png"
+         alt="Article desired structure"/>
 </figure>
 
 <p>So, we have implemented a reliable solution for the case. The method concatenates multiple JSON results with respect to their keys and returns an object. For such a case, performance matters. The endpoints could return large responses. </p>
 <p>First, I would like to disable server garbage collection (Please see notes at end of the article). Performance test of the action could be prepared with JMeter. So, I have setup a JMeter thread group with <strong>5</strong> users x <strong>200</strong> loop count x <strong>random timer</strong>.</p>
 <p>Requests are completed in 00:03:34 with average 750ms. Aside from the request completion time, CPU and memory usage is also important.</p>
-<figure class="image-center">
-    <img src="/img/concatenate/benchmark1.png"
-         alt="Benchmark 1"/> 
+<figure class="image-center"><img src="/img/concatenate/benchmark1.png"
+         alt="Benchmark 1"/>
 </figure>
 
 <p>Too much GC triggers and memory usage is between <strong>140MB</strong>~<strong>170MB</strong>.</p>
 <h1 id="improving-performance">Improving Performance</h1>
 <p>The <code>GetAsRaw</code> method reads the entire result from the request. Then pass it into the result model. ASP.NET Core handles the rest. The problem here we are reading the whole result then allocate it into memory. </p>
 <p>As most of you know, you can complete your http request when the headers are fetched. So, you don&rsquo;t have to wait for the whole request to be completed.  If we enable such a feature, we can&rsquo;t use <code>JRaw</code> with a string, it should switch to <code>Stream</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;</span> <span class="n">GetAsStream</span><span class="p">(</span><span class="kt">string</span> <span class="n">route</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">var</span> <span class="n">hrm</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HttpRequestMessage</span><span class="p">(</span><span class="n">HttpMethod</span><span class="p">.</span><span class="n">Get</span><span class="p">,</span> <span class="n">route</span><span class="p">);</span>
-    <span class="kt">var</span> <span class="n">response</span> <span class="p">=</span> <span class="k">await</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">hrm</span><span class="p">,</span> <span class="n">HttpCompletionOption</span><span class="p">.</span><span class="n">ResponseHeadersRead</span><span class="p">);</span>
-
-    <span class="kt">var</span> <span class="n">stream</span> <span class="p">=</span> <span class="k">await</span> <span class="n">response</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="n">ReadAsStreamAsync</span><span class="p">();</span>
-
-    <span class="k">return</span> <span class="k">new</span> <span class="n">JRaw</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="na">
-</span><span class="na">[HttpGet]</span>
-<span class="k">public</span> <span class="k">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;&gt;</span> <span class="n">Get</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="n">FetchData</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">GetAsStream</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>Json.NET directly calls <code>ToString</code> method for any object. So, in this case we need to consume that stream and write it into the result set without extra memory allocation.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">StreamConverter</span> <span class="p">:</span> <span class="n">JsonConverter</span><span class="p">&lt;</span><span class="n">Stream</span><span class="p">&gt;</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">override</span> <span class="n">Stream</span> <span class="n">ReadJson</span><span class="p">(</span><span class="n">JsonReader</span> <span class="n">reader</span><span class="p">,</span> <span class="n">Type</span> <span class="n">objectType</span><span class="p">,</span> <span class="p">[</span><span class="n">AllowNull</span><span class="p">]</span> <span class="n">Stream</span> <span class="n">existingValue</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">hasExistingValue</span><span class="p">,</span> <span class="n">JsonSerializer</span> <span class="n">serializer</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="k">throw</span> <span class="k">new</span> <span class="n">NotImplementedException</span><span class="p">();</span>
-    <span class="p">}</span>
-
-    <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="n">WriteJson</span><span class="p">(</span><span class="n">JsonWriter</span> <span class="n">writer</span><span class="p">,</span> <span class="p">[</span><span class="n">AllowNull</span><span class="p">]</span> <span class="n">Stream</span> <span class="k">value</span><span class="p">,</span> <span class="n">JsonSerializer</span> <span class="n">serializer</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">PipeReader</span> <span class="n">reader</span> <span class="p">=</span> <span class="n">PipeReader</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
-        
-        <span class="k">while</span> <span class="p">(</span><span class="k">true</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="c1">// read sync, if JsonConverter supports async WriteJson in future, we should replace it.
-</span><span class="c1"></span>            <span class="kt">var</span> <span class="n">read</span> <span class="p">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">ReadAsync</span><span class="p">().</span><span class="n">Result</span><span class="p">;</span>
-
-            <span class="k">if</span> <span class="p">(</span><span class="n">read</span><span class="p">.</span><span class="n">IsCompleted</span><span class="p">)</span>
-                <span class="k">break</span><span class="p">;</span>
-
-            <span class="c1">// get buffer
-</span><span class="c1"></span>            <span class="kt">var</span> <span class="n">buffer</span> <span class="p">=</span> <span class="n">read</span><span class="p">.</span><span class="n">Buffer</span><span class="p">;</span>
-
-            <span class="c1">// if it does not have a length, just dont write any value and skip this iteration.
-</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">Length</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
-                <span class="k">continue</span><span class="p">;</span>
-
-            <span class="c1">// maybe in future, writeraw supports byte[], then we shouldn&#39;t use GetString
-</span><span class="c1"></span>            <span class="kt">var</span> <span class="n">raw</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">ToArray</span><span class="p">());</span>
-            <span class="n">writer</span><span class="p">.</span><span class="n">WriteRaw</span><span class="p">(</span><span class="n">raw</span><span class="p">);</span>
-
-            <span class="c1">// advance to next buffer
-</span><span class="c1"></span>            <span class="n">reader</span><span class="p">.</span><span class="n">AdvanceTo</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">End</span><span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="c1">// final step
-</span><span class="c1"></span>        <span class="c1">// if you don&#39;t write a raw value, the converter will write a null value.
-</span><span class="c1"></span>        <span class="kt">string?</span> <span class="n">empty</span> <span class="p">=</span> <span class="k">null</span><span class="p">;</span>
-        <span class="n">writer</span><span class="p">.</span><span class="n">WriteRawValue</span><span class="p">(</span><span class="n">empty</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Above <code>JsonConverter</code> will consume the given stream and write it into result set without allocation. (<em>Pipeline rocks</em>)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;</span> <span class="n">GetAsStream</span><span class="p">(</span><span class="kt">string</span> <span class="n">route</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">hrm</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HttpRequestMessage</span><span class="p">(</span><span class="n">HttpMethod</span><span class="p">.</span><span class="n">Get</span><span class="p">,</span> <span class="n">route</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">response</span> <span class="p">=</span> <span class="k">await</span> <span class="n">httpClient</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">hrm</span><span class="p">,</span> <span class="n">HttpCompletionOption</span><span class="p">.</span><span class="n">ResponseHeadersRead</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">var</span> <span class="n">stream</span> <span class="p">=</span> <span class="k">await</span> <span class="n">response</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="n">ReadAsStreamAsync</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="n">JRaw</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">[HttpGet]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span><span class="p">&lt;</span><span class="n">ConcatenateModel</span><span class="p">&lt;</span><span class="n">JRaw</span><span class="p">&gt;&gt;</span> <span class="n">Get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">await</span> <span class="n">FetchData</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">GetAsStream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Json.NET directly calls <code>ToString</code> method for any object. So, in this case we need to consume that stream and write it into the result set without extra memory allocation.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="kd">public</span> <span class="k">class</span> <span class="nc">StreamConverter</span> <span class="p">:</span> <span class="n">JsonConverter</span><span class="p">&lt;</span><span class="n">Stream</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">override</span> <span class="n">Stream</span> <span class="n">ReadJson</span><span class="p">(</span><span class="n">JsonReader</span> <span class="n">reader</span><span class="p">,</span> <span class="n">Type</span> <span class="n">objectType</span><span class="p">,</span> <span class="p">[</span><span class="n">AllowNull</span><span class="p">]</span> <span class="n">Stream</span> <span class="n">existingValue</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">hasExistingValue</span><span class="p">,</span> <span class="n">JsonSerializer</span> <span class="n">serializer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">throw</span> <span class="k">new</span> <span class="n">NotImplementedException</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">override</span> <span class="k">void</span> <span class="n">WriteJson</span><span class="p">(</span><span class="n">JsonWriter</span> <span class="n">writer</span><span class="p">,</span> <span class="p">[</span><span class="n">AllowNull</span><span class="p">]</span> <span class="n">Stream</span> <span class="k">value</span><span class="p">,</span> <span class="n">JsonSerializer</span> <span class="n">serializer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">PipeReader</span> <span class="n">reader</span> <span class="p">=</span> <span class="n">PipeReader</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// read sync, if JsonConverter supports async WriteJson in future, we should replace it.</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">var</span> <span class="n">read</span> <span class="p">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">ReadAsync</span><span class="p">().</span><span class="n">Result</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">read</span><span class="p">.</span><span class="n">IsCompleted</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// get buffer</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">var</span> <span class="n">buffer</span> <span class="p">=</span> <span class="n">read</span><span class="p">.</span><span class="n">Buffer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// if it does not have a length, just dont write any value and skip this iteration.</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">Length</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// maybe in future, writeraw supports byte[], then we shouldn&#39;t use GetString</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">var</span> <span class="n">raw</span> <span class="p">=</span> <span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">ToArray</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">            <span class="n">writer</span><span class="p">.</span><span class="n">WriteRaw</span><span class="p">(</span><span class="n">raw</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// advance to next buffer</span>
+</span></span><span class="line"><span class="cl">            <span class="n">reader</span><span class="p">.</span><span class="n">AdvanceTo</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">End</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// final step</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// if you don&#39;t write a raw value, the converter will write a null value.</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">string?</span> <span class="n">empty</span> <span class="p">=</span> <span class="kc">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">writer</span><span class="p">.</span><span class="n">WriteRawValue</span><span class="p">(</span><span class="n">empty</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Above <code>JsonConverter</code> will consume the given stream and write it into result set without allocation. (<em>Pipeline rocks</em>)</p>
 <p>Also, we have to introduce <code>StreamConverter</code> to the controllers.</p>
-<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="n">services</span><span class="p">.</span><span class="n">AddControllers</span><span class="p">().</span><span class="n">AddNewtonsoftJson</span><span class="p">((</span><span class="n">n</span><span class="p">)</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
-    <span class="n">n</span><span class="p">.</span><span class="n">SerializerSettings</span><span class="p">.</span><span class="n">Converters</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">StreamConverter</span><span class="p">());</span>
-<span class="p">});</span>
-</code></pre></div><p>I have implemented the second solution as v2.0 and when we invoke the solution the result is the same.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="n">services</span><span class="p">.</span><span class="n">AddControllers</span><span class="p">().</span><span class="n">AddNewtonsoftJson</span><span class="p">((</span><span class="n">n</span><span class="p">)</span> <span class="p">=&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">n</span><span class="p">.</span><span class="n">SerializerSettings</span><span class="p">.</span><span class="n">Converters</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">StreamConverter</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div><p>I have implemented the second solution as v2.0 and when we invoke the solution the result is the same.</p>
 <h2 id="lets-check-the-performance">Let&rsquo;s check the performance</h2>
 <p>I have applied the same JMeter thread group for v2.0. The requests are completed in 00:03:33 with average 743ms.</p>
-<figure class="image-center">
-    <img src="/img/concatenate/benchmark2.png"
-         alt="Benchmark 2"/> 
+<figure class="image-center"><img src="/img/concatenate/benchmark2.png"
+         alt="Benchmark 2"/>
 </figure>
 
 <p>Less GC triggers than original solution and memory usage decreased between <strong>70MB</strong>~<strong>100MB</strong>.</p>
@@ -273,6 +266,10 @@
     
     
         <li>
+            <a href="/posts/aspnet-core-concatenating-json-endpoints/">ASP.NET Core: Concatenating JSON endpoints<aside class="dates">Mar 6 2021</aside></a>
+        </li>
+    
+        <li>
             <a href="/posts/aspnet-core-jwt-and-refresh-token-with-httponly-cookies/">ASP.NET Core: JWT and Refresh Token with HttpOnly Cookies<aside class="dates">Sep 13 2020</aside></a>
         </li>
     
@@ -286,10 +283,6 @@
     
         <li>
             <a href="/projects/nuget-promptcli/">[NUGET] PromptCLI<aside class="dates">Apr 26 2020</aside></a>
-        </li>
-    
-        <li>
-            <a href="/posts/angular-2-base-component-alternative/">Angular 2&#43;: Base Component Alternative<aside class="dates">Jan 26 2020</aside></a>
         </li>
     
 </ul>
@@ -325,7 +318,7 @@
     
     <p class="small">
     
-       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
+       © Copyright 2024 <i class="fa fa-heart" aria-hidden="true"></i> Alim Özdemir
     
     </p>
 </footer>
@@ -345,7 +338,7 @@
 
 
   
-<script type="application/javascript">
+<script>
 var doNotTrack = false;
 if (!doNotTrack) {
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -357,7 +350,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
 
 
 
