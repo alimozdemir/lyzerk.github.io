@@ -9,12 +9,17 @@
   
     <meta name="twitter:card" content="summary"/>
     
-      <meta name="twitter:image" content="/images/avatar.png" />
-    
+      <meta name="twitter:image" content="/img/concatenate/jeff-dewitt-stream.jpg" />
+      <meta property="og:image" content="/img/concatenate/jeff-dewitt-stream.jpg">
+      
   
   
   <meta name="twitter:title" content="ASP.NET Core: Concatenating JSON endpoints"/>
+  <meta property="og:title" content="ASP.NET Core: Concatenating JSON endpoints"/>
+  <meta property="og:type" content="website">
   <meta name="twitter:description" content="We have redirected an http client response into ASP.NET Core response with the desired structure."/>
+  <meta property="og:description" content="We have redirected an http client response into ASP.NET Core response with the desired structure."/>
+  <meta name="description" content="We have redirected an http client response into ASP.NET Core response with the desired structure."/>
   
     <meta name="twitter:site" content="@almozdmr"/>
   
@@ -105,7 +110,10 @@
 <p>TLDR; We have redirected an http client response into ASP.NET Core response with the desired structure.</p>
 </blockquote>
 <p>Most commonly faced scenario about API design is you want to serialize a POCO class or a different type of objects to JSON with direct serializer. Then get the serialized value and use it. If you are handling big objects/data/files, then you have to be careful with what you do. Otherwise, it can have devastating impacts on the performance.</p>
-<p><img src="/img/concatenate/jeff-dewitt-stream.jpg" alt="Photo by Jeff DeWitt on Unsplash"></p>
+<figure class="image-center"><img src="/img/concatenate/jeff-dewitt-stream.jpg"
+         alt="Photo by Jeff DeWitt on Unsplash"/>
+</figure>
+
 <p>Assume that you have multiple endpoints which returns JSON results and you are trying to concatenate them into a single structure. In that case, you can read the endpoints and allocate them into memory. Then manipulate them according to your wishes.</p>
 <h2 id="data-preparation-andtests">Data preparation and tests</h2>
 <p>Before everything I would like to explain the demo code. So, I have several endpoints from <a href="https://jsonplaceholder.typicode.com/">JSONPlaceholder</a>. And, I would like to collect them into a dictionary with their key value. I implemented the base code with async/await parallelism. <strong>So, no matter what, we are getting the data without blocking each other. Let&rsquo;s see the base code</strong>.</p>

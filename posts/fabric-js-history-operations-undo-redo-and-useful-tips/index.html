@@ -9,12 +9,17 @@
   
     <meta name="twitter:card" content="summary"/>
     
-      <meta name="twitter:image" content="/images/avatar.png" />
-    
+      <meta name="twitter:image" content="/img/1__yjsrwvoZmyY7RmRBxDt7Mg.png" />
+      <meta property="og:image" content="/img/1__yjsrwvoZmyY7RmRBxDt7Mg.png">
+      
   
   
   <meta name="twitter:title" content="Fabric.js History Operations (undo, redo) and Useful Tips"/>
+  <meta property="og:title" content="Fabric.js History Operations (undo, redo) and Useful Tips"/>
+  <meta property="og:type" content="website">
   <meta name="twitter:description" content="Hello again, today’s subject is a javascript library called Fabric.js. I have worked with this library a couple of times in the past…"/>
+  <meta property="og:description" content="Hello again, today’s subject is a javascript library called Fabric.js. I have worked with this library a couple of times in the past…"/>
+  <meta name="description" content="Hello again, today’s subject is a javascript library called Fabric.js. I have worked with this library a couple of times in the past…"/>
   
     <meta name="twitter:site" content="@almozdmr"/>
   
@@ -154,8 +159,8 @@
 </span></span></code></pre></div><p>Then you can download the 3x canvas.</p>
 <h4 id="clip-canvas">Clip canvas</h4>
 <p>In most cases, I wanted to clip objects with different kind of shapes. HTML5 canvas has a property called <code>globalCompositeOperation</code>.</p>
-<p><img src="/img/1__yjsrwvoZmyY7RmRBxDt7Mg.png" alt="global composite operation">
-<a href="https://www.rgraph.net/canvas/reference/globalcompositeoperation.html">global composite operation</a></p>
+<p><img src="/img/1__yjsrwvoZmyY7RmRBxDt7Mg.png" alt="global composite operation"></p>
+<p><a href="https://www.rgraph.net/canvas/reference/globalcompositeoperation.html">global composite operation</a></p>
 <p>This is important while clipping a fabric object. Same rules apply here. For example, I have added a rectangle on the canvas. Then, I have set the clipPath property to a group of objects.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">fabric</span><span class="p">.</span><span class="nx">Canvas</span><span class="p">(</span><span class="s1">&#39;canvas&#39;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">

@@ -9,12 +9,17 @@
   
     <meta name="twitter:card" content="summary"/>
     
-      <meta name="twitter:image" content="/images/avatar.png" />
-    
+      <meta name="twitter:image" content="/img/1__qHnlXoKJKnQHTj6QcoN1nw.jpeg" />
+      <meta property="og:image" content="/img/1__qHnlXoKJKnQHTj6QcoN1nw.jpeg">
+      
   
   
   <meta name="twitter:title" content="ASP.NET Core: A powerful API Design with OData, EF and SQLKata"/>
+  <meta property="og:title" content="ASP.NET Core: A powerful API Design with OData, EF and SQLKata"/>
+  <meta property="og:type" content="website">
   <meta name="twitter:description" content="Rather than reinventing the wheel, you may need a fast and reliable solution in a short time span. In this case, your framework should be…"/>
+  <meta property="og:description" content="Rather than reinventing the wheel, you may need a fast and reliable solution in a short time span. In this case, your framework should be…"/>
+  <meta name="description" content="Rather than reinventing the wheel, you may need a fast and reliable solution in a short time span. In this case, your framework should be…"/>
   
     <meta name="twitter:site" content="@almozdmr"/>
   
@@ -190,7 +195,10 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">AND</span><span class="w"> </span><span class="n">A</span><span class="p">.[</span><span class="n">CountryId</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">.[</span><span class="n">CountryId</span><span class="p">]</span><span class="w">
 </span></span></span></code></pre></div><p>I don’t think this one is a good update statement. The join statement is not necessary because it updates all rows with respect to an ID. My computer runs it in around <strong>1.5</strong> seconds. It works but it’s slow. In a future they could fix it. I will not go into Entity Framework Plus package details.</p>
 <h4 id="sqlkata">SqlKata</h4>
-<p><img src="/img/1__qHnlXoKJKnQHTj6QcoN1nw.jpeg" alt="The blog picture"></p>
+<figure class="image-center"><img src="/img/1__qHnlXoKJKnQHTj6QcoN1nw.jpeg"
+         alt="The blog picture"/>
+</figure>
+
 <p>Since, the selection part is customized I would like to go with my own queries for customization and performance matters. SqlKata is a good query builder that allows you to compile your queries according to different database systems.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="na">[HttpPatch]</span>
 </span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">async</span> <span class="n">Task</span> <span class="n">Patch</span><span class="p">([</span><span class="n">FromODataUri</span><span class="p">]</span> <span class="kt">int</span> <span class="n">key</span><span class="p">,</span> <span class="n">Delta</span><span class="p">&lt;</span><span class="n">vw_Song</span><span class="p">&gt;</span> <span class="n">delta</span><span class="p">)</span>
